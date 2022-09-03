@@ -109,7 +109,6 @@ dateAndTime.set(i, i1, i2);
         /*
 Устанавливает список времени выбраного дня
  */
-
 private  void  initListDate () {
 Record record = new Record();
 recordsEnpty = new ArrayList<>();
