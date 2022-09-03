@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".lits.ListOfProceduresActivity">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editextProcedur"
+        android:hint="Наименование услуги"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/edittextPrice"
+        android:hint="Стоимость"
+        app:layout_constraintTop_toBottomOf="@+id/editextProcedur"
+        android:inputType="numberDecimal"
+        />
+
+    <EditText
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/editTextTimeEnd"
+        android:inputType="number"
+        android:hint="Продолжительность услуги в минутах"
+        app:layout_constraintTop_toBottomOf="@+id/edittextPrice"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonSaveProcedur"
+        android:onClick="buttonAddProcedur"
+        android:text="Добавить услугу"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTimeEnd"
+        />
+
+
+    <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/textTest"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSaveProcedur"
+        />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listProcedures"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/textTest"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

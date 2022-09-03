@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddSessionActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Время записи:"
+    android:id="@+id/textView_info1"
+        />
+
+    <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/textViewSetupTime"
+        app:layout_constraintTop_toBottomOf="@+id/textView_info1"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewSetupUser"
+        android:onClick="onClickSetUser"
+        app:layout_constraintTop_toBottomOf="@+id/textViewSetupTime"
+        android:text="Выбрать клиента"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonSetupProcedure"
+        android:onClick="onClickButtonSetProcedure"
+        android:text="Выбрать услугу"
+        app:layout_constraintTop_toBottomOf="@+id/textViewSetupUser"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listSetupProcedure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSetupProcedure"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView_info2"
+        android:text="Общая сумма услуг"
+        app:layout_constraintTop_toBottomOf="@+id/listSetupProcedure"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextSetupPrise"
+        android:inputType="numberDecimal"
+        app:layout_constraintTop_toBottomOf="@+id/textView_info2"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView_info3"
+        android:text="Общая продолжительность в минутах"
+        app:layout_constraintTop_toBottomOf="@+id/editTextSetupPrise"
+        />
+<EditText
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/editTextSetupTimeFinish"
+    android:inputType="number"
+    app:layout_constraintTop_toBottomOf="@+id/textView_info3"
+    />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextSetupComment"
+        android:hint="Комментарий"
+        app:layout_constraintTop_toBottomOf="@+id/editTextSetupTimeFinish"
+        />
+
+    <Button
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/buttonSessionSave"
+    android:onClick="onClickButtonSessionSave"
+    android:text="Сохранить"
+    app:layout_constraintTop_toBottomOf="@+id/editTextSetupComment"
+    />
+</androidx.constraintlayout.widget.ConstraintLayout>

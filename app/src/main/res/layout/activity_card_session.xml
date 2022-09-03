@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CardSessionActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewCardSessionDate"
+/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewCardSessionNameUser"
+android:onClick="onClickTextViewCardSessionNameUser"
+        app:layout_constraintTop_toBottomOf="@+id/textViewCardSessionDate"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewCardSessionProcedures"
+        app:layout_constraintTop_toBottomOf="@+id/textViewCardSessionNameUser"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewCardSessionPrice"
+        app:layout_constraintTop_toBottomOf="@+id/textViewCardSessionProcedures"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewCardSessionTimeEnd"
+        app:layout_constraintTop_toBottomOf="@+id/textViewCardSessionPrice"
+        />
+
+    <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/textViewCardSessionComment"
+    app:layout_constraintTop_toBottomOf="@+id/textViewCardSessionTimeEnd"
+/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonCardSessionDooble"
+        android:text="Дублировать запись"
+        android:onClick="onClickButtonCardSessionDooble"
+        app:layout_constraintTop_toBottomOf="@+id/textViewCardSessionComment"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonCardSessionRead"
+        android:onClick="onclickButtonCardSessionRead"
+        android:text="Редактировать запись"
+        app:layout_constraintTop_toBottomOf="@+id/buttonCardSessionDooble"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonCardSessionDelete"
+        android:onClick="onClickButtonCardSessionDelete"
+        android:text="Удалить запись"
+        app:layout_constraintTop_toBottomOf="@+id/buttonCardSessionRead"
+/>
+</androidx.constraintlayout.widget.ConstraintLayout>

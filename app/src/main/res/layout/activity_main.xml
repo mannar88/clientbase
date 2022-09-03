@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    android:id="@+id/buttonRecordSession"
+    android:text="Расписание и запись"
+android:onClick="onClickButtonRecord"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonListClient"
+        android:onClick="buttonList"
+        android:text="Список клиентов"
+        app:layout_constraintTop_toBottomOf="@+id/buttonRecordSession"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonListProcedur"
+        android:onClick="buttonListP"
+        android:text="Список услуг"
+        app:layout_constraintTop_toBottomOf="@+id/buttonListClient"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonListExpenses"
+        android:onClick="onClickButtonListExpenses"
+        android:text="Список расходов"
+        app:layout_constraintTop_toBottomOf="@+id/buttonListProcedur"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
