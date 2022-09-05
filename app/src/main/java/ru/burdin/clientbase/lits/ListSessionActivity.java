@@ -166,16 +166,25 @@ if (!checbox) {
              */
             @Override
             public void onUserClick(Object o, int position) {
-if (getIntent().getIntExtra(StaticClass.DUPLICATION, -1) > -1) {
+/*
+Если дублируем
+ */
+                if (getIntent().getIntExtra(StaticClass.DUPLICATION, -1) > -1) {
 Record recordDup = bd.getRecords().get(getIntent().getExtras().getInt(StaticClass.DUPLICATION));
     ContentValues contentValues = new ContentValues();
 
 }else {
-    if (recordsEnpty.get(position).getIdUser() > 0) {
+    /*
+    Если запись уже есть, открывается карточка записи
+     */
+                    if (recordsEnpty.get(position).getIdUser() > 0) {
         intentCardSession.putExtra(POSITION_RECORDSESMPTY, position);
         startActivity(intentCardSession);
     } else {
-        intent.putExtra(SETTIME, position);
+        /*
+        Если записи нет, открывается страничка для добавления записи
+         */
+                        intent.putExtra(SETTIME, position);
         startActivity(intent);
     }
 }                }
