@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
   Bd_AsyncTask bd_asyncTask = new Bd_AsyncTask(getApplicationContext());
   bd_asyncTask.execute();
+
     }
 
     public void onClickButtonRecord(View view) {

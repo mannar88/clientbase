@@ -1,11 +1,23 @@
 package ru.burdin.clientbase.models;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+
 
 public class Record implements Comparable, Model {
-    private long id;
-    private long start;
-    private long end;
+private  long id;
+    private  long start;
+    private  long end = 0;
     private long idUser;
     private String procedure;
     private double price;
@@ -87,11 +99,21 @@ public class Record implements Comparable, Model {
 
         Record record = (Record) o;
 boolean res = false;
-if (
-this.getStart() == record.getStart()
-        || (this.getStart() >= record.getStart() && this.getStart() <= record.getStart() + record.getEnd())
-|| (this.getStart() <= record.getStart() && record.getStart() <= this.getStart() + this.getEnd())
-) {
+Date dateThis = new Date(start);
+Date dateRecord = new Date(record.start);
+Date dateThisEnd = new Date(start + end);
+Date dateRecordEnd = new Date(record.start + record.end);
+if (dateThis.getHours() == dateRecord.getHours() && dateThis.getMinutes() == dateRecord.getMinutes()
+||
+        (dateThisEnd.getTime() < dateRecordEnd.getTime()
+        &&
+        dateThisEnd.getTime() > dateRecord.getTime()
+        )
+|| (
+        dateThis.getTime() < dateRecord.getTime()
+                &&
+                dateThisEnd.getTime() > dateRecordEnd.getTime()
+)){
     res = true;
 }
 return  res;

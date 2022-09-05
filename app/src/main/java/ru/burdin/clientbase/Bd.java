@@ -177,8 +177,7 @@ sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_PROCEDURE + "(" + COLUMN_ID
 sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+TABLE);
             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+TABLE_PROCEDURE);
             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+TABLE_SESSION);
-            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+TABLE_EXPENSES);
-            onCreate(sqLiteDatabase);
+
 }
     }
 }

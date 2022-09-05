@@ -60,7 +60,16 @@ bd = Bd.load(getApplicationContext());
         startActivity(intent);
     }
 
-/*
+    /*
+    Дублирование записи
+     */
+    public void onClickButtonCardSessionDooble(View view) {
+Intent intent = new Intent(this, ListSessionActivity.class);
+intent.putExtra(StaticClass.DUPLICATION, StaticClass.indexList(record.getId(), bd.getRecords()));
+startActivity(intent);
+    }
+
+    /*
 Редактирование записи
  */
 public void onclickButtonCardSessionRead(View view) {

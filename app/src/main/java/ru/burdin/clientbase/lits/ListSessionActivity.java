@@ -1,6 +1,7 @@
 package ru.burdin.clientbase.lits;
 
 import android.app.DatePickerDialog;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -115,6 +116,7 @@ recordsEnpty = new ArrayList<>();
 Date date = new Date(dateAndTime.getTimeInMillis());
 date.setHours(7);
 date.setMinutes(0);
+date.setSeconds(0);
 record.setStart(date.getTime());
 recordsEnpty.addAll(
     bd.getRecords().stream()
@@ -125,26 +127,14 @@ countUser = recordsEnpty.size();
 sum = 0d;
 recordsEnpty.forEach(record1 -> sum = sum + record1.getPrice());
 if (!checbox) {
-    long t = 0l;
-    while (new Date(t).getHours() < 22) {
-        Record record1 = new Record(record.getStart() + t);
-        if (!recordsEnpty.contains(record1)) {
-            recordsEnpty.add(record1);
+    while (record.getStartDay().getHours() < 23) {
+        if (!recordsEnpty.contains(record)) {
+            recordsEnpty.add(new Record(record.getStart()));
         }
-        t = t + TimeUnit.MINUTES.toMillis(10);
+        record.setStart(record.getStart() + TimeUnit.MINUTES.toMillis(10));
     }
 }
-recordsEnpty.sort(Comparator.naturalOrder());
-textViewTime.setText("Всего записей: : " + countUser + " На сумму: " + StaticClass.priceToString(sum));
-if (recordsEnpty.size() >1) {
-    for (int i = 1; i < recordsEnpty.size(); i++) {
-        if (recordsEnpty.get(i).getStartDay().getHours() == recordsEnpty.get(i - 1).getStartDay().getHours()
-&& recordsEnpty.get(i).getStartDay().getMinutes() == recordsEnpty.get(i - 1).getStartDay().getMinutes()
-        ) {
-            recordsEnpty.remove(i - 1);
-        }
-    }
-}
+ recordsEnpty.sort(Comparator.naturalOrder());
 }
 
     /*
@@ -167,7 +157,7 @@ if (recordsEnpty.size() >1) {
                     } else {
                         viewHolder.textView.setText(dateFormatTime.format(recordsEnpty.get(MyAdapter.count).getStartDay()));
                     }
-            }
+                        }
         };
         myAdapter = new MyAdapter(this, recordsEnpty, new MyAdapter.OnUserClickListener() {
             /*
@@ -175,14 +165,19 @@ if (recordsEnpty.size() >1) {
              */
             @Override
             public void onUserClick(Object o, int position) {
-                if (recordsEnpty.get(position).getIdUser() > 0) {
-                    intentCardSession.putExtra(POSITION_RECORDSESMPTY, position);
-                    startActivity(intentCardSession);
-                } else {
-                    intent.putExtra(SETTIME, position);
-                    startActivity(intent);
-                }
-                }
+if (getIntent().getIntExtra(StaticClass.DUPLICATION, -1) > -1) {
+Record recordDup = bd.getRecords().get(getIntent().getExtras().getInt(StaticClass.DUPLICATION));
+    ContentValues contentValues = new ContentValues();
+
+}else {
+    if (recordsEnpty.get(position).getIdUser() > 0) {
+        intentCardSession.putExtra(POSITION_RECORDSESMPTY, position);
+        startActivity(intentCardSession);
+    } else {
+        intent.putExtra(SETTIME, position);
+        startActivity(intent);
+    }
+}                }
         }, consumer);
         recyclerViewTime.setAdapter(myAdapter);
      }

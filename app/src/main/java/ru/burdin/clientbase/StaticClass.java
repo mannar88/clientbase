@@ -8,6 +8,8 @@ import ru.burdin.clientbase.models.Model;
 import ru.burdin.clientbase.models.User;
 
 public final class StaticClass  {
+    public  static  final String DUPLICATION = "duplication";
+
     /*
     Ищет индекс в коллекции по его id
      */
