@@ -108,6 +108,10 @@ if (dateThis.getHours() == dateRecord.getHours() && dateThis.getMinutes() == dat
         (dateThisEnd.getTime() < dateRecordEnd.getTime()
         &&
         dateThisEnd.getTime() > dateRecord.getTime()
+        &&
+                dateThisEnd.getMinutes() != dateRecordEnd.getMinutes()
+                &&
+                dateThisEnd.getMinutes() != dateRecord.getMinutes()
         )
 || (
         dateThis.getTime() < dateRecord.getTime()
