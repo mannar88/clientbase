@@ -167,13 +167,32 @@ if (!checbox) {
             @Override
             public void onUserClick(Object o, int position) {
 /*
-Если дублируем
+Если дублирование записи
  */
                 if (getIntent().getIntExtra(StaticClass.DUPLICATION, -1) > -1) {
 Record recordDup = bd.getRecords().get(getIntent().getExtras().getInt(StaticClass.DUPLICATION));
-    ContentValues contentValues = new ContentValues();
-
-}else {
+ContentValues contentValues = new ContentValues();
+contentValues.put(Bd.COLUMN_TIME, recordsEnpty.get(position).getStart());
+contentValues.put(Bd.COLUMN_TIME_END, recordDup.getEnd());
+contentValues.put(Bd.COLUMN_ID_USER, recordDup.getIdUser());
+contentValues.put(Bd.COLUMN_PROCEDURE, recordDup.getProcedure());
+contentValues.put(Bd.COLUMN_PRICE, recordDup.getPrice());
+contentValues.put(Bd.COLUMN_COMMENT, recordDup.getComment());
+long id = bd.add(Bd.TABLE_SESSION, contentValues);
+if (id > 0) {
+if ( bd.getRecords().add(new Record(
+        id,
+        recordsEnpty.get(position).getStart(),
+        recordDup.getEnd(),
+        recordDup.getIdUser(),
+        recordDup.getProcedure(),
+        recordDup.getPrice(),
+        recordDup.getComment()
+))) {
+finish();
+}
+}
+                }else {
     /*
     Если запись уже есть, открывается карточка записи
      */

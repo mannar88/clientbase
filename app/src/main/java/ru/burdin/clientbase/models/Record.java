@@ -103,7 +103,8 @@ Date dateThis = new Date(start);
 Date dateRecord = new Date(record.start);
 Date dateThisEnd = new Date(start + end);
 Date dateRecordEnd = new Date(record.start + record.end);
-if (dateThis.getHours() == dateRecord.getHours() && dateThis.getMinutes() == dateRecord.getMinutes()
+if ( dateThis.getDate() == dateRecord.getDate()
+        &&(        dateThis.getHours() == dateRecord.getHours() && dateThis.getMinutes() == dateRecord.getMinutes()
 ||
         (dateThisEnd.getTime() < dateRecordEnd.getTime()
         &&
@@ -117,7 +118,7 @@ if (dateThis.getHours() == dateRecord.getHours() && dateThis.getMinutes() == dat
         dateThis.getTime() < dateRecord.getTime()
                 &&
                 dateThisEnd.getTime() > dateRecordEnd.getTime()
-)){
+        ))){
     res = true;
 }
 return  res;
