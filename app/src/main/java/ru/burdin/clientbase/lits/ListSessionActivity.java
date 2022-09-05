@@ -126,7 +126,7 @@ recordsEnpty.addAll(
 countUser = recordsEnpty.size();
 sum = 0d;
 recordsEnpty.forEach(record1 -> sum = sum + record1.getPrice());
-textViewTime.setText("Всего записано: " + countUser + " клиентов, на общую сумму: " + sum + " руб");
+textViewTime.setText("Всего записано: " + countUser + " клиентов, на общую сумму: " + StaticClass.priceToString(sum) + " руб");
 if (!checbox) {
     while (record.getStartDay().getHours() < 23) {
         if (!recordsEnpty.contains(record)) {
