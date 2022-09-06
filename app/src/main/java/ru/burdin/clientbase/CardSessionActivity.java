@@ -29,14 +29,26 @@ public class CardSessionActivity extends AppCompatActivity {
     private  TextView textViewTimeEnd;
     private  TextView textViewComment;
 private  int indexUser;
-    @Override
+    private  int indexRecord = -1;
+
+
+@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_session);
-bd = Bd.load(getApplicationContext());
-        record = ListSessionActivity.recordsEnpty.get(getIntent().getExtras().getInt(ListSessionActivity.POSITION_RECORDSESMPTY));
-     indexUser = StaticClass.indexList(record.getIdUser(), bd.getUsers());
+    bd = Bd.load(getApplicationContext());
+
+    if (savedInstanceState == null) {
+    indexRecord = getIntent().getIntExtra(ListSessionActivity.POSITION_RECORDSESMPTY, -1);
+    if (indexRecord != -1) {
+        record = ListSessionActivity.recordsEnpty.get(indexRecord);
+    }
+    } else {
+       record =  bd.getRecords().get(savedInstanceState.getInt(ListSessionActivity.POSITION_RECORDSESMPTY));
+}
+    indexUser = StaticClass.indexList(record.getIdUser(), bd.getUsers());
      user = bd.getUsers().get(indexUser);
+
      textViewDate = findViewById(R.id.textViewCardSessionDate);
     textViewNameUser = findViewById(R.id.textViewCardSessionNameUser);
     textViewProcedure = findViewById(R.id.textViewCardSessionProcedures);
@@ -88,4 +100,17 @@ bd.getRecords().remove(StaticClass.indexList(record.getId(), bd.getRecords()));
     finish();
 }
     }
-    }
+   /*
+   Сохраняется аактивность
+    */
+   @Override
+   protected void onSaveInstanceState(Bundle outState) {
+       super.onSaveInstanceState(outState);
+       /*
+       Сохраняем индекс списка расписания
+        */
+   int saveIndex = StaticClass.indexList(record.getId(), bd.getRecords());
+   outState.putInt(ListSessionActivity.POSITION_RECORDSESMPTY, saveIndex);
+   }
+
+}
