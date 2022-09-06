@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -170,29 +171,42 @@ if (!checbox) {
 Если дублирование записи
  */
                 if (getIntent().getIntExtra(StaticClass.DUPLICATION, -1) > -1) {
-Record recordDup = bd.getRecords().get(getIntent().getExtras().getInt(StaticClass.DUPLICATION));
-ContentValues contentValues = new ContentValues();
-contentValues.put(Bd.COLUMN_TIME, recordsEnpty.get(position).getStart());
-contentValues.put(Bd.COLUMN_TIME_END, recordDup.getEnd());
-contentValues.put(Bd.COLUMN_ID_USER, recordDup.getIdUser());
-contentValues.put(Bd.COLUMN_PROCEDURE, recordDup.getProcedure());
-contentValues.put(Bd.COLUMN_PRICE, recordDup.getPrice());
-contentValues.put(Bd.COLUMN_COMMENT, recordDup.getComment());
-long id = bd.add(Bd.TABLE_SESSION, contentValues);
-if (id > 0) {
-if ( bd.getRecords().add(new Record(
-        id,
-        recordsEnpty.get(position).getStart(),
-        recordDup.getEnd(),
-        recordDup.getIdUser(),
-        recordDup.getProcedure(),
-        recordDup.getPrice(),
-        recordDup.getComment()
-))) {
-finish();
-}
-}
-                }else {
+int indexListRecords = getIntent().getExtras().getInt(StaticClass.DUPLICATION);
+                    Record recordDup = new Record();
+recordDup.setStart(recordsEnpty.get(position).getStart());
+recordDup.setEnd(bd.getRecords().get(indexListRecords).getEnd());
+recordDup.setIdUser(bd.getRecords().get(indexListRecords).getIdUser())
+;
+recordDup.setProcedure(bd.getRecords().get(indexListRecords).getProcedure());
+recordDup.setPrice(bd.getRecords().get(indexListRecords).getPrice());
+recordDup.setComment(bd.getRecords().get(indexListRecords).getComment());
+if (!bd.getRecords().contains(recordDup)) {
+    ContentValues contentValues = new ContentValues();
+    contentValues.put(Bd.COLUMN_TIME, recordDup.getStart());
+    contentValues.put(Bd.COLUMN_TIME_END, recordDup.getEnd());
+    contentValues.put(Bd.COLUMN_ID_USER, recordDup.getIdUser());
+    contentValues.put(Bd.COLUMN_PROCEDURE, recordDup.getProcedure());
+    contentValues.put(Bd.COLUMN_PRICE, recordDup.getPrice());
+    contentValues.put(Bd.COLUMN_COMMENT, recordDup.getComment());
+    long id = bd.add(Bd.TABLE_SESSION, contentValues);
+
+    if (id > 0) {
+        if (bd.getRecords().add(new Record(
+                id,
+                recordDup.getStart(),
+                recordDup.getEnd(),
+                recordDup.getIdUser(),
+                recordDup.getProcedure(),
+                recordDup.getPrice(),
+                recordDup.getComment()
+        ))) {
+            finish();
+        }
+    }
+    } else {
+        Toast.makeText(getApplicationContext(), "Запись пересекаетсяс другим клиентом", Toast.LENGTH_SHORT).show();
+    }
+}else {
     /*
     Если запись уже есть, открывается карточка записи
      */

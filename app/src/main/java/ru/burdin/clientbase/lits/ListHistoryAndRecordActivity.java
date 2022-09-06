@@ -17,7 +17,13 @@ public class ListHistoryAndRecordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list_history_and_record);
     recyclerView = findViewById(R.id.listHistory);
     }
-
+/*
+устанавливаем список историй записей
+ */
     public void onClickButtonListHistoryAndRecordNewRecord(View view) {
     }
+    private  void  updatelistHistory () {
+
+    }
+
 }
