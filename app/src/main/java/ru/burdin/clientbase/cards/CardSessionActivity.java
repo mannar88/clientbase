@@ -1,4 +1,4 @@
-package ru.burdin.clientbase;
+package ru.burdin.clientbase.cards;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,10 +9,13 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import ru.burdin.clientbase.AddSessionActivity;
+import ru.burdin.clientbase.Bd;
+import ru.burdin.clientbase.R;
+import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.lits.ListSessionActivity;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.models.User;
@@ -21,7 +24,7 @@ public class CardSessionActivity extends AppCompatActivity {
 
     private Record record;
     private User user;
-    private  Bd bd;
+    private Bd bd;
     private TextView textViewDate;
     private  TextView textViewNameUser;
     private     TextView textViewProcedure;

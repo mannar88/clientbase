@@ -33,8 +33,6 @@ private  EditText editTextSetTimeFinish;
 private  EditText editTextSetComment;
 private  int index = -1;
 private Record record;
-    static  private final int USER_INDEX_LIST = 0;
-private  static  final  int PROCEDURE_INDEX = 1;
     private  static  Bd bd;
 private  int userIndex = -1;
 private static ArrayList <Procedure> procedures;
@@ -84,7 +82,7 @@ textViewSetTime.setText(dateFormatTime.format(record.getStartDay()));
 public  void  onClickSetUser (View view) {
     Intent intent = new Intent(this, ListClientActivity.class);
    intent.putExtra(AddSessionActivity.class.getName(), AddSessionActivity.class.getName());
-    startActivityForResult(intent,USER_INDEX_LIST );
+    startActivityForResult(intent,StaticClass.LIST_USERS);
 }
 
 /*
@@ -152,7 +150,7 @@ finish();
     public void onClickButtonSetProcedure(View view) {
     Intent intent = new Intent(this, ListOfProceduresActivity.class);
     intent.putExtra(AddSessionActivity.class.getName(), AddSessionActivity.class.getName());
-    startActivityForResult(intent, PROCEDURE_INDEX);
+    startActivityForResult(intent, StaticClass.LIST_PROCEDURES);
     }
 
 /*
@@ -162,12 +160,12 @@ finish();
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-        if (requestCode == USER_INDEX_LIST) {
+        if (requestCode == StaticClass.LIST_USERS) {
              userIndex = data.getIntExtra(ListClientActivity.class.getName(), -1);
                                      textViewSetUser.setText(bd.getUsers().get(userIndex).getSurname() + " " + bd.getUsers().get(userIndex).getName());
         }
 
-        if (requestCode == PROCEDURE_INDEX) {
+        if (requestCode == StaticClass.LIST_PROCEDURES) {
         procedures.add(bd.getProcedures().get(data.getExtras().getInt(ListOfProceduresActivity.class.getName())));
     updateProcedure();
         buttonAddProcedure.setText("Ещё добавить услугу");

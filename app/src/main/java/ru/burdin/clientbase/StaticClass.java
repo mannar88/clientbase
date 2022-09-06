@@ -8,6 +8,9 @@ import ru.burdin.clientbase.models.Model;
 import ru.burdin.clientbase.models.User;
 
 public final class StaticClass  {
+    public  static  final  int LIST_USERS = 0;
+public  static  final  int LIST_PROCEDURES = 1;
+
     public  static  final String DUPLICATION = "duplication";
 
     /*

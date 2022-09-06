@@ -9,13 +9,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.function.Consumer;
 
 import ru.burdin.clientbase.AddClientActivity;
 import ru.burdin.clientbase.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
-import ru.burdin.clientbase.CardUserActivity;
+import ru.burdin.clientbase.cards.CardUserActivity;
 import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.models.User;

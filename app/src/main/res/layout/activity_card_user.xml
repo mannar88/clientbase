@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CardUserActivity">
+    tools:context=".cards.CardUserActivity">
 
     <TextView
         android:layout_width="match_parent"
@@ -27,12 +27,21 @@
         />
 
     <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+android:id="@+id/buttonCardUserHistoryAndRecord"
+        android:onClick="onClickButtonCardUserHistoryAndRecord"
+        android:text="История и запись"
+        app:layout_constraintTop_toBottomOf="@+id/textVuiwComment"
+        />
+
+    <Button
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/buttonReadUser"
     android:text="Редактировать карточку"
     android:onClick="buttonReadC"
-    app:layout_constraintTop_toBottomOf="@+id/textVuiwComment"
+    app:layout_constraintTop_toBottomOf="@+id/buttonCardUserHistoryAndRecord"
     />
 
     <Button

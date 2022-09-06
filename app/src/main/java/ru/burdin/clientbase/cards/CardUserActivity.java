@@ -1,4 +1,4 @@
-package ru.burdin.clientbase;
+package ru.burdin.clientbase.cards;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,11 +7,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import ru.burdin.clientbase.AddClientActivity;
+import ru.burdin.clientbase.Bd;
+import ru.burdin.clientbase.R;
+import ru.burdin.clientbase.lits.ListHistoryAndRecordActivity;
 import ru.burdin.clientbase.models.User;
 
 public class CardUserActivity extends AppCompatActivity {
 
-    private  Bd bd;
+    private Bd bd;
     private TextView textViewNameAndSurname;
     private TextView textViewPhone;
     private  TextView textViewComment;
@@ -45,5 +49,13 @@ if (bd.delete(Bd.TABLE, user.getId()) == 1) {
         Intent intent = new Intent(this, AddClientActivity.class);
 intent.putExtra(Bd.TABLE, stak);
         startActivity(intent);
+    }
+
+    /*
+    Открывает активность истории и для записи
+     */
+    public void onClickButtonCardUserHistoryAndRecord(View view) {
+    Intent intent = new Intent(this, ListHistoryAndRecordActivity.class);
+    startActivity(intent);
     }
 }

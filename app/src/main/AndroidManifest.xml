@@ -9,12 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ClientBase">
-        <activity android:name=".CardSessionActivity"></activity>
+        <activity android:name=".lits.ListHistoryAndRecordActivity"></activity>
+        <activity android:name=".cards.CardSessionActivity" />
         <activity android:name=".lits.ListExpensesActivity" />
         <activity android:name=".AddSessionActivity" />
         <activity android:name=".lits.ListSessionActivity" />
         <activity android:name=".lits.ListOfProceduresActivity" />
-        <activity android:name=".CardUserActivity" />
+        <activity android:name=".cards.CardUserActivity" />
         <activity android:name=".AddClientActivity" />
         <activity android:name=".lits.ListClientActivity" />
         <activity

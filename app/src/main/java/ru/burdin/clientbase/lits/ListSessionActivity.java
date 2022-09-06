@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 import ru.burdin.clientbase.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
-import ru.burdin.clientbase.CardSessionActivity;
+import ru.burdin.clientbase.cards.CardSessionActivity;
 import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
