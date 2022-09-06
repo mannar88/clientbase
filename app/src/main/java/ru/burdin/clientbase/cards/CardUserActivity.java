@@ -56,6 +56,7 @@ intent.putExtra(Bd.TABLE, stak);
      */
     public void onClickButtonCardUserHistoryAndRecord(View view) {
     Intent intent = new Intent(this, ListHistoryAndRecordActivity.class);
+    intent.putExtra(Bd.TABLE, user.getId());
     startActivity(intent);
     }
 }
