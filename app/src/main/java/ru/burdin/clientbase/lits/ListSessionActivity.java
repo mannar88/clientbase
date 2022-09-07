@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -46,15 +47,17 @@ public class ListSessionActivity extends AppCompatActivity {
 private RecyclerView recyclerViewTime;
 private MyAdapter myAdapter;
 public  static ArrayList <Record>  recordsEnpty;
-Intent intent;
+private   Intent intent;
 public  static  final  String SETTIME = "setTime";
-public  static  final  String POSITION_RECORDSESMPTY = "positionRecordsEsmpty";
     private  Bd bd;
 private  int countUser;
 private  double sum;
 private  Intent intentCardSession;
 private CheckBox checkBoxUsers;
 private  boolean checbox = false;
+private  String key = null;
+private  HashMap <String, Consumer> consumerHashMap = new HashMap<>();
+
 @Override
 protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,6 +148,7 @@ if (!checbox) {
     public  void  recUpdate () {
         DateFormat dateFormatTime = new SimpleDateFormat("HH:mm");
         initListDate();
+        setConsumerHashMap();
         Consumer <MyAdapter.ViewHolder> consumer= new Consumer<MyAdapter.ViewHolder>() {
             @Override
             public void accept(MyAdapter.ViewHolder viewHolder) {
@@ -161,70 +165,21 @@ if (!checbox) {
                     }
                         }
         };
-        myAdapter = new MyAdapter(this, recordsEnpty, new MyAdapter.OnUserClickListener() {
-            /*
-            Обрабатывается нажатие по списку
-             */
-            @Override
-            public void onUserClick(Object o, int position) {
-/*
-Если дублирование записи
- */
-                if (getIntent().getIntExtra(StaticClass.DUPLICATION, -1) > -1) {
-int indexListRecords = getIntent().getExtras().getInt(StaticClass.DUPLICATION);
-                    Record recordDup = new Record();
-recordDup.setStart(recordsEnpty.get(position).getStart());
-recordDup.setEnd(bd.getRecords().get(indexListRecords).getEnd());
-recordDup.setIdUser(bd.getRecords().get(indexListRecords).getIdUser())
-;
-recordDup.setProcedure(bd.getRecords().get(indexListRecords).getProcedure());
-recordDup.setPrice(bd.getRecords().get(indexListRecords).getPrice());
-recordDup.setComment(bd.getRecords().get(indexListRecords).getComment());
-if (!bd.getRecords().contains(recordDup)) {
-    ContentValues contentValues = new ContentValues();
-    contentValues.put(Bd.COLUMN_TIME, recordDup.getStart());
-    contentValues.put(Bd.COLUMN_TIME_END, recordDup.getEnd());
-    contentValues.put(Bd.COLUMN_ID_USER, recordDup.getIdUser());
-    contentValues.put(Bd.COLUMN_PROCEDURE, recordDup.getProcedure());
-    contentValues.put(Bd.COLUMN_PRICE, recordDup.getPrice());
-    contentValues.put(Bd.COLUMN_COMMENT, recordDup.getComment());
-    long id = bd.add(Bd.TABLE_SESSION, contentValues);
-
-    if (id > 0) {
-        if (bd.getRecords().add(new Record(
-                id,
-                recordDup.getStart(),
-                recordDup.getEnd(),
-                recordDup.getIdUser(),
-                recordDup.getProcedure(),
-                recordDup.getPrice(),
-                recordDup.getComment()
-        ))) {
-            finish();
-        }
+MyAdapter.OnUserClickListener <Record> onUserClickListener = new MyAdapter.OnUserClickListener<Record>() {
+    @Override
+    public void onUserClick(Record record, int position) {
+        if (record.getId() !=0) {
+                getIntent().putExtra(StaticClass.KEY, StaticClass.CARDSESSION);
     }
-    } else {
-        Toast.makeText(getApplicationContext(), "Запись пересекаетсяс другим клиентом", Toast.LENGTH_SHORT).show();
+        key = getIntent().getStringExtra(StaticClass.KEY);
+        consumerHashMap.get(key).accept(record);
     }
-}else {
-    /*
-    Если запись уже есть, открывается карточка записи
-     */
-                    if (recordsEnpty.get(position).getIdUser() > 0) {
-        intentCardSession.putExtra(POSITION_RECORDSESMPTY, position);
-        startActivity(intentCardSession);
-    } else {
-        /*
-        Если записи нет, открывается страничка для добавления записи
-         */
-                        intent.putExtra(SETTIME, position);
-        startActivity(intent);
-    }
-}                }
-        }, consumer);
-        recyclerViewTime.setAdapter(myAdapter);
+};
+MyAdapter myAdapter = new MyAdapter(this, recordsEnpty, onUserClickListener, consumer);
+recyclerViewTime.setAdapter(myAdapter);
      }
-    /*
+
+     /*
     Переводит дату на прошлый день
      */
      public void onClickButtonBackDay(View view) {
@@ -241,6 +196,84 @@ dateAndTime.setTimeInMillis(dateAndTime.getTimeInMillis() + TimeUnit.DAYS.toMill
     recUpdate();
 }
 
+/*
+Устанавливает в хэшмапу обработчик нажатия по списку
+ */
+private  void setConsumerHashMap() {
+    /*
+    Если запись свободна
+     */
+    Consumer <Record> recordEmpty = new Consumer<Record>() {
+        @Override
+        public void accept(Record record) {
+        intent.putExtra(StaticClass.TIMEFREE, record.getStart());
+startActivity(intent);
+        }
+    };
+    consumerHashMap.put(null, recordEmpty);
+
+    /*
+    если запись существует
+     */
+    Consumer <Record> recordUser =new Consumer<Record>() {
+        @Override
+        public void accept(Record record) {
+                                    intentCardSession.putExtra(StaticClass.POSITION_LIST_RECORDS, record.getId());
+startActivity(intentCardSession);
+        }
+    };
+    consumerHashMap.put(StaticClass.CARDSESSION, recordUser);
+    /*
+    Если дублирование записи
+     */
+Consumer <Record> duplication = new Consumer<Record>() {
+    @Override
+    public void accept(Record record) {
+        int indexListRecords = getIntent().getExtras().getInt(StaticClass.POSITION_LIST_RECORDS);
+        Record recordDup = new Record();
+        recordDup.setStart(record.getStart());
+        recordDup.setEnd(bd.getRecords().get(indexListRecords).getEnd());
+        recordDup.setIdUser(bd.getRecords().get(indexListRecords).getIdUser())
+        ;
+        recordDup.setProcedure(bd.getRecords().get(indexListRecords).getProcedure());
+        recordDup.setPrice(bd.getRecords().get(indexListRecords).getPrice());
+        recordDup.setComment(bd.getRecords().get(indexListRecords).getComment());
+        if (!bd.getRecords().contains(recordDup)) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(Bd.COLUMN_TIME, recordDup.getStart());
+            contentValues.put(Bd.COLUMN_TIME_END, recordDup.getEnd());
+            contentValues.put(Bd.COLUMN_ID_USER, recordDup.getIdUser());
+            contentValues.put(Bd.COLUMN_PROCEDURE, recordDup.getProcedure());
+            contentValues.put(Bd.COLUMN_PRICE, recordDup.getPrice());
+            contentValues.put(Bd.COLUMN_COMMENT, recordDup.getComment());
+            long id = bd.add(Bd.TABLE_SESSION, contentValues);
+
+            if (id > 0) {
+                if (bd.getRecords().add(new Record(
+                        id,
+                        recordDup.getStart(),
+                        recordDup.getEnd(),
+                        recordDup.getIdUser(),
+                        recordDup.getProcedure(),
+                        recordDup.getPrice(),
+                        recordDup.getComment()
+                ))) {
+                    finish();
+                }
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), "Запись пересекаетсяс другим клиентом", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+};
+consumerHashMap.put(StaticClass.DUPLICATION, duplication);
+}
+
+    /*
+Сохраняет данные перед перекрытием экрана
+ */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

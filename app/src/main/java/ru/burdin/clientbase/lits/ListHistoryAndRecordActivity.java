@@ -3,6 +3,7 @@ package ru.burdin.clientbase.lits;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -15,14 +16,15 @@ import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
+import ru.burdin.clientbase.cards.CardSessionActivity;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.models.User;
 
 public class ListHistoryAndRecordActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private ArrayList <String> times;
-    Bd bd;
+private  ArrayList <Record> r;
+    private      Bd bd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,36 +34,39 @@ public class ListHistoryAndRecordActivity extends AppCompatActivity {
     updatelistHistory();
     }
 
-    /*
-устанавливаем список историй записей
- */
     public void onClickButtonListHistoryAndRecordNewRecord(View view) {
     }
+    /*
+    Создаем на экране список услуг
+     */
     private  void  updatelistHistory () {
-listSetTimes();;
-        Consumer <MyAdapter.ViewHolder> consumer = viewHolder ->viewHolder.textView.setText(times.get(MyAdapter.count));
-    MyAdapter myAdapter = new MyAdapter(this, times, new MyAdapter.OnUserClickListener() {
-        @Override
-        public void onUserClick(Object o, int position) {
-
-        }
-    }, consumer);
+        listSetRcords();
+DateFormat dateFormat = new SimpleDateFormat("dd-MM-YYYY HH:mm");
+        Consumer <MyAdapter.ViewHolder> consumer = viewHolder -> viewHolder.textView.setText(dateFormat.format(r.get(MyAdapter.count).getStartDay()) + ", " + r.get(MyAdapter.count).getProcedure() + ", " + StaticClass.priceToString(r.get(MyAdapter.count).getPrice()));
+MyAdapter myAdapter = new MyAdapter(this, r, onUserClickListener, consumer);
     recyclerView.setAdapter(myAdapter);
     }
 
     /*
     Собираем в список все записи, которые принадлежат клиенту
      */
-    private  void  listSetTimes () {
+    private  void  listSetRcords () {
         long id = getIntent().getExtras().getLong(Bd.TABLE);
-        times = new ArrayList<>();
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-YYYY, HH:mm");
+        r = new ArrayList<>();
         for (Record record : bd.getRecords()) {
-            if (record.getIdUser() == id ) {
-                times.add(dateFormat.format(record.getStartDay()) + ", " + record.getProcedure() + ", " + StaticClass.priceToString(record.getPrice()) + ", " + record.getComment());
+            if (record.getIdUser() == id) {
+                r.add(record);
             }
         }
+    }
+/*
+Определяем де функционал при нажатии
+ */
+  MyAdapter.OnUserClickListener onUserClickListener = new MyAdapter.OnUserClickListener() {
+    @Override
+    public void onUserClick(Object o, int position) {
 
     }
+};
 
 }

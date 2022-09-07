@@ -32,7 +32,7 @@ public class CardSessionActivity extends AppCompatActivity {
     private  TextView textViewTimeEnd;
     private  TextView textViewComment;
 private  int indexUser;
-    private  int indexRecord = -1;
+    private  long indexRecord = -1;
 
 
 @Override
@@ -42,16 +42,18 @@ private  int indexUser;
     bd = Bd.load(getApplicationContext());
 
     if (savedInstanceState == null) {
-    indexRecord = getIntent().getIntExtra(ListSessionActivity.POSITION_RECORDSESMPTY, -1);
+    indexRecord = getIntent().getLongExtra(StaticClass.POSITION_LIST_RECORDS, -1);
     if (indexRecord != -1) {
-        record = ListSessionActivity.recordsEnpty.get(indexRecord);
+        record = bd.getRecords().get(StaticClass.indexList(indexRecord, bd.getRecords()));
+    }else  {
+        finish();
     }
     } else {
-       record =  bd.getRecords().get(savedInstanceState.getInt(ListSessionActivity.POSITION_RECORDSESMPTY));
+       record =  bd.getRecords().get(savedInstanceState.getInt(StaticClass.POSITION_LIST_RECORDS));
 }
     indexUser = StaticClass.indexList(record.getIdUser(), bd.getUsers());
      user = bd.getUsers().get(indexUser);
-
+//
      textViewDate = findViewById(R.id.textViewCardSessionDate);
     textViewNameUser = findViewById(R.id.textViewCardSessionNameUser);
     textViewProcedure = findViewById(R.id.textViewCardSessionProcedures);
@@ -80,7 +82,8 @@ private  int indexUser;
      */
     public void onClickButtonCardSessionDooble(View view) {
 Intent intent = new Intent(this, ListSessionActivity.class);
-intent.putExtra(StaticClass.DUPLICATION, StaticClass.indexList(record.getId(), bd.getRecords()));
+intent.putExtra(StaticClass.KEY, StaticClass.DUPLICATION);
+intent.putExtra(StaticClass.POSITION_LIST_RECORDS, StaticClass.indexList(record.getId(), bd.getRecords()));
 startActivity(intent);
     }
 
@@ -112,8 +115,8 @@ bd.getRecords().remove(StaticClass.indexList(record.getId(), bd.getRecords()));
        /*
        Сохраняем индекс списка расписания
         */
-   int saveIndex = StaticClass.indexList(record.getId(), bd.getRecords());
-   outState.putInt(ListSessionActivity.POSITION_RECORDSESMPTY, saveIndex);
+      int index = StaticClass.indexList(indexRecord, bd.getRecords());
+       outState.putInt(StaticClass.POSITION_LIST_RECORDS, index);
    }
 
 }

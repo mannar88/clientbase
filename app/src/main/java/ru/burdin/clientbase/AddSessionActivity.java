@@ -50,9 +50,11 @@ protected void onCreate(Bundle savedInstanceState) {
     editTextSetPrices = findViewById(R.id.editTextSetupPrise);
     editTextSetTimeFinish = findViewById(R.id.editTextSetupTimeFinish);
     editTextSetComment = findViewById(R.id.editTextSetupComment);
-    index = getIntent().getExtras().getInt(ListSessionActivity.SETTIME);
-    DateFormat dateFormatTime = new SimpleDateFormat("HH:mm  EEEE dd-MM-YYYY");
-record = ListSessionActivity.recordsEnpty.get(index);
+DateFormat dateFormatTime = new SimpleDateFormat("HH:mm  EEEE dd-MM-YYYY");
+long time = getIntent().getLongExtra(StaticClass.TIMEFREE, -1);
+if (time != -1) {
+record = new Record(time);
+}
 textViewSetTime.setText(dateFormatTime.format(record.getStartDay()));
     if (savedInstanceState == null) {
         bd = Bd.load(this);

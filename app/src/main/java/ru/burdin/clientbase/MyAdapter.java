@@ -12,9 +12,11 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class MyAdapter<T> extends  RecyclerView.Adapter<MyAdapter.ViewHolder>{
+    @FunctionalInterface
 
     public  interface OnUserClickListener <T>{
-public void onUserClick(T t, int position);
+
+        public void onUserClick(T t, int position);
     }
 
     private  OnUserClickListener onUserClickListener;
