@@ -99,26 +99,23 @@ private  long id;
 
         Record record = (Record) o;
 boolean res = false;
-Date dateThis = new Date(start);
-Date dateRecord = new Date(record.start);
-Date dateThisEnd = new Date(start + end);
-Date dateRecordEnd = new Date(record.start + record.end);
-if ( dateThis.getDate() == dateRecord.getDate()
-        &&(        dateThis.getHours() == dateRecord.getHours() && dateThis.getMinutes() == dateRecord.getMinutes()
+DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm");
+String thisStart = dateFormat.format(this.getStartDay());
+String recordStart = dateFormat.format(record.getStartDay());
+String thisFinish = dateFormat.format(new Date(this.start + this.end));
+String recordFinish = dateFormat.format(new Date(record.start + record.end));
+if (
+        thisStart.compareToIgnoreCase(recordStart) == 0
 ||
-        (dateThisEnd.getTime() < dateRecordEnd.getTime()
-        &&
-        dateThisEnd.getTime() > dateRecord.getTime()
-        &&
-                dateThisEnd.getMinutes() != dateRecordEnd.getMinutes()
-                &&
-                dateThisEnd.getMinutes() != dateRecord.getMinutes()
-        )
-|| (
-        dateThis.getTime() < dateRecord.getTime()
-                &&
-                dateThisEnd.getTime() > dateRecordEnd.getTime()
-        ))){
+                (thisFinish.compareToIgnoreCase(recordFinish) < 0
+&&
+                        thisFinish.compareToIgnoreCase(recordStart)>0
+                )
+||
+                (thisStart.compareToIgnoreCase(recordStart) < 0
+                        &&
+                        thisFinish.compareToIgnoreCase(recordFinish)>0
+                        )) {
     res = true;
 }
 return  res;

@@ -46,7 +46,7 @@ public class ListSessionActivity extends AppCompatActivity {
   private   ArrayList <Date> dates;
 private RecyclerView recyclerViewTime;
 private MyAdapter myAdapter;
-public  static ArrayList <Record>  recordsEnpty;
+private    ArrayList <Record>  recordsEnpty;
 private   Intent intent;
 public  static  final  String SETTIME = "setTime";
     private  Bd bd;

@@ -80,7 +80,9 @@ textViewSetTime.setText(dateFormatTime.format(record.getStartDay()));
     }
     updateProcedure();
 }
-
+/*
+Открыть список клиентов для выбора
+ */
 public  void  onClickSetUser (View view) {
     Intent intent = new Intent(this, ListClientActivity.class);
    intent.putExtra(AddSessionActivity.class.getName(), AddSessionActivity.class.getName());
