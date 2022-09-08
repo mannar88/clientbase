@@ -53,7 +53,6 @@ private  int indexUser;
 }
     indexUser = StaticClass.indexList(record.getIdUser(), bd.getUsers());
      user = bd.getUsers().get(indexUser);
-//
      textViewDate = findViewById(R.id.textViewCardSessionDate);
     textViewNameUser = findViewById(R.id.textViewCardSessionNameUser);
     textViewProcedure = findViewById(R.id.textViewCardSessionProcedures);
@@ -92,7 +91,7 @@ startActivity(intent);
  */
 public void onclickButtonCardSessionRead(View view) {
 Intent intent = new Intent(this, AddSessionActivity.class);
-intent.putExtra(Bd.TABLE_SESSION, record.getId());
+intent.putExtra(StaticClass.POSITION_LIST_RECORDS, StaticClass.indexList(record.getId(), bd.getRecords()));
 startActivity(intent);
 }
 

@@ -51,35 +51,35 @@ protected void onCreate(Bundle savedInstanceState) {
     editTextSetTimeFinish = findViewById(R.id.editTextSetupTimeFinish);
     editTextSetComment = findViewById(R.id.editTextSetupComment);
 DateFormat dateFormatTime = new SimpleDateFormat("HH:mm  EEEE dd-MM-YYYY");
-long time = getIntent().getLongExtra(StaticClass.TIMEFREE, -1);
-if (time != -1) {
-record = new Record(time);
-}
-textViewSetTime.setText(dateFormatTime.format(record.getStartDay()));
     if (savedInstanceState == null) {
         bd = Bd.load(this);
         procedures = new ArrayList<>();
     }else  {
-            userIndex = savedInstanceState.getInt("user_index");
+        userIndex = savedInstanceState.getInt("user_index");
         if (userIndex != -1) {
-            textViewSetUser.setText(bd.getUsers().get(userIndex).getSurname() + " " + bd.getUsers().get(userIndex).getName());
-                }
+                        textViewSetUser.setText(bd.getUsers().get(userIndex).getSurname() + " " + bd.getUsers().get(userIndex).getName());
+        }
     }
 
-     sessionId = getIntent().getLongExtra(Bd.TABLE_SESSION, 0);
-    if (sessionId > 0) {
-         indexListSession = StaticClass.indexList(sessionId, bd.getRecords());
-        record = bd.getRecords().get(indexListSession);
-        textViewSetTime.setText(dateFormatTime.format(record.getStartDay()));
-        userIndex = StaticClass.indexList(record.getIdUser(), bd.getUsers());
-        textViewSetUser.setText(bd.getUsers().get(userIndex).getSurname() + " " + bd.getUsers().get(userIndex).getName());
-    }
+long time = getIntent().getLongExtra(StaticClass.TIMEFREE, -1);
+if (time != -1) {
+record = new Record(time);
+}else  {
+int indexRecord = getIntent().getIntExtra(StaticClass.POSITION_LIST_RECORDS, -1);
+if (indexRecord != -1) {
+    record = bd.getRecords().get(indexRecord);
+    userIndex = StaticClass.indexList(record.getIdUser(), bd.getUsers());
+    textViewSetUser.setText(bd.getUsers().get(userIndex).getSurname() + " " + bd.getUsers().get(userIndex).getName());
+}
+}
+textViewSetTime.setText(dateFormatTime.format(record.getStartDay()));
 
     if (procedures.size() > 0) {
         buttonAddProcedure.setText("Ещё добавить услугу");
     }
     updateProcedure();
 }
+
 /*
 Открыть список клиентов для выбора
  */
