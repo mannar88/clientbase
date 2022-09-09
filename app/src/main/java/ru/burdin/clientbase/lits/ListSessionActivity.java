@@ -259,6 +259,7 @@ Consumer <Record> duplication = new Consumer<Record>() {
                         recordDup.getPrice(),
                         recordDup.getComment()
                 ))) {
+                    setResult(RESULT_OK);
                     finish();
                 }
             }

@@ -56,16 +56,13 @@ DateFormat dateFormatTime = new SimpleDateFormat("HH:mm  EEEE dd-MM-YYYY");
         bd = Bd.load(this);
         procedures = new ArrayList<>();
     }else  {
-        userIndex = savedInstanceState.getInt("user_index");
-        if (userIndex != -1) {
-                        textViewSetUser.setText(bd.getUsers().get(userIndex).getSurname() + " " + bd.getUsers().get(userIndex).getName());
-        }
+    userIndex = savedInstanceState.getInt(StaticClass.POSITION_LIST_USERS, -1);
     }
 
 long time = getIntent().getLongExtra(StaticClass.TIMEFREE, -1);
 if (time != -1) {
 record = new Record(time);
-userIndex = getIntent().getIntExtra(StaticClass.POSITION_LIST_USERS, -1);
+userIndex = getIntent().getIntExtra(StaticClass.POSITION_LIST_USERS, userIndex);
 if (userIndex  != -1) {
 record.setIdUser(bd.getUsers().get(userIndex).getId());
     textViewSetUser.setText(bd.getUsers().get(userIndex).getSurname() + " " + bd.getUsers().get(userIndex).getName());
@@ -202,10 +199,7 @@ recyclerView.setAdapter(myAdapter);
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-outState.putInt("user_index", userIndex);
-if (editTextSetPrices.getText().length() > 0) {
-    outState.putDouble(AddSessionActivity.class.getName(), Double.valueOf(editTextSetPrices.getText().toString()));
-}
+outState.putInt(StaticClass.POSITION_LIST_USERS, userIndex);
 }
 /*
 Подсчитывается общая сумма выбранных услуг

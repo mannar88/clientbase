@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -38,7 +40,7 @@ private  int indexUser;
 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_card_session);
+    setContentView(R.layout.activity_card_session);
     bd = Bd.load(getApplicationContext());
 
     if (savedInstanceState == null) {
@@ -83,7 +85,7 @@ private  int indexUser;
 Intent intent = new Intent(this, ListSessionActivity.class);
 intent.putExtra(StaticClass.KEY, StaticClass.DUPLICATION);
 intent.putExtra(StaticClass.POSITION_LIST_RECORDS, StaticClass.indexList(record.getId(), bd.getRecords()));
-startActivity(intent);
+    startActivityForResult(intent, StaticClass.LISTSESSION);
     }
 
     /*
@@ -117,5 +119,20 @@ bd.getRecords().remove(StaticClass.indexList(record.getId(), bd.getRecords()));
       int index = StaticClass.indexList(indexRecord, bd.getRecords());
        outState.putInt(StaticClass.POSITION_LIST_RECORDS, index);
    }
+
+    /*
+  Метод определяет из какой активности вернулись и какие данные пришли
+  **/
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == StaticClass.LISTSESSION) {
+                setTitle("");;
+                Toast.makeText(this, "Запись дублирована", Toast.LENGTH_LONG).show();
+            }
+
+        }
+    }
 
 }
