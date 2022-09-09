@@ -58,6 +58,7 @@ private  boolean checbox = false;
 private  String key = null;
 private  HashMap <String, Consumer> consumerHashMap = new HashMap<>();
 
+
 @Override
 protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -269,6 +270,18 @@ Consumer <Record> duplication = new Consumer<Record>() {
     }
 };
 consumerHashMap.put(StaticClass.DUPLICATION, duplication);
+/*
+Если новая запись из карточки клиента
+ */
+Consumer <Record> consumerNewRecord = new Consumer<Record>() {
+    @Override
+    public void accept(Record record) {
+        int index = getIntent().getExtras().getInt(StaticClass.POSITION_LIST_USERS);
+        intent.putExtra(StaticClass.POSITION_LIST_USERS, index);
+consumerHashMap.get(null).accept(record);
+    }
+};
+consumerHashMap.put(StaticClass.NEWRECORDISCARD, consumerNewRecord);
 }
 
     /*

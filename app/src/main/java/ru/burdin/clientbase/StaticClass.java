@@ -15,6 +15,8 @@ public  static  final  int LIST_PROCEDURES = 1;
 public  static  final  String KEY = "key";
 public  static  final  String CARDSESSION = "cardSession";
 public  static  final  String TIMEFREE = "timeFree";
+public  static  final  String   POSITION_LIST_USERS  = "position_list_users";
+public  static  final  String NEWRECORDISCARD = "newRecordCardUser";
 /*
     Ищет индекс в коллекции по его id
      */

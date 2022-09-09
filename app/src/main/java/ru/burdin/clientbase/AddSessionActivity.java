@@ -23,6 +23,7 @@ import ru.burdin.clientbase.lits.ListOfProceduresActivity;
 import ru.burdin.clientbase.lits.ListSessionActivity;
 import ru.burdin.clientbase.models.Procedure;
 import ru.burdin.clientbase.models.Record;
+import ru.burdin.clientbase.models.User;
 
 public class AddSessionActivity extends AppCompatActivity {
 
@@ -64,6 +65,11 @@ DateFormat dateFormatTime = new SimpleDateFormat("HH:mm  EEEE dd-MM-YYYY");
 long time = getIntent().getLongExtra(StaticClass.TIMEFREE, -1);
 if (time != -1) {
 record = new Record(time);
+userIndex = getIntent().getIntExtra(StaticClass.POSITION_LIST_USERS, -1);
+if (userIndex  != -1) {
+record.setIdUser(bd.getUsers().get(userIndex).getId());
+    textViewSetUser.setText(bd.getUsers().get(userIndex).getSurname() + " " + bd.getUsers().get(userIndex).getName());
+}
 }else  {
 int indexRecord = getIntent().getIntExtra(StaticClass.POSITION_LIST_RECORDS, -1);
 if (indexRecord != -1) {

@@ -33,8 +33,14 @@ private  ArrayList <Record> r;
         recyclerView = findViewById(R.id.listHistory);
     updatelistHistory();
     }
-
+/*
+Создать запись
+ */
     public void onClickButtonListHistoryAndRecordNewRecord(View view) {
+    Intent intent = new Intent(this, ListSessionActivity.class);
+        intent.putExtra(StaticClass.POSITION_LIST_USERS, StaticClass.indexList(getIntent().getExtras().getLong(Bd.TABLE), bd.getUsers()));
+intent.putExtra(StaticClass.KEY, StaticClass.NEWRECORDISCARD);
+        startActivity(intent);
     }
     /*
     Создаем на экране список услуг
@@ -62,9 +68,9 @@ MyAdapter myAdapter = new MyAdapter(this, r, onUserClickListener, consumer);
 /*
 Определяем де функционал при нажатии
  */
-  MyAdapter.OnUserClickListener onUserClickListener = new MyAdapter.OnUserClickListener() {
+  MyAdapter.OnUserClickListener <Record> onUserClickListener = new MyAdapter.OnUserClickListener<Record>() {
     @Override
-    public void onUserClick(Object o, int position) {
+    public void onUserClick(Record record, int position) {
 
     }
 };
