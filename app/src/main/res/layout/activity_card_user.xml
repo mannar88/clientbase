@@ -26,13 +26,31 @@
         app:layout_constraintTop_toBottomOf="@+id/cardPhone"
         />
 
+<Button
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/buttonCardUserColl"
+    android:onClick="onClickButtonCardColl"
+    android:text="Позвонить"
+    app:layout_constraintTop_toBottomOf="@+id/textVuiwComment"
+    />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+android:id="@+id/buttonCardClientSend"
+    android:text="Написать"
+        android:onClick="onClickButtonCardClientSend"
+        app:layout_constraintTop_toBottomOf="@+id/buttonCardUserColl"
+        />
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 android:id="@+id/buttonCardUserHistoryAndRecord"
         android:onClick="onClickButtonCardUserHistoryAndRecord"
         android:text="История и запись"
-        app:layout_constraintTop_toBottomOf="@+id/textVuiwComment"
+        app:layout_constraintTop_toBottomOf="@+id/buttonCardUserColl"
         />
 
     <Button
@@ -50,6 +68,6 @@ android:id="@+id/buttonCardUserHistoryAndRecord"
     android:id="@+id/buttonDeleteUser"
         android:onClick="buttonDeleteC"
 android:text="Удалить карточку"
-        app:layout_constraintTop_toBottomOf="@+id/textVuiwComment"
+        app:layout_constraintTop_toBottomOf="@+id/buttonReadUser"
 />
 </androidx.constraintlayout.widget.ConstraintLayout>

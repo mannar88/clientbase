@@ -3,6 +3,7 @@ package ru.burdin.clientbase.cards;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -58,5 +59,21 @@ intent.putExtra(Bd.TABLE, stak);
     Intent intent = new Intent(this, ListHistoryAndRecordActivity.class);
     intent.putExtra(Bd.TABLE, user.getId());
     startActivity(intent);
+    }
+
+    /*
+    Позвонить
+     */
+    public void onClickButtonCardColl(View view) {
+    Intent intentColl = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + user.getPhone()));
+    startActivity(intentColl);
+    }
+
+    /*
+    Написать
+     */
+    public void onClickButtonCardClientSend(View view) {
+    Intent intentSend = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:"+user.getPhone()));
+    startActivity(intentSend);
     }
 }
