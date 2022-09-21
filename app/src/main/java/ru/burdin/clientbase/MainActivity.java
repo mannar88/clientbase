@@ -44,4 +44,8 @@ startActivity(intent);
     startActivity(intent);
     }
 
+    public void onClickButtonSetting(View view) {
+    Intent intent = new Intent(this, SettingActivity.class);
+    startActivity(intent);
+    }
 }

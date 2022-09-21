@@ -3,7 +3,8 @@
     package="ru.burdin.clientbase">
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
-
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ClientBase">
-        <activity android:name=".lits.ListHistoryAndRecordActivity"></activity>
+        <activity android:name=".SettingActivity"></activity>
+        <activity android:name=".lits.ListHistoryAndRecordActivity" />
         <activity android:name=".cards.CardSessionActivity" />
         <activity android:name=".lits.ListExpensesActivity" />
         <activity android:name=".AddSessionActivity" />

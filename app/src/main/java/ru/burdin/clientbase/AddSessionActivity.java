@@ -38,9 +38,9 @@ private Record record;
 private  int userIndex = -1;
 private static ArrayList <Procedure> procedures;
 private Button buttonAddProcedure;
-    private long sessionId = 0;
+//    private long sessionId = 0;
 private  int indexListSession;
-
+private  int indexRecord = -1;
 @Override
 protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +68,7 @@ record.setIdUser(bd.getUsers().get(userIndex).getId());
     textViewSetUser.setText(bd.getUsers().get(userIndex).getSurname() + " " + bd.getUsers().get(userIndex).getName());
 }
 }else  {
-int indexRecord = getIntent().getIntExtra(StaticClass.POSITION_LIST_RECORDS, -1);
+ indexRecord = getIntent().getIntExtra(StaticClass.POSITION_LIST_RECORDS, -1);
 if (indexRecord != -1) {
     record = bd.getRecords().get(indexRecord);
     userIndex = StaticClass.indexList(record.getIdUser(), bd.getUsers());
@@ -96,7 +96,7 @@ public  void  onClickSetUser (View view) {
 Сохраняет  или редактирует запись в БД и в списке
  */
 public void onClickButtonSessionSave(View view) {
-    if (userIndex > -1 && editTextSetTimeFinish.getText().length() > 0 && editTextSetPrices.getText().length() > 0) {
+    if ( userIndex > -1 && editTextSetTimeFinish.getText().length() > 0 && editTextSetPrices.getText().length() > 0) {
         Record record = new Record(this.record.getStart());
         record.setEnd(TimeUnit.MINUTES.toMillis(Long.valueOf(editTextSetTimeFinish.getText().toString())));
         record.setIdUser(bd.getUsers().get(userIndex).getId());
@@ -114,14 +114,14 @@ public void onClickButtonSessionSave(View view) {
         contentValues.put(Bd.COLUMN_PROCEDURE, record.getProcedure());
         contentValues.put(Bd.COLUMN_PRICE, record.getPrice());
         contentValues.put(Bd.COLUMN_COMMENT, record.getComment());
-        if (sessionId > 0) {
-if (bd.update(Bd.TABLE_SESSION, contentValues, sessionId) == 1) {
-    bd.getRecords().get(indexListSession).setStart(record.getStart());
-    bd.getRecords().get(indexListSession).setEnd(record.getEnd());
-    bd.getRecords().get(indexListSession).setIdUser(record.getIdUser());
-    bd.getRecords().get(indexListSession).setProcedure(record.getProcedure());
-    bd.getRecords().get(indexListSession).setPrice(record.getPrice());
-    bd.getRecords().get(indexListSession).setComment(record.getComment());
+        if (indexRecord != -1) {
+            if (bd.update(Bd.TABLE_SESSION, contentValues, bd.getRecords().get(indexRecord).getId()) == 1) {
+    bd.getRecords().get(indexRecord).setStart(record.getStart());
+    bd.getRecords().get(indexRecord).setEnd(record.getEnd());
+    bd.getRecords().get(indexRecord).setIdUser(record.getIdUser());
+    bd.getRecords().get(indexRecord).setProcedure(record.getProcedure());
+    bd.getRecords().get(indexRecord).setPrice(record.getPrice());
+    bd.getRecords().get(indexRecord).setComment(record.getComment());
 finish();
 }else {
     Toast.makeText(getApplicationContext(), "Обновить запись не удалось", Toast.LENGTH_SHORT).show();
