@@ -14,6 +14,8 @@ import ru.burdin.clientbase.lits.ListSessionActivity;
 public class MainActivity extends AppCompatActivity {
 
     private  Bd bd;
+private  CalendarSetting calendarSetting;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
   Bd_AsyncTask bd_asyncTask = new Bd_AsyncTask(getApplicationContext());
   bd_asyncTask.execute();
 
+    calendarSetting = CalendarSetting.load(this);
     }
 
     public void onClickButtonRecord(View view) {

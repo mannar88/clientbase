@@ -6,10 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".SettingActivity">
 
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkBoxSettingCalender"
+        android:text="Синхронизация с календарем"
+        />
+
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/spinerSettingCalendar"
-/>
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxSettingCalender"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
