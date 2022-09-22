@@ -38,9 +38,10 @@ private Record record;
 private  int userIndex = -1;
 private static ArrayList <Procedure> procedures;
 private Button buttonAddProcedure;
-//    private long sessionId = 0;
 private  int indexListSession;
 private  int indexRecord = -1;
+private  CalendarSetting calendarSetting;
+
 @Override
 protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +53,8 @@ protected void onCreate(Bundle savedInstanceState) {
     editTextSetTimeFinish = findViewById(R.id.editTextSetupTimeFinish);
     editTextSetComment = findViewById(R.id.editTextSetupComment);
 DateFormat dateFormatTime = new SimpleDateFormat("HH:mm  EEEE dd-MM-YYYY");
-    if (savedInstanceState == null) {
+calendarSetting = CalendarSetting.load(this);
+if (savedInstanceState == null) {
         bd = Bd.load(this);
         procedures = new ArrayList<>();
     }else  {
@@ -102,7 +104,7 @@ public void onClickButtonSessionSave(View view) {
         record.setIdUser(bd.getUsers().get(userIndex).getId());
         String string = "";
         for (Procedure procedure : procedures) {
-            string = string + procedure.getName();
+            string = string +" " + procedure.getName();
         }
         record.setProcedure(string);
         record.setPrice(Double.valueOf(editTextSetPrices.getText().toString()));
@@ -136,8 +138,10 @@ finish();
                             record.getProcedure(),
                             record.getPrice(),
                             record.getComment()))) {
-finish();
-                }else {
+                                                if (calendarSetting.addRecordCalender(res) >0) {
+    finish();
+}
+}else {
                         Toast.makeText(getApplicationContext(), "Не удается сохранить", Toast.LENGTH_SHORT).show();
                     }
                     }
