@@ -21,6 +21,16 @@ private  long id;
     private long idUser;
     private String procedure;
     private double price;
+    private  long event_id;
+
+    public long getEvent_id() {
+        return event_id;
+    }
+
+    public void setEvent_id(long event_id) {
+        this.event_id = event_id;
+    }
+
     private String comment;
 
     public Record() {
@@ -62,13 +72,14 @@ private  long id;
         this.procedure = procedure;
     }
 
-    public Record(long id, long start, long end, long idUser,  String procedure, double price, String comment) {
+    public Record(long id, long start, long end, long idUser,  String procedure, double price,   String comment, Long event_id) {
         this.id = id;
         this.start = start;
         this.end = end;
         this.idUser = idUser;
         this.procedure = procedure;
         this.price = price;
+        this.event_id = event_id;
         this.comment = comment;
     }
 

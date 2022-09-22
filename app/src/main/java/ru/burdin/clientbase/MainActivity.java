@@ -1,10 +1,11 @@
 package ru.burdin.clientbase;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import ru.burdin.clientbase.lits.ListClientActivity;
 import ru.burdin.clientbase.lits.ListExpensesActivity;
@@ -22,7 +23,6 @@ private  CalendarSetting calendarSetting;
         setContentView(R.layout.activity_main);
   Bd_AsyncTask bd_asyncTask = new Bd_AsyncTask(getApplicationContext());
   bd_asyncTask.execute();
-
     calendarSetting = CalendarSetting.load(this);
     }
 

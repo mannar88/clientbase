@@ -25,8 +25,8 @@ public class Bd {
 
 private  static Bd bd;
 public static final String DATABASE_NAME = "clientBase.db";
-    public static final int SCHEMA = 2;
-public  static  final int SCHEMA_PROCEDURE = 2;
+    public static final int SCHEMA = 5;
+//public  static  final int SCHEMA_PROCEDURE = 3;
     public  static final String TABLE = "users";
     public  static  final String TABLE_PROCEDURE = "procedures";
     public  static  final String TABLE_EXPENSES = "expenses";
@@ -41,7 +41,8 @@ public  static  final int SCHEMA_PROCEDURE = 2;
     public  static  final  String COLUMN_TIME = "time";
     public  static final  String COLUMN_ID_USER = "id_user";
 public  static  final  String COLUMN_PROCEDURE = "procedire";
-    private  DatabaseHelper databaseHelper;
+public  static  final  String COLUMN_EVENT_ID = "event_id";
+private  DatabaseHelper databaseHelper;
 private  SQLiteDatabase sqLiteDatabase;
 private ArrayList <User> users;
 private  ArrayList <Procedure> procedures;
@@ -110,9 +111,14 @@ private  void  collectRecord () {
     records = new ArrayList<>();
 Cursor cursorRecord = sqLiteDatabase.rawQuery("select * from "+ TABLE_SESSION, null);
 while (cursorRecord.moveToNext()) {
-records.add(new Record(cursorRecord.getLong(0), cursorRecord.getLong(1), cursorRecord.getLong(2), cursorRecord.getLong(3), cursorRecord.getString(4),cursorRecord.getDouble(5), cursorRecord.getString(6)));
+records.add(new Record(cursorRecord.getLong(0), cursorRecord.getLong(1), cursorRecord.getLong(2), cursorRecord.getLong(3), cursorRecord.getString(4),cursorRecord.getDouble(5), cursorRecord.getString(6), cursorRecord.getLong(7)));
     }
-cursorRecord.close();
+//String names = "";
+//    for (int i = 0; i < cursorRecord.getColumnCount(); i++) {
+//        names = names + " " + cursorRecord.getColumnName(i);
+//    }
+//MainActivity.count = names;
+    cursorRecord.close();
 }
 
 private  void collectExpenses () {
@@ -162,6 +168,7 @@ sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_PROCEDURE + "(" + COLUMN_ID
                     + COLUMN_ID_USER + " INTEGER,"
 + COLUMN_PROCEDURE + " TEXT,"
                     + COLUMN_PRICE + " REAL,"
+                    + COLUMN_EVENT_ID + " INTEGER,"
                     +COLUMN_COMMENT + " TEXT);");
 
             sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_EXPENSES + "(" + COLUMN_ID
@@ -174,10 +181,10 @@ sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_PROCEDURE + "(" + COLUMN_ID
 
         @Override
         public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+TABLE);
-            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+TABLE_PROCEDURE);
-            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+TABLE_SESSION);
-
+    if (i < i1) {
+sqLiteDatabase.execSQL("ALTER TABLE " + TABLE_SESSION + " ADD COLUMN " + COLUMN_EVENT_ID + " INTEGER;");
+sqLiteDatabase.setVersion(i1);
+}
 }
     }
 }

@@ -142,8 +142,7 @@ editor.putBoolean(APP_PREFERENCES_CheckBox, checkBoxCalender);
 /*
 Добавить событие в календарь
  */
-public long addRecordCalender (long id) {
-    Record record = bd.getRecords().get(StaticClass.indexList(id, bd.getRecords()));
+public long addRecordCalender (Record record) {
     User user = bd.getUsers().get(StaticClass.indexList(record.getIdUser(), bd.getUsers()));
     ContentValues contentValues = new ContentValues();
     contentValues.put(CalendarContract.Events.DTSTART,record.getStart());

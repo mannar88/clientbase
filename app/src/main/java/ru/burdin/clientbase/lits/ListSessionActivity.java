@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 import ru.burdin.clientbase.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
+import ru.burdin.clientbase.CalendarSetting;
 import ru.burdin.clientbase.cards.CardSessionActivity;
 import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;
@@ -57,6 +58,7 @@ private CheckBox checkBoxUsers;
 private  boolean checbox = false;
 private  String key = null;
 private  HashMap <String, Consumer> consumerHashMap = new HashMap<>();
+private CalendarSetting calendarSetting;
 
 
 @Override
@@ -64,7 +66,8 @@ protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_session);
         bd = Bd.load(getApplicationContext());
-     intentCardSession = new Intent(this, CardSessionActivity.class);
+     calendarSetting = CalendarSetting.load(this);
+        intentCardSession = new Intent(this, CardSessionActivity.class);
         if (savedInstanceState == null) {
             dateAndTime =Calendar.getInstance();
         }else  {
@@ -234,12 +237,12 @@ Consumer <Record> duplication = new Consumer<Record>() {
         Record recordDup = new Record();
         recordDup.setStart(record.getStart());
         recordDup.setEnd(bd.getRecords().get(indexListRecords).getEnd());
-        recordDup.setIdUser(bd.getRecords().get(indexListRecords).getIdUser())
-        ;
+        recordDup.setIdUser(bd.getRecords().get(indexListRecords).getIdUser());
         recordDup.setProcedure(bd.getRecords().get(indexListRecords).getProcedure());
         recordDup.setPrice(bd.getRecords().get(indexListRecords).getPrice());
         recordDup.setComment(bd.getRecords().get(indexListRecords).getComment());
         if (!bd.getRecords().contains(recordDup)) {
+            recordDup.setEvent_id(calendarSetting.addRecordCalender(recordDup));
             ContentValues contentValues = new ContentValues();
             contentValues.put(Bd.COLUMN_TIME, recordDup.getStart());
             contentValues.put(Bd.COLUMN_TIME_END, recordDup.getEnd());
@@ -247,6 +250,7 @@ Consumer <Record> duplication = new Consumer<Record>() {
             contentValues.put(Bd.COLUMN_PROCEDURE, recordDup.getProcedure());
             contentValues.put(Bd.COLUMN_PRICE, recordDup.getPrice());
             contentValues.put(Bd.COLUMN_COMMENT, recordDup.getComment());
+            contentValues.put(Bd.COLUMN_EVENT_ID, recordDup.getEvent_id());
             long id = bd.add(Bd.TABLE_SESSION, contentValues);
 
             if (id > 0) {
@@ -257,8 +261,9 @@ Consumer <Record> duplication = new Consumer<Record>() {
                         recordDup.getIdUser(),
                         recordDup.getProcedure(),
                         recordDup.getPrice(),
-                        recordDup.getComment()
-                ))) {
+                        recordDup.getComment(),
+                recordDup.getEvent_id()
+                        ))) {
                     setResult(RESULT_OK);
                     finish();
                 }

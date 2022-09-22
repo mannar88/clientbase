@@ -109,6 +109,11 @@ public void onClickButtonSessionSave(View view) {
         record.setProcedure(string);
         record.setPrice(Double.valueOf(editTextSetPrices.getText().toString()));
         record.setComment(editTextSetComment.getText().toString());
+        if (indexRecord ==-1) {
+    record.setEvent_id(calendarSetting.addRecordCalender(record));
+}else  {
+        record.setEvent_id(bd.getRecords().get(indexRecord).getEvent_id());
+        }
         ContentValues contentValues = new ContentValues();
         contentValues.put(Bd.COLUMN_TIME, record.getStart());
         contentValues.put(Bd.COLUMN_TIME_END, record.getEnd());
@@ -116,6 +121,7 @@ public void onClickButtonSessionSave(View view) {
         contentValues.put(Bd.COLUMN_PROCEDURE, record.getProcedure());
         contentValues.put(Bd.COLUMN_PRICE, record.getPrice());
         contentValues.put(Bd.COLUMN_COMMENT, record.getComment());
+        contentValues.put(Bd.COLUMN_EVENT_ID, record.getEvent_id());
         if (indexRecord != -1) {
             if (bd.update(Bd.TABLE_SESSION, contentValues, bd.getRecords().get(indexRecord).getId()) == 1) {
     bd.getRecords().get(indexRecord).setStart(record.getStart());
@@ -124,7 +130,8 @@ public void onClickButtonSessionSave(View view) {
     bd.getRecords().get(indexRecord).setProcedure(record.getProcedure());
     bd.getRecords().get(indexRecord).setPrice(record.getPrice());
     bd.getRecords().get(indexRecord).setComment(record.getComment());
-finish();
+bd.getRecords().get(indexRecord).setEvent_id(record.getEvent_id());
+    finish();
 }else {
     Toast.makeText(getApplicationContext(), "Обновить запись не удалось", Toast.LENGTH_SHORT).show();
 }
@@ -137,10 +144,9 @@ finish();
                             record.getIdUser(),
                             record.getProcedure(),
                             record.getPrice(),
-                            record.getComment()))) {
-                                                if (calendarSetting.addRecordCalender(res) >0) {
+                            record.getComment(),
+record.getEvent_id()                            ))) {
     finish();
-}
 }else {
                         Toast.makeText(getApplicationContext(), "Не удается сохранить", Toast.LENGTH_SHORT).show();
                     }
