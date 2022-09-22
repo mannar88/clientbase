@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 import ru.burdin.clientbase.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
+import ru.burdin.clientbase.CalendarSetting;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.lits.ListSessionActivity;
@@ -35,6 +36,7 @@ public class CardSessionActivity extends AppCompatActivity {
     private  TextView textViewComment;
 private  int indexUser;
     private  long indexRecord = -1;
+private CalendarSetting calendarSetting;
 
 
 @Override
@@ -42,7 +44,7 @@ private  int indexUser;
         super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_card_session);
     bd = Bd.load(getApplicationContext());
-
+calendarSetting = CalendarSetting.load(this);
     if (savedInstanceState == null) {
     indexRecord = getIntent().getLongExtra(StaticClass.POSITION_LIST_RECORDS, -1);
     if (indexRecord != -1) {
@@ -103,8 +105,9 @@ startActivity(intent);
     public void onClickButtonCardSessionDelete(View view) {
 int resultDelete = bd.delete(Bd.TABLE_SESSION, record.getId());
 if (resultDelete == 1) {
-bd.getRecords().remove(StaticClass.indexList(record.getId(), bd.getRecords()));
-    finish();
+long id =  bd.getRecords().remove(StaticClass.indexList(record.getId(), bd.getRecords())).getEvent_id();
+calendarSetting.delete(id);
+finish();
 }
     }
    /*

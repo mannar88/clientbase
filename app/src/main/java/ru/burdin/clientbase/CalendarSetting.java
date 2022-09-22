@@ -2,6 +2,7 @@ package ru.burdin.clientbase;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -143,15 +144,29 @@ editor.putBoolean(APP_PREFERENCES_CheckBox, checkBoxCalender);
 Добавить событие в календарь
  */
 public long addRecordCalender (Record record) {
-    User user = bd.getUsers().get(StaticClass.indexList(record.getIdUser(), bd.getUsers()));
-    ContentValues contentValues = new ContentValues();
-    contentValues.put(CalendarContract.Events.DTSTART,record.getStart());
-    contentValues.put(CalendarContract.Events.DTEND, record.getStart() + record.getEnd());
-    contentValues.put(CalendarContract.Events.TITLE, activity.getResources().getString(R.string.app_name) + " " + user.getSurname() + " " + user.getName() + " " + record.getProcedure());
-    contentValues.put(CalendarContract.Events.DESCRIPTION, "");
-    contentValues.put(CalendarContract.Events.CALENDAR_ID, this.id);
-    contentValues.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getDisplayName());
-Uri uri =  activity.getContentResolver().insert(CalendarContract.Events.CONTENT_URI,  contentValues);
-    return  Long.parseLong(uri.getLastPathSegment());
+    if (checkBoxCalender) {
+        User user = bd.getUsers().get(StaticClass.indexList(record.getIdUser(), bd.getUsers()));
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CalendarContract.Events.DTSTART, record.getStart());
+        contentValues.put(CalendarContract.Events.DTEND, record.getStart() + record.getEnd());
+        contentValues.put(CalendarContract.Events.TITLE, activity.getResources().getString(R.string.app_name) + " " + user.getSurname() + " " + user.getName() + " " + record.getProcedure());
+        contentValues.put(CalendarContract.Events.DESCRIPTION, "");
+        contentValues.put(CalendarContract.Events.CALENDAR_ID, this.id);
+        contentValues.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getDisplayName());
+        Uri uri = activity.getContentResolver().insert(CalendarContract.Events.CONTENT_URI, contentValues);
+        return Long.parseLong(uri.getLastPathSegment());
     }
+return  0;
+}
+
+/*
+удаляет запись в календаре
+ */
+    public     int delete (long id) {
+if (checkBoxCalender) {
+    Uri deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, id);
+    return activity.getContentResolver().delete(deleteUri, null, null);
+}
+    return 0;
+}
 }
