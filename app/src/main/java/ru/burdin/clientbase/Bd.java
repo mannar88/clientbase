@@ -10,10 +10,14 @@ import android.database.DataSetObserver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import ru.burdin.clientbase.models.Expenses;
@@ -83,8 +87,17 @@ collectExpenses();
     }
 
     public  long  add (String table, ContentValues contentValues) {
+AsyncTaskBd <Long> asyncTaskBd = new AsyncTaskBd();
     long  result = 0;
-    result =  sqLiteDatabase.insert(table, null, contentValues);
+    Supplier <Long>  supplier = ()-> sqLiteDatabase.insert(table, null, contentValues);
+    asyncTaskBd.execute(supplier);
+        try {
+            result = asyncTaskBd.get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return  result;
 }
 
@@ -113,11 +126,6 @@ Cursor cursorRecord = sqLiteDatabase.rawQuery("select * from "+ TABLE_SESSION, n
 while (cursorRecord.moveToNext()) {
 records.add(new Record(cursorRecord.getLong(0), cursorRecord.getLong(1), cursorRecord.getLong(2), cursorRecord.getLong(3), cursorRecord.getString(4),cursorRecord.getDouble(5), cursorRecord.getString(6), cursorRecord.getLong(7)));
     }
-//String names = "";
-//    for (int i = 0; i < cursorRecord.getColumnCount(); i++) {
-//        names = names + " " + cursorRecord.getColumnName(i);
-//    }
-//MainActivity.count = names;
     cursorRecord.close();
 }
 
@@ -131,14 +139,29 @@ cursorExpenses.close();
 }
 
 public  int delete (String table, long id) {
-int result = 0;
-      result =sqLiteDatabase.delete(table, "_id = ?", new String[]{String.valueOf(id)});
-return  result;
+AsyncTaskBd <Integer> asyncTaskBd = new AsyncTaskBd<>();
+Supplier<Integer> supplier = ()-> sqLiteDatabase.delete(table, "_id = ?", new String[]{String.valueOf(id)});
+    int result = 0;
+      asyncTaskBd.execute(supplier);
+    try {
+        result = asyncTaskBd.get();
+    } catch (ExecutionException e) {
+        e.printStackTrace();
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+    return  result;
 }
 
 public     int update  (String table, ContentValues contentValues, long id) {
+    AsyncTaskBd <Integer> asyncTaskBd = new AsyncTaskBd<>();
+    Supplier <Integer> supplier =()-> sqLiteDatabase.update(table, contentValues, COLUMN_ID + "=" + id, null);
+
     int result = -1;
-    result = sqLiteDatabase.update(table, contentValues, COLUMN_ID + "=" + id, null);
+    asyncTaskBd.execute(supplier);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        result = supplier.get();
+    }
     return result;
 }
 
@@ -184,4 +207,13 @@ sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_PROCEDURE + "(" + COLUMN_ID
 
 }
     }
-}
+
+   private  class  AsyncTaskBd<T> extends  AsyncTask<Supplier<T>, Void, T> {
+
+
+       @Override
+       protected T doInBackground(Supplier<T>... suppliers) {
+           return suppliers[0].get();
+       }
+   }
+    }
