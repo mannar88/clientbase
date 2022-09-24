@@ -17,6 +17,7 @@ import android.os.Bundle;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -53,28 +54,50 @@ private  ArrayList <Procedure> procedures;
 private  ArrayList <Record> records;
 private  ArrayList <Expenses> expenses;
 
-private  Bd (Context context) {
+    private  Bd (Context context) {
     databaseHelper = new DatabaseHelper(context);
-    sqLiteDatabase = databaseHelper.getReadableDatabase();
-    collectListUsers();
-    collectProcedures();
-collectRecord();
-collectExpenses();
-}
+
+        sqLiteDatabase = databaseHelper.getReadableDatabase();
+        collectListUsers();
+        collectProcedures();
+        collectRecord();
+        collectExpenses();
+    }
 
     public ArrayList<Expenses> getExpenses() {
         return expenses;
     }
 
     public  static  Bd load (Context context) {
+Supplier <Bd> bdSupplier = new Supplier<Bd>() {
+    @Override
+    public Bd get() {
+if (bd == null) {
+    bd = new Bd(context);
+}
+        return bd;
+    }
+};
+ AsyncTaskBd <Bd> asyncTaskBd = new  AsyncTaskBd<>();
+asyncTaskBd.execute(bdSupplier);
+        Bd result = null;
+        try {
+            result = asyncTaskBd.get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return result;
+}
 
+private  Bd getBd () {
     if (bd == null) {
-        bd = new Bd(context);
+        Consumer <Context> consumer = context ->bd = new Bd(context);
     }
     return  bd;
 }
-
-    public ArrayList<User> getUsers() {
+public ArrayList<User> getUsers() {
     return  users;
     }
 
@@ -208,7 +231,7 @@ sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_PROCEDURE + "(" + COLUMN_ID
 }
     }
 
-   private  class  AsyncTaskBd<T> extends  AsyncTask<Supplier<T>, Void, T> {
+   private static class  AsyncTaskBd<T> extends  AsyncTask<Supplier<T>, Void, T> {
 
 
        @Override

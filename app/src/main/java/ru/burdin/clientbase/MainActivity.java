@@ -21,9 +21,8 @@ private  CalendarSetting calendarSetting;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-  Bd_AsyncTask bd_asyncTask = new Bd_AsyncTask(getApplicationContext());
-  bd_asyncTask.execute();
-    calendarSetting = CalendarSetting.load(this);
+    bd = Bd.load(getApplicationContext());
+        calendarSetting = CalendarSetting.load(this);
     }
 
     public void onClickButtonRecord(View view) {
