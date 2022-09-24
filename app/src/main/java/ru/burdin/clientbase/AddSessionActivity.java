@@ -130,7 +130,8 @@ public void onClickButtonSessionSave(View view) {
     bd.getRecords().get(indexRecord).setProcedure(record.getProcedure());
     bd.getRecords().get(indexRecord).setPrice(record.getPrice());
     bd.getRecords().get(indexRecord).setComment(record.getComment());
-bd.getRecords().get(indexRecord).setEvent_id(record.getEvent_id());
+    bd.getRecords().get(indexRecord).setEvent_id(record.getEvent_id());
+    calendarSetting.update(bd.getRecords().get(indexRecord));
     finish();
 }else {
     Toast.makeText(getApplicationContext(), "Обновить запись не удалось", Toast.LENGTH_SHORT).show();

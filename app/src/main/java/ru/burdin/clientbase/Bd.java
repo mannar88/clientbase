@@ -168,8 +168,8 @@ sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_PROCEDURE + "(" + COLUMN_ID
                     + COLUMN_ID_USER + " INTEGER,"
 + COLUMN_PROCEDURE + " TEXT,"
                     + COLUMN_PRICE + " REAL,"
-                    + COLUMN_EVENT_ID + " INTEGER,"
-                    +COLUMN_COMMENT + " TEXT);");
+                    +COLUMN_COMMENT + " TEXT,"
+                            + COLUMN_EVENT_ID + " INTEGER);");
 
             sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_EXPENSES + "(" + COLUMN_ID
                     + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -181,10 +181,7 @@ sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_PROCEDURE + "(" + COLUMN_ID
 
         @Override
         public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-    if (i < i1) {
-sqLiteDatabase.execSQL("ALTER TABLE " + TABLE_SESSION + " ADD COLUMN " + COLUMN_EVENT_ID + " INTEGER;");
-sqLiteDatabase.setVersion(i1);
-}
+
 }
     }
 }
