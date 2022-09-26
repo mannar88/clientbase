@@ -252,7 +252,6 @@ Consumer <Record> duplication = new Consumer<Record>() {
             contentValues.put(Bd.COLUMN_COMMENT, recordDup.getComment());
             contentValues.put(Bd.COLUMN_EVENT_ID, recordDup.getEvent_id());
             long id = bd.add(Bd.TABLE_SESSION, contentValues);
-
             if (id > 0) {
                 if (bd.getRecords().add(new Record(
                         id,

@@ -25,11 +25,17 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
@@ -45,7 +51,7 @@ import ru.burdin.clientbase.models.User;
 public class CalendarSetting {
 
     private static CalendarSetting calendarSetting;
-    private long id;
+    public long id = 1;
     private String name;
     private HashMap<String, Long> calendars = new HashMap<>();
     private static Activity activity;
@@ -57,25 +63,22 @@ public class CalendarSetting {
     private SharedPreferences preferences;
     private Bd bd;
     public   static final int Calender_PERMISSION = 2;
-    private  Context context;
 
-    public void setContext(Context context) {
-        this.context = context;
-    }
 
 
     private CalendarSetting(Activity activity) {
         this.activity = activity;
 
         preferences = activity.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        if (requestSinglePermission()) {
+            initCalendars();
+        }
+
         if (preferences.contains(APP_PREFERENCES_ID_CALENDER) && preferences.contains(APP_PREFERENCES_NAME_CALENDAR)) {
-            id = preferences.getLong(APP_PREFERENCES_ID_CALENDER, 0);
+            id = preferences.getLong(APP_PREFERENCES_ID_CALENDER, 1);
             name = preferences.getString(APP_PREFERENCES_NAME_CALENDAR, "");
             checkBoxCalender = preferences.getBoolean(APP_PREFERENCES_CheckBox, false) && requestSinglePermission();
         }
-if (requestSinglePermission()) {
-    initCalendars();
-}
         bd = Bd.load(activity.getApplicationContext());
     }
 
@@ -135,7 +138,9 @@ AsyncTasCalender asyncTasCalender =new AsyncTasCalender();
 Получаем список имен календарей
  */
     public Set<String> getNameCalendar() {
-        return calendars.keySet();
+Set <String> strings = new HashSet<>();
+//return  strings;
+                return calendars.keySet();
     }
 
     /*
@@ -205,26 +210,24 @@ calenderAxtivity.recreate();
      */
     public long addRecordCalender (Record record) {
         long result = 0;
-        AsyncTasCalender asyncTasCalender = new AsyncTasCalender();
-        Supplier<Long> supplier = new Supplier<Long>() {
-            @Override
-            public Long get() {
-                if (checkBoxCalender) {
+        if (checkBoxCalender) {
+            AsyncTasCalender asyncTasCalender = new AsyncTasCalender();
+            Supplier<Long> supplier = new Supplier<Long>() {
+                @Override
+                public Long get() {
                     Uri uri = activity.getContentResolver().insert(CalendarContract.Events.CONTENT_URI, getContentValues(record));
                     return Long.parseLong(uri.getLastPathSegment());
-                }
-                return 0l;
+                                    }
+            };
+            asyncTasCalender.execute(supplier);
+            try {
+                result = asyncTasCalender.get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        };
-asyncTasCalender.execute(supplier);
-        try {
-            result = asyncTasCalender.get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-return  result;
+        }        return  result;
     }
 
     /*
@@ -314,7 +317,7 @@ asyncTasCalender.execute(supplier);
         }
     }
 
-            public  void getDialog () {
+            public  void getDialog (Context context) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setMessage("Нет разрешения чтение и записи календаря! Те чё, западло разрешить?");
                 builder.setPositiveButton("Нет, не западло, сейчас разрешу",   new DialogInterface.OnClickListener() {

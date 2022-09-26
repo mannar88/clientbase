@@ -40,7 +40,7 @@ List <String> nameCalendars = new ArrayList<>(calendars.getNameCalendar());
     arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     spinnerGetCalendar.setAdapter(arrayAdapter);
     spinnerGetCalendar.setSelection(calendars.indexSave(nameCalendars));
-calendars.setContext(this);/*
+/*
 Получаем настройку флажка календаря
  */
             checkBoxCalender.setChecked(calendars.getCheckBox());
@@ -66,7 +66,7 @@ spinnerGetCalendar.setEnabled(true);
 this.recreate();
                 }else {
 spinnerGetCalendar.setEnabled(false);
-                    calendars.getDialog();
+                    calendars.getDialog(this);
                 }
                 break;
             default:
