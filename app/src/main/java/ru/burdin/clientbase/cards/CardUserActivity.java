@@ -1,7 +1,10 @@
 package ru.burdin.clientbase.cards;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -10,8 +13,12 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.jetbrains.annotations.NotNull;
 
 import ru.burdin.clientbase.AddClientActivity;
 import ru.burdin.clientbase.Bd;
@@ -27,6 +34,7 @@ public class CardUserActivity extends AppCompatActivity {
     private TextView textViewComment;
     private User user;
     private int stak = -1;
+private  final int call_permission = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +52,18 @@ public class CardUserActivity extends AppCompatActivity {
             textViewComment.setText(user.getComment());
         }
     }
-
+/*
+Удаляет клиента
+ */
     public void buttonDeleteC(View view) {
         if (bd.delete(Bd.TABLE, user.getId()) == 1) {
             bd.getUsers().remove(stak);
             onBackPressed();
         }
     }
-
+/*
+Редактировать клинта
+ */
     public void buttonReadC(View view) {
         Intent intent = new Intent(this, AddClientActivity.class);
         intent.putExtra(Bd.TABLE, stak);
@@ -71,9 +83,61 @@ public class CardUserActivity extends AppCompatActivity {
     Позвонить
      */
     public void onClickButtonCardColl(View view) {
+        requestSinglePermission();
+    }
+
+    private void requestSinglePermission() {
+String callPermission = Manifest.permission.CALL_PHONE;
+    int hasPermission = checkSelfPermission(callPermission);
+    String [] permissions = new  String[] {callPermission};
+    if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+        requestPermissions(permissions, call_permission);
+    }else  {
         Intent intentColl = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + user.getPhone()));
         startActivity(intentColl);
+
     }
+    }
+/*
+Дал ли разрешение пользователь
+
+ */
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+        switch (requestCode) {
+            case call_permission:
+            if (grantResults.length > 0 && grantResults[0] ==PackageManager.PERMISSION_GRANTED) {
+
+                Intent intentColl = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + user.getPhone()));
+                startActivity(intentColl);
+            }else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+builder.setMessage("Нет разрешения на звонки! Те чё, западло разрешить?");
+builder.setPositiveButton("Нет, не западло, сейчас разрешу",   new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        startActivity(intent);
+
+                    }
+                }
+            );
+builder.setNegativeButton("Не разрешу, мало ли чё там в коде хакерского зарыто", new DialogInterface.OnClickListener() {
+    @Override
+    public void onClick(DialogInterface dialogInterface, int i) {
+    dialogInterface.cancel();
+    }
+});
+builder.create().show();
+            }
+            break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
+        }
 
     /*
     Написать
@@ -87,7 +151,7 @@ dialog().show();
      */
     private Dialog dialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setNegativeButton("SMS", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton("SMS", new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
             Intent intentSend = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + user.getPhone()));
@@ -102,6 +166,7 @@ String  number = "https://wa.me/" + user.getPhone().substring(1);
             startActivity(intent);
                     }
     });
+
     return builder.create();
     }
 

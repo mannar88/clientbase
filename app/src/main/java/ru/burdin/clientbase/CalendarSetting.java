@@ -1,15 +1,22 @@
 package ru.burdin.clientbase;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.CalendarContract;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
@@ -18,8 +25,9 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+
 import java.lang.reflect.Array;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -35,11 +43,12 @@ import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.models.User;
 
 public class CalendarSetting {
+
     private static CalendarSetting calendarSetting;
     private long id;
     private String name;
     private HashMap<String, Long> calendars = new HashMap<>();
-    private Activity activity;
+    private static Activity activity;
     private boolean checkBoxCalender;
     public static final String APP_PREFERENCES = "preferenses";
     public static final String APP_PREFERENCES_NAME_CALENDAR = "name_calendar";
@@ -47,16 +56,26 @@ public class CalendarSetting {
     public static final String APP_PREFERENCES_CheckBox = "checkBox_calender";
     private SharedPreferences preferences;
     private Bd bd;
+    public   static final int Calender_PERMISSION = 2;
+    private  Context context;
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
 
     private CalendarSetting(Activity activity) {
         this.activity = activity;
+
         preferences = activity.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         if (preferences.contains(APP_PREFERENCES_ID_CALENDER) && preferences.contains(APP_PREFERENCES_NAME_CALENDAR)) {
             id = preferences.getLong(APP_PREFERENCES_ID_CALENDER, 0);
             name = preferences.getString(APP_PREFERENCES_NAME_CALENDAR, "");
-            checkBoxCalender = preferences.getBoolean(APP_PREFERENCES_CheckBox, false);
+            checkBoxCalender = preferences.getBoolean(APP_PREFERENCES_CheckBox, false) && requestSinglePermission();
         }
-        initCalendars();
+if (requestSinglePermission()) {
+    initCalendars();
+}
         bd = Bd.load(activity.getApplicationContext());
     }
 
@@ -141,9 +160,13 @@ AsyncTasCalender asyncTasCalender =new AsyncTasCalender();
         });
     }
 
+    public void setCheckBoxCalender(boolean checkBoxCalender) {
+        this.checkBoxCalender = checkBoxCalender;
+    }
+
     /*
-    Сохраненный выбор календаря
-     */
+        Сохраненный выбор календаря
+         */
     public int indexSave(List<String> list) {
         int result = 0;
         if (id != 0) {
@@ -155,15 +178,24 @@ AsyncTasCalender asyncTasCalender =new AsyncTasCalender();
     /*
     Слушатель флажка календаря
      */
-    public void listenChexBox(CheckBox checkBox, Spinner spinner) {
+    public void listenChexBox(CheckBox checkBox, Spinner spinner, Activity calenderAxtivity) {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                checkBoxCalender = b;
-                spinner.setEnabled(checkBoxCalender);
+                checkBoxCalender = b && requestSinglePermission();
                 SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean(APP_PREFERENCES_CheckBox, checkBoxCalender);
+if (!checkBoxCalender) {
+    String [] permissions = new  String[] {Manifest.permission.READ_CALENDAR};
+calenderAxtivity.requestPermissions(permissions, Calender_PERMISSION);
+spinner.setEnabled(checkBoxCalender);
+}else {
+                initCalendars();
+spinner.setEnabled(checkBoxCalender);
+calenderAxtivity.recreate();
+}
+             editor.putBoolean(APP_PREFERENCES_CheckBox, checkBoxCalender);
                 editor.apply();
+
             }
         });
     }
@@ -263,6 +295,16 @@ asyncTasCalender.execute(supplier);
         return contentValues;
     }
 
+    /*
+Проверка разрешения
+ */
+    private static boolean requestSinglePermission() {
+
+        String calenderPermission = Manifest.permission.READ_CALENDAR;
+        int hasPermission = activity.checkSelfPermission(calenderPermission);
+        return hasPermission  == PackageManager.PERMISSION_GRANTED;
+    }
+
     private class AsyncTasCalender extends AsyncTask<Supplier<Long>, Void,Long> {
 
         @Override
@@ -272,6 +314,26 @@ asyncTasCalender.execute(supplier);
         }
     }
 
+            public  void getDialog () {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Нет разрешения чтение и записи календаря! Те чё, западло разрешить?");
+                builder.setPositiveButton("Нет, не западло, сейчас разрешу",   new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package", context.getPackageName(), null);
+                                intent.setData(uri);
+                                context.startActivity(intent);
 
-}
-
+                            }
+                        }
+                );
+                builder.setNegativeButton("Не разрешу, мало ли чё там в коде хакерского зарыто", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+                builder.create().show();
+            }
+        }
