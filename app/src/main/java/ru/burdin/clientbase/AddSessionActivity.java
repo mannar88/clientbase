@@ -83,7 +83,6 @@ textViewSetTime.setText(dateFormatTime.format(record.getStartDay()));
         buttonAddProcedure.setText("Ещё добавить услугу");
     }
     updateProcedure();
-textViewSetUser.setText(calendarSetting.getCheckBox() + " " + calendarSetting.id);
 }
 
 /*

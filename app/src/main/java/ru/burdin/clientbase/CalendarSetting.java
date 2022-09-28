@@ -51,7 +51,7 @@ import ru.burdin.clientbase.models.User;
 public class CalendarSetting {
 
     private static CalendarSetting calendarSetting;
-    public long id = 1;
+    public long id = 0;
     private String name;
     private HashMap<String, Long> calendars = new HashMap<>();
     private static Activity activity;
@@ -60,6 +60,7 @@ public class CalendarSetting {
     public static final String APP_PREFERENCES_NAME_CALENDAR = "name_calendar";
     public static final String APP_PREFERENCES_ID_CALENDER = "id_calender";
     public static final String APP_PREFERENCES_CheckBox = "checkBox_calender";
+    public   final static  String EMPTY = "Календарь не выбран";
     private SharedPreferences preferences;
     private Bd bd;
     public   static final int Calender_PERMISSION = 2;
@@ -75,7 +76,7 @@ public class CalendarSetting {
         }
 
         if (preferences.contains(APP_PREFERENCES_ID_CALENDER) && preferences.contains(APP_PREFERENCES_NAME_CALENDAR)) {
-            id = preferences.getLong(APP_PREFERENCES_ID_CALENDER, 1);
+            id = preferences.getLong(APP_PREFERENCES_ID_CALENDER, 0);
             name = preferences.getString(APP_PREFERENCES_NAME_CALENDAR, "");
             checkBoxCalender = preferences.getBoolean(APP_PREFERENCES_CheckBox, false) && requestSinglePermission();
         }
@@ -100,7 +101,7 @@ public class CalendarSetting {
     Получаем список календарей
      */
     private void initCalendars()  {
-AsyncTasCalender asyncTasCalender =new AsyncTasCalender();
+        AsyncTasCalender asyncTasCalender =new AsyncTasCalender();
         Supplier <Long> supplier = new Supplier<Long>() {
     @Override
     public Long get() {
@@ -139,7 +140,6 @@ AsyncTasCalender asyncTasCalender =new AsyncTasCalender();
  */
     public Set<String> getNameCalendar() {
 Set <String> strings = new HashSet<>();
-//return  strings;
                 return calendars.keySet();
     }
 
@@ -150,8 +150,13 @@ Set <String> strings = new HashSet<>();
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                name = list.get(i);
-                id = calendars.get(name);
+                if (i != 0) {
+                    name = list.get(i);
+                    id = calendars.get(name);
+                }else {
+                    i = 0;
+                    name = EMPTY;
+                }
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putLong(APP_PREFERENCES_ID_CALENDER, id);
                 editor.putString(APP_PREFERENCES_NAME_CALENDAR, name);
@@ -190,7 +195,7 @@ Set <String> strings = new HashSet<>();
                 checkBoxCalender = b && requestSinglePermission();
                 SharedPreferences.Editor editor = preferences.edit();
 if (!checkBoxCalender) {
-    String [] permissions = new  String[] {Manifest.permission.READ_CALENDAR};
+    String [] permissions = new  String[] {Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR};
 calenderAxtivity.requestPermissions(permissions, Calender_PERMISSION);
 spinner.setEnabled(checkBoxCalender);
 }else {
@@ -210,7 +215,7 @@ calenderAxtivity.recreate();
      */
     public long addRecordCalender (Record record) {
         long result = 0;
-        if (checkBoxCalender) {
+        if (checkBoxCalender && requestSinglePermission() && id != 0) {
             AsyncTasCalender asyncTasCalender = new AsyncTasCalender();
             Supplier<Long> supplier = new Supplier<Long>() {
                 @Override
@@ -235,24 +240,23 @@ calenderAxtivity.recreate();
      */
     public int update(Record record) {
         long result = 0;
-        AsyncTasCalender  asyncTasCalender = new AsyncTasCalender();
-        Supplier <Long> supplier = new Supplier<Long>() {
-            @Override
-            public Long get() {
-                if (checkBoxCalender) {
+        if (checkBoxCalender && requestSinglePermission() && id !=0) {
+            AsyncTasCalender asyncTasCalender = new AsyncTasCalender();
+            Supplier<Long> supplier = new Supplier<Long>() {
+                @Override
+                public Long get() {
                     Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, record.getEvent_id());
                     return (long) activity.getContentResolver().update(uri, getContentValues(record), null, null);
                 }
-                return 0l;
+            };
+            asyncTasCalender.execute(supplier);
+            try {
+                result = asyncTasCalender.get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        };
-    asyncTasCalender.execute(supplier);
-        try {
-            result = asyncTasCalender.get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
         return  (int)result;
     }
@@ -262,24 +266,24 @@ calenderAxtivity.recreate();
  */
     public int delete(long id) {
         long result = 0;
-        AsyncTasCalender asyncTasCalender = new AsyncTasCalender();
-Supplier < Long> supplier = new Supplier<Long>() {
-    @Override
-    public Long get() {
-        if (checkBoxCalender) {
-            Uri deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, id);
-            return (long)activity.getContentResolver().delete(deleteUri, null, null);
-        }
-        return 0l;
-    }
-    };
-asyncTasCalender.execute(supplier);
-        try {
-            result = asyncTasCalender.get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (checkBoxCalender && requestSinglePermission() && id !=0) {
+
+            AsyncTasCalender asyncTasCalender = new AsyncTasCalender();
+            Supplier<Long> supplier = new Supplier<Long>() {
+                @Override
+                public Long get() {
+                    Uri deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, id);
+                    return (long) activity.getContentResolver().delete(deleteUri, null, null);
+                }
+            };
+            asyncTasCalender.execute(supplier);
+            try {
+                result = asyncTasCalender.get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         return  (int) result;
 }
@@ -304,8 +308,10 @@ asyncTasCalender.execute(supplier);
     private static boolean requestSinglePermission() {
 
         String calenderPermission = Manifest.permission.READ_CALENDAR;
+        String calenderPermission1 = Manifest.permission.WRITE_CALENDAR;
         int hasPermission = activity.checkSelfPermission(calenderPermission);
-        return hasPermission  == PackageManager.PERMISSION_GRANTED;
+        int hasPermission2 =activity.checkSelfPermission(calenderPermission1);
+        return hasPermission  == PackageManager.PERMISSION_GRANTED && hasPermission2 == PackageManager.PERMISSION_GRANTED;
     }
 
     private class AsyncTasCalender extends AsyncTask<Supplier<Long>, Void,Long> {

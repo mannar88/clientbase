@@ -36,6 +36,7 @@ public class SettingActivity extends AppCompatActivity {
         spinnerGetCalendar = findViewById(R.id.spinerSettingCalendar);
    calendars = CalendarSetting.load(this);
 List <String> nameCalendars = new ArrayList<>(calendars.getNameCalendar());
+nameCalendars.add(0, CalendarSetting.EMPTY);
                 arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, nameCalendars);
     arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     spinnerGetCalendar.setAdapter(arrayAdapter);
