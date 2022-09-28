@@ -154,7 +154,7 @@ Set <String> strings = new HashSet<>();
                     name = list.get(i);
                     id = calendars.get(name);
                 }else {
-                    i = 0;
+                    id   = 0l;
                     name = EMPTY;
                 }
                 SharedPreferences.Editor editor = preferences.edit();
@@ -179,9 +179,7 @@ Set <String> strings = new HashSet<>();
          */
     public int indexSave(List<String> list) {
         int result = 0;
-        if (id != 0) {
             result = list.indexOf(name);
-        }
         return result;
     }
 
