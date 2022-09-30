@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -19,6 +20,7 @@ import java.util.function.Consumer;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;
+import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.models.Expenses;
 
 import static java.text.DateFormat.FULL;
@@ -61,27 +63,39 @@ updateListExpenses();
           textViewTime.setText(DateFormat.getDateInstance(FULL).format(date.getTime()));
           }
       };
-        public void onClickButtonSetExpenses(View view) {
+/*
+Сохранение расхода
+ */
+public void onClickButtonSetExpenses(View view) {
             if (check()) {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(Bd.COLUMN_TIME, date.getTimeInMillis());
                 contentValues.put(Bd.COLUMN_NAME, editTextNameExpenses.getText().toString());
                 contentValues.put(Bd.COLUMN_PRICE, Double.valueOf(editTextPriceExpenses.getText().toString()));
                 long result = bd.add(Bd.TABLE_EXPENSES, contentValues);
-                if (result > -1) {
+                if (result > 0) {
                     bd.getExpenses().add(new Expenses(result, date.getTimeInMillis(), editTextNameExpenses.getText().toString(), Double.valueOf(editTextPriceExpenses.getText().toString())));
                     editTextNameExpenses.setText("");
                     editTextPriceExpenses.setText("");
+                updateListExpenses();
                 }
             }
         }
 
+        /*
+        устанавливает список расходов
+         */
         private  void  updateListExpenses () {
             Consumer <MyAdapter.ViewHolder> consumer = viewHolder -> viewHolder.textView.setText(DateFormat.getDateInstance(FULL).format(new Date(bd.getExpenses().get(MyAdapter.count).getTime())) + " " + bd.getExpenses().get(MyAdapter.count).getName() + " " + bd.getExpenses().get(MyAdapter.count).getPrice());
         MyAdapter myAdapter = new MyAdapter(this, bd.getExpenses(), new MyAdapter.OnUserClickListener() {
             @Override
             public void onUserClick(Object o, int position) {
-
+int res = bd.delete(Bd.TABLE_EXPENSES, bd.getExpenses().get(position).getId());
+if (res > 0) {
+    bd.getExpenses().remove(position);
+    updateListExpenses();
+    Toast.makeText(getApplicationContext(), "Расход удален", Toast.LENGTH_SHORT).show();
+}
             }
         }, consumer);
         recyclerViewExpenses.setAdapter(myAdapter);
