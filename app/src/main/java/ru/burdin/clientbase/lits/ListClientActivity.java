@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -48,7 +49,6 @@ private  RecyclerView recyclerViewClient;
 editTextSerch = findViewById(R.id.editTextListClientSearsh);
 users = bd.getUsers();
 listenerSearch();
-    updateList();
     }
 
     /*
@@ -108,10 +108,18 @@ users.add(user);
         }
     });
     }
+/*
+Выводит список клиентов на экран
+ */
+    @Override
+    protected void onResume() {
+        super.onResume();
+updateList();
+            }
 
     /*
-    Установка листа клиентов
-     */
+        Установка листа клиентов
+         */
     private  void  updateList () {
         Consumer <MyAdapter.ViewHolder> consumer = viewHolder ->viewHolder.textView.setText(users.get(MyAdapter.count).getSurname() +  " " + users.get(MyAdapter.count).getName());
 MyAdapter.OnUserClickListener <User> onUserClickListener = new MyAdapter.OnUserClickListener<User>() {

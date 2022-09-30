@@ -80,7 +80,6 @@ textViewDay.setText(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime(
 checkBoxUsers = findViewById(R.id.checkBoxListSessionUsers);
 recyclerViewTime = findViewById(R.id.listTime);
 intent = new Intent(this, AddSessionActivity.class);
-        recUpdate();
 checkBoxUsers.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -128,7 +127,7 @@ date.setSeconds(0);
 record.setStart(date.getTime());
 recordsEnpty.addAll(
     bd.getRecords().stream()
-            .filter(r -> r.getStartDay().getDate() == record.getStartDay().getDate())
+            .filter(r -> r.getStartDay().getDate() == record.getStartDay().getDate() && r.getStartDay().getMonth() == record.getStartDay().getMonth() && r.getStartDay().getYear() == record.getStartDay().getYear())
             .collect(Collectors.toCollection(() -> new  ArrayList<>()))
 );
 countUser = recordsEnpty.size();
@@ -146,9 +145,19 @@ if (!checbox) {
  recordsEnpty.sort(Comparator.naturalOrder());
 }
 
+/*
+Выводит список на экран
+ */
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    recUpdate();
+    }
+
     /*
-    Инициализирует список
-     */
+        Инициализирует список
+         */
     public  void  recUpdate () {
         DateFormat dateFormatTime = new SimpleDateFormat("HH:mm");
         initListDate();
