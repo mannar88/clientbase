@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".StatActivity">
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/textViewStatSelectPeriod"
+android:text="Выбрать период"
+    />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerStatSelectPeriod"
+        app:layout_constraintTop_toBottomOf="@+id/textViewStatSelectPeriod"
+    />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+android:id="@+id/buttonStatBack"
+        android:onClick="onClickButtonStatBack"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerStatSelectPeriod"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewStat"
+        android:onClick="onClickTextViewStat"
+        app:layout_constraintTop_toBottomOf="@+id/buttonStatBack"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonStatNext"
+        android:onClick="onClickButtonStatNext"
+        app:layout_constraintTop_toBottomOf="@+id/textViewStat"
+/>
+</androidx.constraintlayout.widget.ConstraintLayout>

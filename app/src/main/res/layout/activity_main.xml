@@ -40,7 +40,16 @@ android:onClick="onClickButtonRecord"
         app:layout_constraintTop_toBottomOf="@+id/buttonListProcedur"
         />
 
-<Button
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+android:id="@+id/buttonStatistick"
+    android:onClick="onClickButtonStastick"
+    android:text="Статистика"
+        app:layout_constraintTop_toBottomOf="@+id/buttonListExpenses"
+        />
+
+    <Button
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/buttonSetting"

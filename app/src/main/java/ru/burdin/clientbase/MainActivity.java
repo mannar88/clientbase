@@ -58,5 +58,11 @@ startActivity(intent);
     Intent intent = new Intent(this, SettingActivity.class);
     startActivity(intent);
     }
-
+    /*
+    открывает активность статистики
+    */
+    public void onClickButtonStastick(View view) {
+    Intent intent = new Intent(this, StatActivity.class);
+    startActivity(intent);
     }
+}
