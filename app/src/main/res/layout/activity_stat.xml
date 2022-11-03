@@ -42,4 +42,12 @@ android:id="@+id/buttonStatBack"
         android:onClick="onClickButtonStatNext"
         app:layout_constraintTop_toBottomOf="@+id/textViewStat"
 />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+android:id="@+id/listViewStat"
+        app:layout_constraintTop_toBottomOf="@+id/buttonStatNext"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

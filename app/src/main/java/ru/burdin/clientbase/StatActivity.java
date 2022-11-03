@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -22,6 +23,8 @@ import java.util.Map;
 import java.util.SimpleTimeZone;
 import java.util.TreeMap;
 
+import ru.burdin.clientbase.models.Record;
+
 public class StatActivity extends AppCompatActivity {
 
     private Spinner spinnerSelectPeriod;
@@ -31,17 +34,23 @@ public class StatActivity extends AppCompatActivity {
    private Map <String, Period>  periods = new LinkedHashMap<>();
 private ArrayAdapter <?> adapter;
 private  Calendar calendar;
-List <String> listPeriods;
+private List <String> listPeriods;
+private ListView listViewStat;
+private  ArrayAdapter <String> adapterListView;
+private  List <String> resStat = new ArrayList<>();
+private  Bd bd;
 
-    @Override
+@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stat);
-spinnerSelectPeriod = findViewById(R.id.spinnerStatSelectPeriod);
+bd = Bd.load(this);
+        spinnerSelectPeriod = findViewById(R.id.spinnerStatSelectPeriod);
 buttonBack = findViewById(R.id.buttonStatBack);
 textViewPeriod = findViewById(R.id.textViewStat);
 buttonNext = findViewById(R.id.buttonStatNext);
-    mapInit();
+listViewStat = findViewById(R.id.listViewStat);
+mapInit();
 listPeriods = new ArrayList<>(periods.keySet());
     adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listPeriods);
        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -49,6 +58,11 @@ listPeriods = new ArrayList<>(periods.keySet());
 spinnerSelectPeriod.setAdapter(adapter);
     calendar = Calendar.getInstance();
 periods.get(spinnerSelectPeriod.getSelectedItem().toString()).get();;
+    resultInit();
+    adapterListView = new ArrayAdapter<>(this,
+            android.R.layout.simple_list_item_1, resStat
+    );
+    listViewStat.setAdapter(adapterListView);
 }
 
     @Override
@@ -58,6 +72,9 @@ spinnerSelectPeriod.setOnItemSelectedListener(new AdapterView.OnItemSelectedList
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 periods.get(listPeriods.get(i)).get();
+    resultInit();
+        adapterListView.notifyDataSetChanged();
+
     }
 
     @Override
@@ -81,6 +98,8 @@ periods.get(listPeriods.get(i)).get();
     public void onClickButtonStatBack(View view) {
     periods.get(spinnerSelectPeriod.getSelectedItem().toString()).backNext(-1);
     periods.get(spinnerSelectPeriod.getSelectedItem().toString()).get();
+    resultInit();
+    adapterListView.notifyDataSetChanged();
     }
     /*
     Выбрать конкретный период
@@ -93,15 +112,31 @@ periods.get(listPeriods.get(i)).get();
     public void onClickButtonStatNext(View view) {
     periods.get(spinnerSelectPeriod.getSelectedItem().toString()).backNext(1);
     periods.get(spinnerSelectPeriod.getSelectedItem().toString()).get();
+        resultInit();
+        adapterListView.notifyDataSetChanged();
     }
 
-    private  class  Period {
+    /*
+    Инициализация списка статистики за выбранный период
+     */
+private  void resultInit () {
+    resStat.clear();
+resStat.add("Статистика");
+resStat.add("Всего записей: " + bd.getRecords().size());
+Period period = periods.get(spinnerSelectPeriod.getSelectedItem());
+    period.getRecords();
+resStat.add("Количество записей за выбранный период: " + period.records.size() + "");
+}
+
+private  class  Period {
         DateFormat dateFormat;
 private  int p;
-        protected  Period (DateFormat dateFormat, int p) {
+List <Record> records = new ArrayList<>();
+protected  Period (DateFormat dateFormat, int p) {
             this.dateFormat = dateFormat;
         this.p = p;
-        }
+this.records = new ArrayList<>();
+}
 /*
 Устанавливает выбранный период на экране
  */
@@ -120,6 +155,19 @@ buttonBack.setText(dateFormat.format(calendar.getTime()));
     public  void  backNext (int i) {
         calendar.add(p, i);
     }
+
+    /*
+    Собирает список записей для текущего периода
+     */
+private void getRecords() {
+records.clear();
+    for ( Record record : bd.getRecords()) {
+        if (dateFormat.format(calendar.getTime()).equals(dateFormat.format(record.getStartDay()))) {
+records.add(record);
+        }
     }
+}
+
+}
 
 }
