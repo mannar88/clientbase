@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.SimpleTimeZone;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
+import ru.burdin.clientbase.models.Expenses;
 import ru.burdin.clientbase.models.Record;
 
 public class StatActivity extends AppCompatActivity {
@@ -121,22 +123,43 @@ periods.get(listPeriods.get(i)).get();
      */
 private  void resultInit () {
     resStat.clear();
-resStat.add("Статистика");
-resStat.add("Всего записей: " + bd.getRecords().size());
+resStat.add("Статистика за выбранный период");
 Period period = periods.get(spinnerSelectPeriod.getSelectedItem());
     period.getRecords();
-resStat.add("Количество записей за выбранный период: " + period.records.size() + "");
+// Подсчет клиентов и записей
+    Map <Long, Long> countClient = period.records.stream()
+            .collect(Collectors.groupingBy(Record::getIdUser, Collectors.counting()));
+    resStat.add("Клиентов: " + countClient.keySet().size());
+    resStat.add("Записей: " + period.records.size() + "");
+//Подсчет суммы
+double sumPlus = 0d;
+double sumDef = 0d;
+for (Record record : period.records) {
+    sumPlus = sumPlus + record.getPrice();
+}
+for (Expenses expenses : period.expenses) {
+    sumDef = sumDef + expenses.getPrice();
+}
+resStat.add("Чистый доход:  " + StaticClass.priceToString(sumPlus - sumDef));
+resStat.add("Всего заработанно: " + StaticClass.priceToString(sumPlus) + ", всего расходов: "  + StaticClass.priceToString(sumDef));
+// Статистика за всю историю
+resStat.add("Статистика за всю историю");
+    resStat.add("Всего записей: " + bd.getRecords().size());
 }
 
 private  class  Period {
         DateFormat dateFormat;
 private  int p;
 List <Record> records = new ArrayList<>();
+List <Expenses> expenses;
+
 protected  Period (DateFormat dateFormat, int p) {
             this.dateFormat = dateFormat;
         this.p = p;
 this.records = new ArrayList<>();
+this.expenses = new ArrayList<>();
 }
+
 /*
 Устанавливает выбранный период на экране
  */
@@ -157,15 +180,21 @@ buttonBack.setText(dateFormat.format(calendar.getTime()));
     }
 
     /*
-    Собирает список записей для текущего периода
+    Собирает список записей  и расходов для текущего периода
      */
 private void getRecords() {
 records.clear();
-    for ( Record record : bd.getRecords()) {
-        if (dateFormat.format(calendar.getTime()).equals(dateFormat.format(record.getStartDay()))) {
+expenses.clear();
+for ( Record record : bd.getRecords()) {
+        if (dateFormat.format(calendar.getTime()).equals(dateFormat.format(record.getStartDay())) &&Calendar.getInstance().getTimeInMillis() > record.getStart() + record.getEnd() ) {
 records.add(record);
         }
     }
+for (Expenses expensesOne : bd.getExpenses()) {
+    if (dateFormat.format(calendar.getTime()).equals(dateFormat.format(expensesOne.getTime()))&& Calendar.getInstance().getTimeInMillis() > expensesOne.getTime()) {
+expenses.add(expensesOne);
+    }
+}
 }
 
 }
