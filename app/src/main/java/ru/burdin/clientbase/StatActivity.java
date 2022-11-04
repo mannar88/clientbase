@@ -129,22 +129,35 @@ Period period = periods.get(spinnerSelectPeriod.getSelectedItem());
 // Подсчет клиентов и записей
     Map <Long, Long> countClient = period.records.stream()
             .collect(Collectors.groupingBy(Record::getIdUser, Collectors.counting()));
-    resStat.add("Клиентов: " + countClient.keySet().size());
+    List <Record> oldRecords = new ArrayList<>(bd.getRecords());
+    oldRecords.removeAll(period.records);
+    int countOldRecord = 0;
+    for (long idUser : countClient.keySet()) {
+        for (Record record : oldRecords) {
+            if (record.getId() == idUser) {
+                countOldRecord++;
+                break;
+            }
+        }
+    }
+    resStat.add("Клиентов: " + countClient.keySet().size() + ", из них новые: " + (countClient.keySet().size() - countOldRecord));
     resStat.add("Записей: " + period.records.size() + "");
 //Подсчет суммы
-double sumPlus = 0d;
-double sumDef = 0d;
-for (Record record : period.records) {
-    sumPlus = sumPlus + record.getPrice();
-}
-for (Expenses expenses : period.expenses) {
-    sumDef = sumDef + expenses.getPrice();
-}
-resStat.add("Чистый доход:  " + StaticClass.priceToString(sumPlus - sumDef));
-resStat.add("Всего заработанно: " + StaticClass.priceToString(sumPlus) + ", всего расходов: "  + StaticClass.priceToString(sumDef));
+double sumPrise = period.records.stream()
+        .collect(Collectors.summingDouble(Record::getPrice));
+double sumDef = period.expenses.stream()
+        .collect(Collectors.summingDouble(Expenses::getPrice));
+resStat.add("Чистый доход:  " + StaticClass.priceToString(sumPrise - sumDef));
+resStat.add("Всего заработанно: " + StaticClass.priceToString(sumPrise) + ", всего расходов: "  + StaticClass.priceToString(sumDef));
 // Статистика за всю историю
 resStat.add("Статистика за всю историю");
     resStat.add("Всего записей: " + bd.getRecords().size());
+ sumPrise = bd.getRecords().stream()
+        .collect(Collectors.summingDouble(Record::getPrice));
+sumDef = bd.getExpenses().stream()
+        .collect(Collectors.summingDouble(Expenses::getPrice));
+ resStat.add("Чистый доход: "+ StaticClass.priceToString(sumPrise - sumDef));
+    resStat.add("Всего заработанно: " + StaticClass.priceToString(sumPrise) + ", всего расходов: "  + StaticClass.priceToString(sumDef));
 }
 
 private  class  Period {
