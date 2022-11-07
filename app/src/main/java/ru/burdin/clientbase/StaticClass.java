@@ -1,6 +1,12 @@
 package ru.burdin.clientbase;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.Settings;
+
+import androidx.appcompat.app.AlertDialog;
 
 import java.util.ArrayList;
 
@@ -42,4 +48,32 @@ return  result;
     }
     return result;
     }
+
+    /*
+    Выводит диалоговое окно
+     */
+    public  static void getDialog (Context context, String text) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("Нет разрешения " + text + "! Те чё, западло разрешить?");
+        builder.setPositiveButton("Нет, не западло, сейчас разрешу",   new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", context.getPackageName(), null);
+                        intent.setData(uri);
+                        context.startActivity(intent);
+
+                    }
+                }
+        );
+        builder.setNegativeButton("Не разрешу, мало ли чё там в коде хакерского зарыто", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+        builder.create().show();
+    }
+
+
 }

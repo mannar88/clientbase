@@ -20,4 +20,13 @@
         app:layout_constraintTop_toBottomOf="@+id/checkBoxSettingCalender"
         />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonSettingExport"
+        android:text="Экспортировать базу данных"
+android:onClick="onClickButtonSettingExportBd"
+        app:layout_constraintTop_toBottomOf="@+id/spinerSettingCalendar"
+/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

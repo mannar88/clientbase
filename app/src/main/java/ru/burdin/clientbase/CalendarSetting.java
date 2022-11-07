@@ -2,8 +2,6 @@ package ru.burdin.clientbase;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,7 +10,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.CalendarContract;
@@ -21,28 +18,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.lang.reflect.Array;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import ru.burdin.clientbase.models.Record;
