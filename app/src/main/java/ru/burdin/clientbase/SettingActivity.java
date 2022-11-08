@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.PackageManagerCompat;
 
 import android.Manifest;
 import android.app.Activity;
@@ -12,6 +13,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.provider.Settings;
@@ -25,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class SettingActivity extends AppCompatActivity {
 
@@ -71,7 +74,14 @@ spinnerGetCalendar.setEnabled(calendars.getCheckBox());
  */
         public void onClickButtonSettingExportBd(View view) {
         if (requestMultiplePermissions()) {
-            Toast.makeText(this, bdExportImport.exportBd() + "", Toast.LENGTH_SHORT).show();
+            try {
+                Toast.makeText(this, bdExportImport.exportBd() + "", Toast.LENGTH_SHORT).show();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
         }
         }
 
@@ -82,17 +92,24 @@ spinnerGetCalendar.setEnabled(calendars.getCheckBox());
 boolean result = false;
             String reExternalStoragePermission = Manifest.permission.READ_EXTERNAL_STORAGE;
             String writeExternalStoregePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-int haReExternalStoragePermission = checkSelfPermission(reExternalStoragePermission);
+String manageExternalStoreg = Manifest.permission.MANAGE_EXTERNAL_STORAGE;
+            int haReExternalStoragePermission = checkSelfPermission(reExternalStoragePermission);
             int haWriteExternalStoregePermission = checkSelfPermission(writeExternalStoregePermission);
-
-            List<String> permissions = new ArrayList<>();
+int haManageExternalStoreg = checkSelfPermission(manageExternalStoreg);
+List<String> permissions = new ArrayList<>();
             if (haReExternalStoragePermission != PackageManager.PERMISSION_GRANTED) {
                 permissions.add(reExternalStoragePermission);
             }
-//            if (haWriteExternalStoregePermission != PackageManager.PERMISSION_GRANTED) {
-//                permissions.add(writeExternalStoregePermission);
-//            }
-            if (!permissions.isEmpty()) {
+            if (Build.VERSION.SDK_INT < 31) {
+                if (haWriteExternalStoregePermission != PackageManager.PERMISSION_GRANTED) {
+//                    permissions.add(writeExternalStoregePermission);
+                }
+            }else {
+                if (haManageExternalStoreg != PackageManager.PERMISSION_GRANTED) {
+                    permissions.add(manageExternalStoreg);
+                }
+            }
+                if (!permissions.isEmpty()) {
                 String[] params = permissions.toArray(new String[permissions.size()]);
                 requestPermissions(params, REQUEST_PERMISSIONS);
             }else {
@@ -117,7 +134,7 @@ int haReExternalStoragePermission = checkSelfPermission(reExternalStoragePermiss
                 }
                 break;
             case REQUEST_PERMISSIONS:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED ) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED  && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 } else {
 StaticClass.getDialog(this, "чтение и запись файловой системы");
         }
