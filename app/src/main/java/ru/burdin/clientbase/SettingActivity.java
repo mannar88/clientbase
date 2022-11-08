@@ -15,6 +15,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.CalendarContract;
 import android.provider.Settings;
 import android.view.View;
@@ -72,42 +73,33 @@ spinnerGetCalendar.setEnabled(calendars.getCheckBox());
         /*
 Экспорт БД
  */
-        public void onClickButtonSettingExportBd(View view) {
+        public void onClickButtonSettingExportBd(View view){
         if (requestMultiplePermissions()) {
             try {
-                Toast.makeText(this, bdExportImport.exportBd() + "", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, bdExportImport.exportBd(), Toast.LENGTH_SHORT).show();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
         }
         }
 
-        /*
+    /*
         Запрос разрешение на файловую систему
          */
         private boolean requestMultiplePermissions() {
 boolean result = false;
             String reExternalStoragePermission = Manifest.permission.READ_EXTERNAL_STORAGE;
             String writeExternalStoregePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-String manageExternalStoreg = Manifest.permission.MANAGE_EXTERNAL_STORAGE;
             int haReExternalStoragePermission = checkSelfPermission(reExternalStoragePermission);
             int haWriteExternalStoregePermission = checkSelfPermission(writeExternalStoregePermission);
-int haManageExternalStoreg = checkSelfPermission(manageExternalStoreg);
 List<String> permissions = new ArrayList<>();
             if (haReExternalStoragePermission != PackageManager.PERMISSION_GRANTED) {
                 permissions.add(reExternalStoragePermission);
             }
-            if (Build.VERSION.SDK_INT < 31) {
                 if (haWriteExternalStoregePermission != PackageManager.PERMISSION_GRANTED) {
-//                    permissions.add(writeExternalStoregePermission);
-                }
-            }else {
-                if (haManageExternalStoreg != PackageManager.PERMISSION_GRANTED) {
-                    permissions.add(manageExternalStoreg);
-                }
+                    permissions.add(writeExternalStoregePermission);
             }
                 if (!permissions.isEmpty()) {
                 String[] params = permissions.toArray(new String[permissions.size()]);
@@ -136,7 +128,7 @@ List<String> permissions = new ArrayList<>();
             case REQUEST_PERMISSIONS:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED  && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 } else {
-StaticClass.getDialog(this, "чтение и запись файловой системы");
+                    StaticClass.getDialog(this, "чтение и запись файловой системы");
         }
     break;
                 default:

@@ -20,12 +20,16 @@ import java.nio.file.StandardCopyOption;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
+import static android.os.Environment.getExternalStorageDirectory;
+import static android.os.Environment.getExternalStoragePublicDirectory;
+
 public class BdExportImport {
 
     private  File file_Bd;
 private  File file_export;
 public  BdExportImport ( String path) {
     this.file_Bd = new File(path);
+this.file_export = new File(getExternalStorageDirectory(), "Клиентская база");
 }
 
 /*
@@ -42,12 +46,12 @@ Supplier <String> supplier = new Supplier<String>() {
         if (!file_export.exists()) {
             file_export.mkdir();
         }
-
         try {
-Files.copy(file_Bd.toPath(), Paths.get("/storage/emulated/0/Download/" + Bd.DATABASE_NAME), StandardCopyOption.REPLACE_EXISTING);
-                        text = "База успешно экспортировалась в папку Загрузки";
+            Files.copy(file_Bd.toPath(), Paths.get(file_export.getAbsolutePath() + "/" + Bd.DATABASE_NAME), StandardCopyOption.REPLACE_EXISTING);
+        text = "База экспортировалась успешно в папку Клиентская база";
         } catch (IOException e) {
-            text = "Что-то пошло не так!";
+            e.printStackTrace();
+        text ="Что-то пошло не так";
         }
         return  text;
 
