@@ -53,8 +53,9 @@ private ArrayList <User> users;
 private  ArrayList <Procedure> procedures;
 private  ArrayList <Record> records;
 private  ArrayList <Expenses> expenses;
+private  static  Context staticContex;
 
-    private  Bd (Context context) {
+private  Bd (Context context) {
     databaseHelper = new DatabaseHelper(context);
 
         sqLiteDatabase = databaseHelper.getReadableDatabase();
@@ -67,9 +68,12 @@ private  ArrayList <Expenses> expenses;
     public ArrayList<Expenses> getExpenses() {
         return expenses;
     }
-
+/*
+Создание объекта База данных
+ */
     public  static  Bd load (Context context) {
-Supplier <Bd> bdSupplier = new Supplier<Bd>() {
+staticContex = context;
+        Supplier <Bd> bdSupplier = new Supplier<Bd>() {
     @Override
     public Bd get() {
 if (bd == null) {
@@ -97,7 +101,16 @@ private  Bd getBd () {
     }
     return  bd;
 }
-public ArrayList<User> getUsers() {
+
+/*
+Пересоздание объекта База данных
+ */
+public void  reStart (){
+    bd = null;
+    load(staticContex);
+}
+
+    public ArrayList<User> getUsers() {
     return  users;
     }
 

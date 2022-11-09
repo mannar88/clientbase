@@ -38,11 +38,12 @@ public class SettingActivity extends AppCompatActivity {
     private CalendarSetting calendars;
     private static final int REQUEST_PERMISSIONS = 101;
 private  BdExportImport bdExportImport;
-
+private  Bd bd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seting);
+        bd = Bd.load(this);
         checkBoxCalender = findViewById(R.id.checkBoxSettingCalender);
         bdExportImport = new BdExportImport(getDatabasePath(Bd.DATABASE_NAME).getPath());
         spinnerGetCalendar = findViewById(R.id.spinerSettingCalendar);
@@ -152,7 +153,18 @@ if (Build.VERSION.SDK_INT < 30) {
                             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
                     }
                 }
+/*
+Кнопка для импорта базы данных
+ */
 
-
-
+    public void onClickSettingImport(View view) {
+        try {
+            Toast.makeText(this, bdExportImport.inport(), Toast.LENGTH_SHORT).show();
+        bd.reStart();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

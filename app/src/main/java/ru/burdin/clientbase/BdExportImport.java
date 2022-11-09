@@ -27,10 +27,14 @@ public class BdExportImport {
 
     private  File file_Bd;
 private  File file_export;
-public  BdExportImport ( String path) {
+private  File fileImport;
+private final  String PATH ="Клиентская база";
+
+    public  BdExportImport ( String path) {
     this.file_Bd = new File(path);
-this.file_export = new File(getExternalStorageDirectory(), "Клиентская база");
-}
+this.file_export = new File(getExternalStorageDirectory(), PATH);
+this.fileImport = new File(getExternalStorageDirectory().getAbsolutePath() + "/" + PATH + "/" + Bd.DATABASE_NAME);
+    }
 
 /*
 Экспорт базы данных
@@ -61,7 +65,33 @@ fileTask.execute(supplier);
             return  fileTask.get();
     }
 
-class FileTask extends AsyncTask <Supplier<String>, Void, String> {
+    /*
+    Импорт базы
+     */
+public  String inport () throws ExecutionException, InterruptedException {
+    Supplier<String> supplier = new Supplier<String>() {
+        @Override
+        public String get() {
+String result = "";
+if (!fileImport.exists()){
+    result = "Файл базы данных отсутствует";
+}else {
+    try {
+        Files.copy(fileImport.toPath(), file_Bd.toPath(), StandardCopyOption.REPLACE_EXISTING);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    result = "База данных  импортированна успешно";
+}
+return result;
+        }
+    };
+FileTask fileTask = new FileTask();
+fileTask.execute(supplier);
+return  fileTask.get();
+}
+
+    class FileTask extends AsyncTask <Supplier<String>, Void, String> {
 
 
     @Override

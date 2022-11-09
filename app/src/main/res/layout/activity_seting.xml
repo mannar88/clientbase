@@ -29,4 +29,13 @@ android:onClick="onClickButtonSettingExportBd"
         app:layout_constraintTop_toBottomOf="@+id/spinerSettingCalendar"
 />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonSettingImport"
+        android:onClick="onClickSettingImport"
+        android:text="Импортировать базу данных"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSettingExport"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
