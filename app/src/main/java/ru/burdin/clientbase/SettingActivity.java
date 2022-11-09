@@ -68,7 +68,8 @@ spinnerGetCalendar.setEnabled(calendars.getCheckBox());
     Выбор календаря для синхронизации
      */
         calendars.listenCSpinner(spinnerGetCalendar, nameCalendars);
-        }
+
+    }
 
         /*
 Экспорт БД
@@ -90,24 +91,34 @@ spinnerGetCalendar.setEnabled(calendars.getCheckBox());
          */
         private boolean requestMultiplePermissions() {
 boolean result = false;
-            String reExternalStoragePermission = Manifest.permission.READ_EXTERNAL_STORAGE;
-            String writeExternalStoregePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-            int haReExternalStoragePermission = checkSelfPermission(reExternalStoragePermission);
-            int haWriteExternalStoregePermission = checkSelfPermission(writeExternalStoregePermission);
-List<String> permissions = new ArrayList<>();
-            if (haReExternalStoragePermission != PackageManager.PERMISSION_GRANTED) {
-                permissions.add(reExternalStoragePermission);
-            }
-                if (haWriteExternalStoregePermission != PackageManager.PERMISSION_GRANTED) {
-                    permissions.add(writeExternalStoregePermission);
-            }
-                if (!permissions.isEmpty()) {
-                String[] params = permissions.toArray(new String[permissions.size()]);
-                requestPermissions(params, REQUEST_PERMISSIONS);
-            }else {
-                result = true;
-            }
-        return  result;
+if (Build.VERSION.SDK_INT < 30) {
+    String reExternalStoragePermission = Manifest.permission.READ_EXTERNAL_STORAGE;
+    String writeExternalStoregePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+    int haReExternalStoragePermission = checkSelfPermission(reExternalStoragePermission);
+    int haWriteExternalStoregePermission = checkSelfPermission(writeExternalStoregePermission);
+    List<String> permissions = new ArrayList<>();
+    if (haReExternalStoragePermission != PackageManager.PERMISSION_GRANTED) {
+        permissions.add(reExternalStoragePermission);
+    }
+    if (haWriteExternalStoregePermission != PackageManager.PERMISSION_GRANTED) {
+        permissions.add(writeExternalStoregePermission);
+    }
+
+    if (!permissions.isEmpty()) {
+        String[] params = permissions.toArray(new String[permissions.size()]);
+        requestPermissions(params, REQUEST_PERMISSIONS);
+    } else {
+        result = true;
+    }
+}else {
+   if ( !(result = Environment.isExternalStorageManager())) {
+       Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+       intent.addCategory("android.intent.category.DEFAULT");
+       intent.setData(Uri.parse(String.format("package:%s", this.getPackageName())));
+       this.startActivityForResult(intent, REQUEST_PERMISSIONS);
+   }
+   }
+    return  result;
         }
 
         /*
@@ -128,8 +139,14 @@ List<String> permissions = new ArrayList<>();
             case REQUEST_PERMISSIONS:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED  && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 } else {
-                    StaticClass.getDialog(this, "чтение и запись файловой системы");
-        }
+//                    StaticClass.getDialog(this, "чтение и запись файловой системы");
+                String string = "";
+                    for (int i = 0; i < permissions.length; i++) {
+                        string = string + " " + permissions[i] + " " + grantResults[i] + " ";
+                    }
+                checkBoxCalender.setText(string);
+
+                }
     break;
                 default:
                             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
