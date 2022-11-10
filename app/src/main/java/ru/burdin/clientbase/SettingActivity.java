@@ -1,6 +1,7 @@
 package ru.burdin.clientbase;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -135,4 +136,9 @@ spinnerGetCalendar.setEnabled(calendars.getCheckBox());
                     }
                 }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }
