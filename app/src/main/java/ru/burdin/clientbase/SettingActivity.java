@@ -36,7 +36,7 @@ public class SettingActivity extends AppCompatActivity {
     private CheckBox checkBoxCalender;
    private ArrayAdapter <?> arrayAdapter;
     private CalendarSetting calendars;
-    private static final int REQUEST_PERMISSIONS = 101;
+    public static final int REQUEST_PERMISSIONS = 101;
 private  BdExportImport bdExportImport;
 private  Bd bd;
     @Override
@@ -75,54 +75,35 @@ spinnerGetCalendar.setEnabled(calendars.getCheckBox());
         /*
 Экспорт БД
  */
-        public void onClickButtonSettingExportBd(View view){
-        if (requestMultiplePermissions()) {
+        public void onClickButtonSettingExportBd(View view) {
+            if (bdExportImport.requestMultiplePermissions(this, REQUEST_PERMISSIONS)) {
+                try {
+                    Toast.makeText(this, bdExportImport.exportBd(), Toast.LENGTH_SHORT).show();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    /*
+Кнопка для импорта базы данных
+*/
+    public void onClickSettingImport(View view) {
+        if (bdExportImport.requestMultiplePermissions(this, REQUEST_PERMISSIONS)) {
             try {
-                Toast.makeText(this, bdExportImport.exportBd(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, bdExportImport.inport(), Toast.LENGTH_SHORT).show();
+                bd.reStart();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        }
+    }
 
     /*
-        Запрос разрешение на файловую систему
-         */
-        private boolean requestMultiplePermissions() {
-boolean result = false;
-if (Build.VERSION.SDK_INT < 30) {
-    String reExternalStoragePermission = Manifest.permission.READ_EXTERNAL_STORAGE;
-    String writeExternalStoregePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-    int haReExternalStoragePermission = checkSelfPermission(reExternalStoragePermission);
-    int haWriteExternalStoregePermission = checkSelfPermission(writeExternalStoregePermission);
-    List<String> permissions = new ArrayList<>();
-    if (haReExternalStoragePermission != PackageManager.PERMISSION_GRANTED) {
-        permissions.add(reExternalStoragePermission);
-    }
-    if (haWriteExternalStoregePermission != PackageManager.PERMISSION_GRANTED) {
-        permissions.add(writeExternalStoregePermission);
-    }
-
-    if (!permissions.isEmpty()) {
-        String[] params = permissions.toArray(new String[permissions.size()]);
-        requestPermissions(params, REQUEST_PERMISSIONS);
-    } else {
-        result = true;
-    }
-}else {
-   if ( !(result = Environment.isExternalStorageManager())) {
-       Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-       intent.addCategory("android.intent.category.DEFAULT");
-       intent.setData(Uri.parse(String.format("package:%s", this.getPackageName())));
-       this.startActivityForResult(intent, REQUEST_PERMISSIONS);
-   }
-   }
-    return  result;
-        }
-
-        /*
 Ответна разрешение
  */
     @Override
@@ -153,18 +134,5 @@ if (Build.VERSION.SDK_INT < 30) {
                             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
                     }
                 }
-/*
-Кнопка для импорта базы данных
- */
 
-    public void onClickSettingImport(View view) {
-        try {
-            Toast.makeText(this, bdExportImport.inport(), Toast.LENGTH_SHORT).show();
-        bd.reStart();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 }
