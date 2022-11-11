@@ -1,4 +1,4 @@
-package ru.burdin.clientbase;
+package ru.burdin.clientbase.add;
 
 import android.content.ContentValues;
 import android.content.Intent;
@@ -18,12 +18,15 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import ru.burdin.clientbase.Bd;
+import ru.burdin.clientbase.MyAdapter;
+import ru.burdin.clientbase.R;
+import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.lits.ListClientActivity;
 import ru.burdin.clientbase.lits.ListOfProceduresActivity;
-import ru.burdin.clientbase.lits.ListSessionActivity;
 import ru.burdin.clientbase.models.Procedure;
 import ru.burdin.clientbase.models.Record;
-import ru.burdin.clientbase.models.User;
+import ru.burdin.clientbase.setting.CalendarSetting;
 
 public class AddSessionActivity extends AppCompatActivity {
 
@@ -34,13 +37,13 @@ private  EditText editTextSetTimeFinish;
 private  EditText editTextSetComment;
 private  int index = -1;
 private Record record;
-    private  static  Bd bd;
+    private  static Bd bd;
 private  int userIndex = -1;
 private static ArrayList <Procedure> procedures;
 private Button buttonAddProcedure;
 private  int indexListSession;
 private  int indexRecord = -1;
-private  CalendarSetting calendarSetting;
+private CalendarSetting calendarSetting;
 
 @Override
 protected void onCreate(Bundle savedInstanceState) {

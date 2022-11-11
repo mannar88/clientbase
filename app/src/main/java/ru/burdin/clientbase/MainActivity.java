@@ -1,33 +1,23 @@
 package ru.burdin.clientbase;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import org.jetbrains.annotations.NotNull;
 
 import ru.burdin.clientbase.lits.ListClientActivity;
 import ru.burdin.clientbase.lits.ListExpensesActivity;
 import ru.burdin.clientbase.lits.ListOfProceduresActivity;
 import ru.burdin.clientbase.lits.ListSessionActivity;
-import com.parse.Parse;
-import com.parse.ParseObject;
-import com.parse.GetCallback;
-import com.parse.ParseException;
+import ru.burdin.clientbase.setting.CalendarSetting;
+import ru.burdin.clientbase.setting.SettingActivity;
+
 public class MainActivity extends AppCompatActivity {
 
     private  Bd bd;
-private  CalendarSetting calendarSetting;
+private CalendarSetting calendarSetting;
 private Button button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,4 +1,4 @@
-package ru.burdin.clientbase;
+package ru.burdin.clientbase.add;
 
 import android.content.ContentValues;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Comparator;
 
+import ru.burdin.clientbase.Bd;
+import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.models.User;
 
 public class AddClientActivity extends AppCompatActivity {

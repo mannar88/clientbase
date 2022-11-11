@@ -27,9 +27,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import ru.burdin.clientbase.AddSessionActivity;
+import ru.burdin.clientbase.add.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
-import ru.burdin.clientbase.CalendarSetting;
+import ru.burdin.clientbase.setting.CalendarSetting;
 import ru.burdin.clientbase.cards.CardSessionActivity;
 import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;

@@ -7,19 +7,16 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
-import android.telephony.PhoneNumberUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-import ru.burdin.clientbase.AddSessionActivity;
+import ru.burdin.clientbase.add.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;

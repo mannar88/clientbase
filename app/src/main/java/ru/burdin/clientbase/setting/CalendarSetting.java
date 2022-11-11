@@ -1,4 +1,4 @@
-package ru.burdin.clientbase;
+package ru.burdin.clientbase.setting;
 
 import android.Manifest;
 import android.app.Activity;
@@ -7,7 +7,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -30,6 +29,9 @@ import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
+import ru.burdin.clientbase.Bd;
+import ru.burdin.clientbase.R;
+import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.models.User;
 
@@ -41,12 +43,7 @@ public class CalendarSetting {
     private HashMap<String, Long> calendars = new HashMap<>();
     private static Activity activity;
     private boolean checkBoxCalender;
-    public static final String APP_PREFERENCES = "preferenses";
-    public static final String APP_PREFERENCES_NAME_CALENDAR = "name_calendar";
-    public static final String APP_PREFERENCES_ID_CALENDER = "id_calender";
-    public static final String APP_PREFERENCES_CheckBox = "checkBox_calender";
     public   final static  String EMPTY = "Календарь не выбран";
-    private SharedPreferences preferences;
     private Bd bd;
     public   static final int Calender_PERMISSION = 2;
 
@@ -54,16 +51,14 @@ public class CalendarSetting {
 
     private CalendarSetting(Activity activity) {
         this.activity = activity;
-
-        preferences = activity.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         if (requestSinglePermission()) {
             initCalendars();
         }
 
-        if (preferences.contains(APP_PREFERENCES_ID_CALENDER) && preferences.contains(APP_PREFERENCES_NAME_CALENDAR)) {
-            id = preferences.getLong(APP_PREFERENCES_ID_CALENDER, 0);
-            name = preferences.getString(APP_PREFERENCES_NAME_CALENDAR, "");
-            checkBoxCalender = preferences.getBoolean(APP_PREFERENCES_CheckBox, false) && requestSinglePermission();
+        if (Preferences.getSharedPreferences(activity).contains(Preferences.APP_PREFERENCES_ID_CALENDER) && Preferences.getSharedPreferences(activity).contains(Preferences.APP_PREFERENCES_NAME_CALENDAR)) {
+            id = Preferences.getLong(activity, Preferences.APP_PREFERENCES_ID_CALENDER, 1);
+            name = Preferences.getString(activity, Preferences.APP_PREFERENCES_NAME_CALENDAR, "");
+            checkBoxCalender = Preferences.getBoolean (activity, Preferences.APP_PREFERENCES_CheckBox, false) && requestSinglePermission();
         }
         bd = Bd.load(activity.getApplicationContext());
     }
@@ -142,10 +137,8 @@ Set <String> strings = new HashSet<>();
                     id   = 0l;
                     name = EMPTY;
                 }
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putLong(APP_PREFERENCES_ID_CALENDER, id);
-                editor.putString(APP_PREFERENCES_NAME_CALENDAR, name);
-                editor.apply();
+                Preferences.set(activity, Preferences.APP_PREFERENCES_ID_CALENDER, id);
+                Preferences.set(activity, Preferences.APP_PREFERENCES_NAME_CALENDAR, name);
             }
 
             @Override
@@ -176,7 +169,6 @@ Set <String> strings = new HashSet<>();
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 checkBoxCalender = b && requestSinglePermission();
-                SharedPreferences.Editor editor = preferences.edit();
 if (!checkBoxCalender) {
     String [] permissions = new  String[] {Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR};
 calenderAxtivity.requestPermissions(permissions, Calender_PERMISSION);
@@ -186,9 +178,7 @@ spinner.setEnabled(checkBoxCalender);
 spinner.setEnabled(checkBoxCalender);
 calenderAxtivity.recreate();
 }
-             editor.putBoolean(APP_PREFERENCES_CheckBox, checkBoxCalender);
-                editor.apply();
-
+             Preferences.set(activity, Preferences.APP_PREFERENCES_CheckBox, checkBoxCalender);
             }
         });
     }

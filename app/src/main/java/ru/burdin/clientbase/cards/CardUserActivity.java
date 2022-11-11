@@ -2,25 +2,22 @@ package ru.burdin.clientbase.cards;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
-import ru.burdin.clientbase.AddClientActivity;
+import ru.burdin.clientbase.add.AddClientActivity;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.lits.ListHistoryAndRecordActivity;

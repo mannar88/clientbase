@@ -1,24 +1,12 @@
-package ru.burdin.clientbase;
+package ru.burdin.clientbase.setting;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.PackageManagerCompat;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.CalendarContract;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -31,6 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import ru.burdin.clientbase.Bd;
+import ru.burdin.clientbase.BdExportImport;
+import ru.burdin.clientbase.R;
+import ru.burdin.clientbase.StaticClass;
+
 public class SettingActivity extends AppCompatActivity {
 
     private Spinner spinnerGetCalendar;
@@ -38,8 +31,8 @@ public class SettingActivity extends AppCompatActivity {
    private ArrayAdapter <?> arrayAdapter;
     private CalendarSetting calendars;
     public static final int REQUEST_PERMISSIONS = 101;
-private  BdExportImport bdExportImport;
-private  Bd bd;
+private BdExportImport bdExportImport;
+private Bd bd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

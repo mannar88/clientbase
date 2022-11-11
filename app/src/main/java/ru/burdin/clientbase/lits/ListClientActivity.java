@@ -10,13 +10,12 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-import ru.burdin.clientbase.AddClientActivity;
-import ru.burdin.clientbase.AddSessionActivity;
+import ru.burdin.clientbase.add.AddClientActivity;
+import ru.burdin.clientbase.add.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.cards.CardUserActivity;

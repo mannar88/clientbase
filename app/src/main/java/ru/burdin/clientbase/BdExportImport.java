@@ -10,17 +10,9 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
 
-import androidx.annotation.RequiresApi;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -28,8 +20,9 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
+import ru.burdin.clientbase.setting.SettingActivity;
+
 import static android.os.Environment.getExternalStorageDirectory;
-import static android.os.Environment.getExternalStoragePublicDirectory;
 
 public class BdExportImport {
 

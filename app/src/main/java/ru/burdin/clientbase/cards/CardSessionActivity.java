@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,9 +13,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import ru.burdin.clientbase.AddSessionActivity;
+import ru.burdin.clientbase.add.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
-import ru.burdin.clientbase.CalendarSetting;
+import ru.burdin.clientbase.setting.CalendarSetting;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.lits.ListSessionActivity;
