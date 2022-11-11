@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -47,7 +48,7 @@ public class ListSessionActivity extends AppCompatActivity {
   private   ArrayList <Date> dates;
 private RecyclerView recyclerViewTime;
 private MyAdapter myAdapter;
-private    ArrayList <Record>  recordsEnpty;
+private List <Record> recordsEnpty = new ArrayList<>();
 private   Intent intent;
 public  static  final  String SETTIME = "setTime";
     private  Bd bd;
@@ -117,35 +118,29 @@ dateAndTime.set(i, i1, i2);
         /*
 Устанавливает список времени выбраного дня
  */
-private  void  initListDate () {
-Record record = new Record();
-recordsEnpty = new ArrayList<>();
-Date date = new Date(dateAndTime.getTimeInMillis());
-date.setHours(7);
-date.setMinutes(0);
-date.setSeconds(0);
-record.setStart(date.getTime());
-recordsEnpty.addAll(
-    bd.getRecords().stream()
-            .filter(r -> r.getStartDay().getDate() == record.getStartDay().getDate() && r.getStartDay().getMonth() == record.getStartDay().getMonth() && r.getStartDay().getYear() == record.getStartDay().getYear())
-            .collect(Collectors.toCollection(() -> new  ArrayList<>()))
-);
-countUser = recordsEnpty.size();
-sum = 0d;
-recordsEnpty.forEach(record1 -> sum = sum + record1.getPrice());
-textViewTime.setText("Всего записано: " + countUser + " клиентов, на общую сумму: " + StaticClass.priceToString(sum) + " руб");
+    private  void  initListDate () {
+DateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY");
+dateAndTime.set(Calendar.HOUR_OF_DAY, 7);
+dateAndTime.set(Calendar.MINUTE, 0);
+recordsEnpty = bd.getRecords().stream()
+.filter(record -> dateFormat.format(dateAndTime.getTime()).equals(dateFormat.format(record.getStartDay())))
+.collect(Collectors.toList());
+    sum = recordsEnpty.stream()
+        .collect(Collectors.summingDouble(Record::getPrice));
+        textViewTime.setText("Всего записано: " + recordsEnpty.size() + " клиентов, на общую сумму: " + StaticClass.priceToString(sum) + " руб");
 if (!checbox) {
-    while (record.getStartDay().getHours() < 23) {
+    while (dateAndTime.get(Calendar.HOUR_OF_DAY) < 23) {
+        Record record = new Record(dateAndTime.getTimeInMillis());
         if (!recordsEnpty.contains(record)) {
-            recordsEnpty.add(new Record(record.getStart()));
+            recordsEnpty.add(record);
         }
-        record.setStart(record.getStart() + TimeUnit.MINUTES.toMillis(10));
+        dateAndTime.add(Calendar.MINUTE, 10);
     }
 }
- recordsEnpty.sort(Comparator.naturalOrder());
-}
+    recordsEnpty.sort(Comparator.naturalOrder());
+    }
 
-/*
+        /*
 Выводит список на экран
  */
 

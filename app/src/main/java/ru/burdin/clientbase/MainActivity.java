@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,19 +20,22 @@ import ru.burdin.clientbase.lits.ListClientActivity;
 import ru.burdin.clientbase.lits.ListExpensesActivity;
 import ru.burdin.clientbase.lits.ListOfProceduresActivity;
 import ru.burdin.clientbase.lits.ListSessionActivity;
-
+import com.parse.Parse;
+import com.parse.ParseObject;
+import com.parse.GetCallback;
+import com.parse.ParseException;
 public class MainActivity extends AppCompatActivity {
 
     private  Bd bd;
 private  CalendarSetting calendarSetting;
-
+private Button button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     bd = Bd.load(getApplicationContext());
         calendarSetting = CalendarSetting.load(this);
-    }
+        }
 
     public void onClickButtonRecord(View view) {
 Intent intent = new Intent(this, ListSessionActivity.class);
@@ -65,4 +69,5 @@ startActivity(intent);
     Intent intent = new Intent(this, StatActivity.class);
     startActivity(intent);
     }
-}
+
+    }
