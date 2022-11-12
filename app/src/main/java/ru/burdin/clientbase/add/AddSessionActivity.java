@@ -150,7 +150,8 @@ public void onClickButtonSessionSave(View view) {
                             record.getPrice(),
                             record.getComment(),
 record.getEvent_id()                            ))) {
-    finish();
+    Toast.makeText(getApplicationContext(), "Запись успешно добавлена.", Toast.LENGTH_SHORT).show();
+                        finish();
 }else {
                         Toast.makeText(getApplicationContext(), "Не удается сохранить", Toast.LENGTH_SHORT).show();
                     }

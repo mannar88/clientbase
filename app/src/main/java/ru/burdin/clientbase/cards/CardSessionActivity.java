@@ -106,10 +106,12 @@ int resultDelete = bd.delete(Bd.TABLE_SESSION, record.getId());
 if (resultDelete == 1) {
 long id =  bd.getRecords().remove(StaticClass.indexList(record.getId(), bd.getRecords())).getEvent_id();
 calendarSetting.delete(id);
+Toast.makeText(this, "Запись удалена", Toast.LENGTH_SHORT).show();
 finish();
 }
     }
-   /*
+
+    /*
    Сохраняется аактивность
     */
    @Override
@@ -132,6 +134,7 @@ finish();
             if (requestCode == StaticClass.LISTSESSION) {
                 setTitle("");;
                 Toast.makeText(this, "Запись дублирована", Toast.LENGTH_LONG).show();
+            finish();
             }
 
         }

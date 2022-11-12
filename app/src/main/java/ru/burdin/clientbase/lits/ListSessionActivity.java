@@ -57,10 +57,9 @@ private  double sum;
 private  Intent intentCardSession;
 private CheckBox checkBoxUsers;
 private  boolean checbox = false;
-private  String key = null;
 private  HashMap <String, Consumer> consumerHashMap = new HashMap<>();
 private CalendarSetting calendarSetting;
-
+private  int indexListRecord;
 
 @Override
 protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +74,7 @@ protected void onCreate(Bundle savedInstanceState) {
         dateAndTime = new GregorianCalendar();
 dateAndTime.setTimeInMillis(savedInstanceState.getLong("dateAndTime"));
             }
+indexListRecord = getIntent().getIntExtra(StaticClass.POSITION_LIST_RECORDS,0);
         textViewDay = findViewById(R.id.textViewDate);
         textViewTime = findViewById(R.id.textViewTime);
 textViewDay.setText(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()));
@@ -176,12 +176,16 @@ if (!checbox) {
 MyAdapter.OnUserClickListener <Record> onUserClickListener = new MyAdapter.OnUserClickListener<Record>() {
     @Override
     public void onUserClick(Record record, int position) {
+        if (getIntent().getStringExtra(StaticClass.KEY) == null) {
+            getIntent().putExtra(StaticClass.KEY, StaticClass.NEWRECORD);
+        }
         if (record.getId() !=0) {
                 getIntent().putExtra(StaticClass.KEY, StaticClass.CARDSESSION);
     }
-        key = getIntent().getStringExtra(StaticClass.KEY);
+
+        String key = getIntent().getStringExtra(StaticClass.KEY);
         consumerHashMap.get(key).accept(record);
-    }
+    getIntent().removeExtra(StaticClass.KEY);}
 };
 MyAdapter myAdapter = new MyAdapter(this, recordsEnpty, onUserClickListener, consumer);
 recyclerViewTime.setAdapter(myAdapter);
@@ -208,22 +212,18 @@ dateAndTime.setTimeInMillis(dateAndTime.getTimeInMillis() + TimeUnit.DAYS.toMill
 Устанавливает в хэшмапу обработчик нажатия по списку
  */
 private  void setConsumerHashMap() {
-    /*
-    Если запись свободна
-     */
-    Consumer <Record> recordEmpty = new Consumer<Record>() {
+//    Если запись свободна
+         Consumer <Record> recordEmpty = new Consumer<Record>() {
         @Override
         public void accept(Record record) {
         intent.putExtra(StaticClass.TIMEFREE, record.getStart());
 startActivity(intent);
         }
     };
-    consumerHashMap.put(null, recordEmpty);
+         consumerHashMap.put(StaticClass.NEWRECORD, recordEmpty);
 
-    /*
-    если запись существует
-     */
-    Consumer <Record> recordUser =new Consumer<Record>() {
+//    если запись существует
+         Consumer <Record> recordUser =new Consumer<Record>() {
         @Override
         public void accept(Record record) {
                                     intentCardSession.putExtra(StaticClass.POSITION_LIST_RECORDS, record.getId());
@@ -231,20 +231,17 @@ startActivity(intentCardSession);
         }
     };
     consumerHashMap.put(StaticClass.CARDSESSION, recordUser);
-    /*
-    Если дублирование записи
-     */
+//    Если дублирование записи
 Consumer <Record> duplication = new Consumer<Record>() {
     @Override
     public void accept(Record record) {
-        int indexListRecords = getIntent().getExtras().getInt(StaticClass.POSITION_LIST_RECORDS);
         Record recordDup = new Record();
         recordDup.setStart(record.getStart());
-        recordDup.setEnd(bd.getRecords().get(indexListRecords).getEnd());
-        recordDup.setIdUser(bd.getRecords().get(indexListRecords).getIdUser());
-        recordDup.setProcedure(bd.getRecords().get(indexListRecords).getProcedure());
-        recordDup.setPrice(bd.getRecords().get(indexListRecords).getPrice());
-        recordDup.setComment(bd.getRecords().get(indexListRecords).getComment());
+        recordDup.setEnd(bd.getRecords().get(indexListRecord).getEnd());
+        recordDup.setIdUser(bd.getRecords().get(indexListRecord).getIdUser());
+        recordDup.setProcedure(bd.getRecords().get(indexListRecord).getProcedure());
+        recordDup.setPrice(bd.getRecords().get(indexListRecord).getPrice());
+        recordDup.setComment(bd.getRecords().get(indexListRecord).getComment());
         if (!bd.getRecords().contains(recordDup)) {
             recordDup.setEvent_id(calendarSetting.addRecordCalender(recordDup));
             ContentValues contentValues = new ContentValues();
@@ -268,26 +265,24 @@ Consumer <Record> duplication = new Consumer<Record>() {
                 recordDup.getEvent_id()
                         ))) {
                     setResult(RESULT_OK);
+                    indexListRecord = 0;
                     finish();
                 }
             }
         } else {
             Toast.makeText(getApplicationContext(), "Запись пересекаетсяс другим клиентом", Toast.LENGTH_SHORT).show();
         }
-
-
     }
 };
 consumerHashMap.put(StaticClass.DUPLICATION, duplication);
-/*
-Если новая запись из карточки клиента
- */
-Consumer <Record> consumerNewRecord = new Consumer<Record>() {
+//Если новая запись из карточки клиента
+ Consumer <Record> consumerNewRecord = new Consumer<Record>() {
     @Override
     public void accept(Record record) {
         int index = getIntent().getExtras().getInt(StaticClass.POSITION_LIST_USERS);
         intent.putExtra(StaticClass.POSITION_LIST_USERS, index);
-consumerHashMap.get(null).accept(record);
+consumerHashMap.get(StaticClass.NEWRECORD).accept(record);
+    finish();
     }
 };
 consumerHashMap.put(StaticClass.NEWRECORDISCARD, consumerNewRecord);

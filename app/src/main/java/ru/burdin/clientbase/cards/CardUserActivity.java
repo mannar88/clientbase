@@ -55,7 +55,7 @@ private  final int call_permission = 1;
     public void buttonDeleteC(View view) {
         if (bd.delete(Bd.TABLE, user.getId()) == 1) {
             bd.getUsers().remove(stak);
-            onBackPressed();
+            finish();
         }
     }
 /*
