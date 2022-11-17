@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.DateFormat;
@@ -48,6 +49,7 @@ public class ListSessionActivity extends AppCompatActivity {
   private   ArrayList <Date> dates;
 private RecyclerView recyclerViewTime;
 private MyAdapter myAdapter;
+LinearLayoutManager linearLayoutManager;
 private List <Record> recordsEnpty = new ArrayList<>();
 private   Intent intent;
 public  static  final  String SETTIME = "setTime";
@@ -79,7 +81,9 @@ indexListRecord = getIntent().getIntExtra(StaticClass.POSITION_LIST_RECORDS,0);
         textViewTime = findViewById(R.id.textViewTime);
 textViewDay.setText(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()));
 checkBoxUsers = findViewById(R.id.checkBoxListSessionUsers);
-recyclerViewTime = findViewById(R.id.listTime);
+ recyclerViewTime = findViewById(R.id.listTime);
+linearLayoutManager = new LinearLayoutManager(this);
+recyclerViewTime.setLayoutManager(linearLayoutManager);
 intent = new Intent(this, AddSessionActivity.class);
 checkBoxUsers.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
     @Override
@@ -128,7 +132,7 @@ recordsEnpty = bd.getRecords().stream()
     sum = recordsEnpty.stream()
         .collect(Collectors.summingDouble(Record::getPrice));
         textViewTime.setText("Всего записано: " + recordsEnpty.size() + " клиентов, на общую сумму: " + StaticClass.priceToString(sum) + " руб");
-if (!checbox) {
+        if (!checbox) {
     while (dateAndTime.get(Calendar.HOUR_OF_DAY) < 23) {
         Record record = new Record(dateAndTime.getTimeInMillis());
         if (!recordsEnpty.contains(record)) {
@@ -188,8 +192,9 @@ MyAdapter.OnUserClickListener <Record> onUserClickListener = new MyAdapter.OnUse
     getIntent().removeExtra(StaticClass.KEY);}
 };
 MyAdapter myAdapter = new MyAdapter(this, recordsEnpty, onUserClickListener, consumer);
-recyclerViewTime.setAdapter(myAdapter);
-     }
+        recyclerViewTime.setAdapter(myAdapter);
+
+    }
 
      /*
     Переводит дату на прошлый день
@@ -198,7 +203,9 @@ recyclerViewTime.setAdapter(myAdapter);
 dateAndTime.setTimeInMillis(dateAndTime.getTimeInMillis() - TimeUnit.DAYS.toMillis(1));
     textViewDay.setText(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()) + " Щёлкните для установки даты");
     recUpdate();
-    }
+
+     }
+
 /*
 Переводит дату на следущий день
  */
