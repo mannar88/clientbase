@@ -34,7 +34,7 @@ public class CardSessionActivity extends AppCompatActivity {
     private  TextView textViewTimeEnd;
     private  TextView textViewComment;
 private  int indexUser;
-    private  long indexRecord = -1;
+private  long recordId = -1;
 private CalendarSetting calendarSetting;
 
 
@@ -45,34 +45,46 @@ private CalendarSetting calendarSetting;
     bd = Bd.load(getApplicationContext());
 calendarSetting = CalendarSetting.load(this);
     if (savedInstanceState == null) {
-    indexRecord = getIntent().getLongExtra(StaticClass.POSITION_LIST_RECORDS, -1);
-    if (indexRecord != -1) {
-        record = bd.getRecords().get(StaticClass.indexList(indexRecord, bd.getRecords()));
-    }else  {
-        finish();
+        recordId = getIntent().getLongExtra(StaticClass.POSITION_LIST_RECORDS, -1);
+        if (recordId != -1) {
+            record = bd.getRecords().get(StaticClass.indexList(recordId, bd.getRecords()));
+        } else {
+            finish();
+        }
     }
-    } else {
-       record =  bd.getRecords().get(savedInstanceState.getInt(StaticClass.POSITION_LIST_RECORDS));
-}
-    indexUser = StaticClass.indexList(record.getIdUser(), bd.getUsers());
-     user = bd.getUsers().get(indexUser);
-     textViewDate = findViewById(R.id.textViewCardSessionDate);
+    textViewDate = findViewById(R.id.textViewCardSessionDate);
     textViewNameUser = findViewById(R.id.textViewCardSessionNameUser);
     textViewProcedure = findViewById(R.id.textViewCardSessionProcedures);
     textViewPrice = findViewById(R.id.textViewCardSessionPrice);
     textViewTimeEnd = findViewById(R.id.textViewCardSessionTimeEnd);
     textViewComment = findViewById(R.id.textViewCardSessionComment);
+        }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+setScreenInfo(record);
+}
+
+    /*
+    Устанавливает информацию на экран
+     */
+    private  void  setScreenInfo (Record record) {
+        indexUser = StaticClass.indexList(record.getIdUser(), bd.getUsers());
+        user = bd.getUsers().get(indexUser);
         DateFormat dateFormatTime = new SimpleDateFormat("HH:mm dd.MM.YYYY");
-    textViewDate.setText("Время записи: "  + dateFormatTime.format(new Date(record.getStart())));
-    textViewNameUser.setText("Клиент: " +user.getSurname() + " " + user.getName() + " Нажмите, что бы открыть карточку клиента.");
-    textViewProcedure.setText("Услуги: " + record.getProcedure());
-    textViewPrice.setText("Стоимость: " + StaticClass.priceToString(record.getPrice()));
-    textViewTimeEnd.setText("Продолжительность услуги: " + TimeUnit.MILLISECONDS.toMinutes(record.getEnd()) + " минут");
-    textViewComment.setText("Комментарии: "+  record.getComment());
+        textViewDate.setText("Время записи: "  + dateFormatTime.format(new Date(record.getStart())));
+        textViewNameUser.setText("Клиент: " +user.getSurname() + " " + user.getName() + " Нажмите, что бы открыть карточку клиента.");
+        textViewProcedure.setText("Услуги: " + record.getProcedure());
+        textViewPrice.setText("Стоимость: " + StaticClass.priceToString(record.getPrice()));
+        textViewTimeEnd.setText("Продолжительность услуги: " + TimeUnit.MILLISECONDS.toMinutes(record.getEnd()) + " минут");
+        textViewComment.setText("Комментарии: "+  record.getComment());
+
     }
-/*
-Открывает карточку клиента
- */
+
+    /*
+    Открывает карточку клиента
+     */
     public void onClickTextViewCardSessionNameUser(View view) {
         Intent intent = new Intent(this, CardUserActivity.class);
         intent.putExtra(Bd.TABLE,indexUser );
@@ -86,7 +98,7 @@ calendarSetting = CalendarSetting.load(this);
 Intent intent = new Intent(this, ListSessionActivity.class);
 intent.putExtra(StaticClass.KEY, StaticClass.DUPLICATION);
 intent.putExtra(StaticClass.POSITION_LIST_RECORDS, StaticClass.indexList(record.getId(), bd.getRecords()));
-    startActivityForResult(intent, StaticClass.LISTSESSION);
+    startActivityForResult(intent,ListSessionActivity.CLASS_INDEX);
     }
 
     /*
@@ -95,7 +107,7 @@ intent.putExtra(StaticClass.POSITION_LIST_RECORDS, StaticClass.indexList(record.
 public void onclickButtonCardSessionRead(View view) {
 Intent intent = new Intent(this, AddSessionActivity.class);
 intent.putExtra(StaticClass.POSITION_LIST_RECORDS, StaticClass.indexList(record.getId(), bd.getRecords()));
-startActivity(intent);
+startActivityForResult(intent, AddSessionActivity.CLASS_INDEX);
 }
 
     /*
@@ -112,31 +124,21 @@ finish();
     }
 
     /*
-   Сохраняется аактивность
-    */
-   @Override
-   protected void onSaveInstanceState(Bundle outState) {
-       super.onSaveInstanceState(outState);
-       /*
-       Сохраняем индекс списка расписания
-        */
-      int index = StaticClass.indexList(indexRecord, bd.getRecords());
-       outState.putInt(StaticClass.POSITION_LIST_RECORDS, index);
-   }
-
-    /*
   Метод определяет из какой активности вернулись и какие данные пришли
   **/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == StaticClass.LISTSESSION) {
-                setTitle("");;
+            switch (requestCode) {
+                case  ListSessionActivity.CLASS_INDEX:
                 Toast.makeText(this, "Запись дублирована", Toast.LENGTH_LONG).show();
-            finish();
+            break;
+                case AddSessionActivity.CLASS_INDEX:
+            setScreenInfo(record);
+                    Toast.makeText(getApplicationContext(), "Запись изменена", Toast.LENGTH_SHORT).show();
+            break;
             }
-
         }
     }
 

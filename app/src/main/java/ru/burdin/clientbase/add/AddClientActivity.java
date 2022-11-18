@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -63,17 +64,22 @@ public class AddClientActivity extends AppCompatActivity {
             contentValues.put(Bd.COLUMN_COMMENT, editTextComment.getText().toString());
             if (index == -1) {
                 long id = bd.add(Bd.TABLE, contentValues);
-                if (bd.getUsers().add(new User(id, editTextName.getText().toString(), editTextSurname.getText().toString(), editTextPhone.getText().toString(), editTextComment.getText().toString()))) {
-                    bd.getUsers().sort(Comparator.naturalOrder());
+                if (id > 0) {
+                    if (bd.getUsers().add(new User(id, editTextName.getText().toString(), editTextSurname.getText().toString(), editTextPhone.getText().toString(), editTextComment.getText().toString()))) {
+                        bd.getUsers().sort(Comparator.naturalOrder());
+                    }
+                    Toast.makeText(getApplicationContext(), "Клиент успешно добавлен", Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                bd.update(Bd.TABLE, contentValues, user.getId());
-                bd.getUsers().get(index).setName(editTextName.getText().toString());
-                bd.getUsers().get(index).setSurname(editTextSurname.getText().toString());
-                bd.getUsers().get(index).setPhone(editTextPhone.getText().toString());
-                bd.getUsers().get(index).setComment(editTextComment.getText().toString());
+                } else {
+                if (bd.update(Bd.TABLE, contentValues, user.getId()) == 1) {
+                    bd.getUsers().get(index).setName(editTextName.getText().toString());
+                    bd.getUsers().get(index).setSurname(editTextSurname.getText().toString());
+                    bd.getUsers().get(index).setPhone(editTextPhone.getText().toString());
+                    bd.getUsers().get(index).setComment(editTextComment.getText().toString());
+                }
+            Toast.makeText(getApplicationContext(), "Карточка клиента успешна обновлена", Toast.LENGTH_SHORT).show();
             }
-            finish();
+finish();
         }
     }
 

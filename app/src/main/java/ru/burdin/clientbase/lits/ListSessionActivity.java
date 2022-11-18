@@ -63,6 +63,7 @@ private  HashMap <String, Consumer> consumerHashMap = new HashMap<>();
 private CalendarSetting calendarSetting;
 private  int indexListRecord;
 
+public  static  final  int CLASS_INDEX = 2;
 @Override
 protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

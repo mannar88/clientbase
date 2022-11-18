@@ -44,6 +44,7 @@ private Button buttonAddProcedure;
 private  int indexListSession;
 private  int indexRecord = -1;
 private CalendarSetting calendarSetting;
+public  static  final  int CLASS_INDEX = 1;
 
 @Override
 protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +136,7 @@ public void onClickButtonSessionSave(View view) {
     bd.getRecords().get(indexRecord).setComment(record.getComment());
     bd.getRecords().get(indexRecord).setEvent_id(record.getEvent_id());
     calendarSetting.update(bd.getRecords().get(indexRecord));
+    setResult(RESULT_OK);
     finish();
 }else {
     Toast.makeText(getApplicationContext(), "Обновить запись не удалось", Toast.LENGTH_SHORT).show();

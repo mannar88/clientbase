@@ -24,7 +24,6 @@ LinearLayoutManager linearLayoutManager;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import_export);
         recyclerView = findViewById(R.id.reCyclerViewTest);
-linearLayoutManager = new MyLinearLayoutManager(this);
 recyclerView.setLayoutManager(linearLayoutManager);
 init ();
 
