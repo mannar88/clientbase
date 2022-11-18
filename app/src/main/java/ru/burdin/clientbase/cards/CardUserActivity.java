@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -43,18 +44,32 @@ private  final int call_permission = 1;
         textViewComment = findViewById(R.id.textVuiwComment);
         stak = getIntent().getExtras().getInt(Bd.TABLE);
         user = bd.getUsers().get(stak);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    setScreenInfo();
+    }
+
+    /*
+    Устанавливает на экран информацию об клиенте
+     */
+    private  void  setScreenInfo () {
         if (user != null) {
             textViewNameAndSurname.setText(user.getSurname() + " " + user.getName());
             textViewPhone.setText(user.getPhone());
             textViewComment.setText(user.getComment());
         }
     }
-/*
+
+    /*
 Удаляет клиента
  */
     public void buttonDeleteC(View view) {
         if (bd.delete(Bd.TABLE, user.getId()) == 1) {
             bd.getUsers().remove(stak);
+            Toast.makeText(getApplicationContext(), "Клиент удален", Toast.LENGTH_SHORT).show();
             finish();
         }
     }
