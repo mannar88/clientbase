@@ -113,9 +113,7 @@ public void onClickButtonSessionSave(View view) {
         record.setProcedure(string);
         record.setPrice(Double.valueOf(editTextSetPrices.getText().toString()));
         record.setComment(editTextSetComment.getText().toString());
-        if (indexRecord ==-1) {
-    record.setEvent_id(calendarSetting.addRecordCalender(record));
-}else  {
+        if (indexRecord !=-1) {
         record.setEvent_id(bd.getRecords().get(indexRecord).getEvent_id());
         }
         ContentValues contentValues = new ContentValues();
@@ -143,6 +141,8 @@ public void onClickButtonSessionSave(View view) {
 }
 } else {
             if (!bd.getRecords().contains(record)) {
+                record.setEvent_id(calendarSetting.addRecordCalender(record));
+                contentValues.put(Bd.COLUMN_EVENT_ID, record.getEvent_id());
                 long res = bd.add(Bd.TABLE_SESSION, contentValues);
                 if (res > -1) {
                     if (bd.getRecords().add(new Record(res, record.getStart(),
@@ -207,7 +207,9 @@ private  void  updateProcedure () {
 MyAdapter myAdapter = new MyAdapter(this, procedures, new MyAdapter.OnUserClickListener() {
     @Override
     public void onUserClick(Object o, int position) {
-
+procedures.remove(position);
+    updateProcedure();
+    sumPrices();
     }
 }, consumer);
 recyclerView.setAdapter(myAdapter);

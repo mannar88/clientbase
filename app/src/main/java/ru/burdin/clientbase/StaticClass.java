@@ -16,7 +16,7 @@ import ru.burdin.clientbase.models.User;
 public final class StaticClass  {
     public  static  final  int LIST_USERS = 0;
 public  static  final  int LIST_PROCEDURES = 1;
-public  static  final  String POSITION_LIST_RECORDS = "positionRECORD";
+public  static  final  String POSITION_LIST_RECORDS    = "positionRECORD";
     public  static  final String DUPLICATION = "duplication";
 public  static  final  String KEY = "key";
 public  static  final  String CARDSESSION = "cardSession";
