@@ -59,4 +59,34 @@ android:id="@+id/spinnerSettingMinits"
         app:layout_constraintTop_toBottomOf="@id/textViewSettingMinits"
                 />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewSettingFinishHour"
+        android:text="Конец дня: час"
+        app:layout_constraintTop_toBottomOf="@id/spinnerSettingMinits"
+        />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+android:id="@+id/spinnerSettingFinishHour"
+        app:layout_constraintTop_toBottomOf="@id/textViewSettingFinishHour"
+/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+android:id="@+id/textViewSettingFinishMinits"
+        android:text="Конец дня: минуты"
+        app:layout_constraintTop_toBottomOf="@id/spinnerSettingFinishHour"
+        />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerSettingFinishMinits"
+        app:layout_constraintTop_toBottomOf="@id/textViewSettingFinishMinits"
+/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
