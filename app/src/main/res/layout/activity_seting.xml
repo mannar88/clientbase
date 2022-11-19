@@ -20,22 +20,43 @@
         app:layout_constraintTop_toBottomOf="@+id/checkBoxSettingCalender"
         />
 
-    <Button
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/buttonSettingExport"
-        android:text="Экспортировать базу данных"
-android:onClick="onClickButtonSettingExportBd"
-        app:layout_constraintTop_toBottomOf="@+id/spinerSettingCalendar"
+android:id="@+id/textViewSetting"
+        android:text="Рабочий график"
+    app:layout_constraintTop_toBottomOf="@id/spinerSettingCalendar"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    android:id="@+id/textVirwSettingHour"
+android:text="Начало дня: час"
+                app:layout_constraintTop_toBottomOf="@id/textViewSetting"
+
+    />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerSettingHour"
+        app:layout_constraintTop_toBottomOf="@id/textVirwSettingHour"
+    />
+
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/textViewSettingMinits"
+android:text="ачало дня: минуты"
+    app:layout_constraintTop_toBottomOf="@id/spinnerSettingHour"
 />
 
-    <Button
+    <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/buttonSettingImport"
-        android:onClick="onClickSettingImport"
-        android:text="Импортировать базу данных"
-        app:layout_constraintTop_toBottomOf="@+id/buttonSettingExport"
-        />
+android:id="@+id/spinnerSettingMinits"
+        app:layout_constraintTop_toBottomOf="@id/textViewSettingMinits"
+                />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

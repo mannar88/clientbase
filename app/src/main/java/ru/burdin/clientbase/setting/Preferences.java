@@ -10,6 +10,8 @@ private static final String APP_PREFERENCES = "preferenses";
     public static final String APP_PREFERENCES_NAME_CALENDAR = "name_calendar";
     public static final String APP_PREFERENCES_ID_CALENDER = "id_calender";
     public static final String APP_PREFERENCES_CheckBox = "checkBox_calender";
+public  static  final  String  APP_PREFERENCES_START_WORK_HOUR = "start_work_hour";
+    public  static  final  String APP_PREFERENCES_START_WORK_MINITS = "start_work_minits";
 
     public  static SharedPreferences  getSharedPreferences (Activity activity) {
         return   activity.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -32,7 +34,12 @@ public  static  void  set (Activity activity, String key, boolean value) {
         editor.putBoolean(key, value);
         editor.apply();
 }
-    public  static Long getLong (Activity activity,  String key, long other) {
+
+public  static  int getInt (Activity activity, String key, int other) {
+        return  getSharedPreferences(activity).getInt(key, other);
+}
+
+public  static Long getLong (Activity activity,  String key, long other) {
         return  getSharedPreferences(activity).getLong(key, other);
     }
 

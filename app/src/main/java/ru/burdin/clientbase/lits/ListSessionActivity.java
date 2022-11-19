@@ -37,6 +37,7 @@ import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.models.User;
+import ru.burdin.clientbase.setting.Preferences;
 
 import static java.text.DateFormat.FULL;
 import static java.text.DateFormat.getDateInstance;
@@ -125,8 +126,8 @@ dateAndTime.set(i, i1, i2);
  */
     private  void  initListDate () {
 DateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY");
-dateAndTime.set(Calendar.HOUR_OF_DAY, 7);
-dateAndTime.set(Calendar.MINUTE, 0);
+dateAndTime.set(Calendar.HOUR_OF_DAY, Preferences.getInt(this, Preferences.APP_PREFERENCES_START_WORK_HOUR, 7));
+dateAndTime.set(Calendar.MINUTE, Preferences.getInt(this, Preferences.APP_PREFERENCES_START_WORK_MINITS, 0));
 recordsEnpty = bd.getRecords().stream()
 .filter(record -> dateFormat.format(dateAndTime.getTime()).equals(dateFormat.format(record.getStartDay())))
 .collect(Collectors.toList());
