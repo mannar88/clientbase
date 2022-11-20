@@ -69,9 +69,15 @@ spinnerGetCalendar.setEnabled(calendars.getCheckBox());
 
     }
 
-        /*
-Экспорт БД
- */
+    @Override
+    protected void onStart() {
+        super.onStart();
+workScheduleSetting.setOnItemSelectedListener();
+}
+
+    /*
+    Экспорт БД
+     */
         public void onClickButtonSettingExportBd(View view) {
             if (bdExportImport.requestMultiplePermissions(this, REQUEST_PERMISSIONS)) {
                 try {

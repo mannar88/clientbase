@@ -1,7 +1,9 @@
 package ru.burdin.clientbase.setting;
 
 import android.app.Activity;
+import android.view.View;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -51,6 +53,58 @@ spinnerFinishMinutes.setAdapter(spinnerStartMinutes.getAdapter());
         adapter = new ArrayAdapter<>(activity.getApplication(), android.R.layout.simple_spinner_item, list);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     spinner.setAdapter(adapter);
+    }
+
+    /*
+    Срушатель спиннеров
+
+     */
+
+    public  void  setOnItemSelectedListener () {
+spinnerStartHour.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+Preferences.set(activity, Preferences.APP_PREFERENCES_START_WORK_HOUR, list.get(i));
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+});
+   spinnerStartMinutes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+       @Override
+       public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+           Preferences.set(activity, Preferences.APP_PREFERENCES_START_WORK_MINITS, listMinutes.get(i));
+       }
+
+       @Override
+       public void onNothingSelected(AdapterView<?> adapterView) {
+
+       }
+   });
+    spinnerFinishHour.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            Preferences.set(activity, Preferences.APP_PREFERENCES_FINISH_HOUR, listFinishHour.get(i));
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    });
+    spinnerFinishMinutes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            Preferences.set(activity, Preferences.APP_PREFERENCES_FINISH_MINUTES, listMinutes.get(i));
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    });
     }
 
 }
