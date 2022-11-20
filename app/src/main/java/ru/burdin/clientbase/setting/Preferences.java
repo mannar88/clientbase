@@ -12,6 +12,8 @@ private static final String APP_PREFERENCES = "preferenses";
     public static final String APP_PREFERENCES_CheckBox = "checkBox_calender";
 public  static  final  String  APP_PREFERENCES_START_WORK_HOUR = "start_work_hour";
     public  static  final  String APP_PREFERENCES_START_WORK_MINITS = "start_work_minits";
+    public  static  final  String  APP_PREFERENCES_FINISH_HOUR = "ffinish_hour";
+    public  static  final  String  APP_PREFERENCES_FINISH_MINUTES ="finish_minutes";
 
     public  static SharedPreferences  getSharedPreferences (Activity activity) {
         return   activity.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);

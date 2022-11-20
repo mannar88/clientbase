@@ -125,25 +125,34 @@ dateAndTime.set(i, i1, i2);
 Устанавливает список времени выбраного дня
  */
     private  void  initListDate () {
-DateFormat dateFormat = new SimpleDateFormat("dd.MM.YYYY");
-dateAndTime.set(Calendar.HOUR_OF_DAY, Preferences.getInt(this, Preferences.APP_PREFERENCES_START_WORK_HOUR, 7));
-dateAndTime.set(Calendar.MINUTE, Preferences.getInt(this, Preferences.APP_PREFERENCES_START_WORK_MINITS, 0));
+        DateFormat dateFormat = new SimpleDateFormat("\"YYYY-MM-d");
+        DateFormat time  = new SimpleDateFormat("HH:mm");
+        Calendar calendarFinish = Calendar.getInstance();
+dateAndTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(Preferences.getString(this, Preferences.APP_PREFERENCES_START_WORK_HOUR, "7")));
+dateAndTime.set(Calendar.MINUTE, Integer.parseInt(Preferences.getString(this, Preferences.APP_PREFERENCES_START_WORK_MINITS, "0")));
+calendarFinish.set(Calendar.HOUR_OF_DAY, Integer.parseInt(Preferences.getString(this, Preferences.APP_PREFERENCES_FINISH_HOUR, "23")));
+calendarFinish.set(Calendar.MINUTE, Integer.parseInt(Preferences.getString(this, Preferences.APP_PREFERENCES_FINISH_MINUTES, "59")));
+calendarFinish.set(Calendar.DAY_OF_MONTH, dateAndTime.get(Calendar.DAY_OF_MONTH));
 recordsEnpty = bd.getRecords().stream()
 .filter(record -> dateFormat.format(dateAndTime.getTime()).equals(dateFormat.format(record.getStartDay())))
 .collect(Collectors.toList());
     sum = recordsEnpty.stream()
         .collect(Collectors.summingDouble(Record::getPrice));
         textViewTime.setText("Всего записано: " + recordsEnpty.size() + " клиентов, на общую сумму: " + StaticClass.priceToString(sum) + " руб");
+
         if (!checbox) {
-    while (dateAndTime.get(Calendar.HOUR_OF_DAY) < 23) {
-        Record record = new Record(dateAndTime.getTimeInMillis());
+while (time.format(dateAndTime.getTime()).compareToIgnoreCase(time.format(calendarFinish.getTime())) < 0 && dateAndTime.get(Calendar.HOUR_OF_DAY) != 0) {
+            Record record = new Record(dateAndTime.getTimeInMillis());
         if (!recordsEnpty.contains(record)) {
             recordsEnpty.add(record);
         }
         dateAndTime.add(Calendar.MINUTE, 10);
     }
 }
-    recordsEnpty.sort(Comparator.naturalOrder());
+    if (dateAndTime.get(Calendar.DAY_OF_MONTH) != calendarFinish.get(Calendar.DAY_OF_MONTH)) {
+        dateAndTime.set(Calendar.DAY_OF_MONTH, calendarFinish.get(Calendar.DAY_OF_MONTH));
+    }
+        recordsEnpty.sort(Comparator.naturalOrder());
     }
 
         /*

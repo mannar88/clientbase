@@ -33,7 +33,9 @@ public class SettingActivity extends AppCompatActivity {
     public static final int REQUEST_PERMISSIONS = 101;
 private BdExportImport bdExportImport;
 private Bd bd;
-    @Override
+private  WorkScheduleSetting workScheduleSetting;
+
+@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seting);
@@ -41,7 +43,8 @@ private Bd bd;
         checkBoxCalender = findViewById(R.id.checkBoxSettingCalender);
         bdExportImport = new BdExportImport(getDatabasePath(Bd.DATABASE_NAME).getPath());
         spinnerGetCalendar = findViewById(R.id.spinerSettingCalendar);
-   calendars = CalendarSetting.load(this);
+   workScheduleSetting = new WorkScheduleSetting(this);
+        calendars = CalendarSetting.load(this);
 List <String> nameCalendars = new ArrayList<>(calendars.getNameCalendar());
 nameCalendars.add(0, CalendarSetting.EMPTY);
                 arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, nameCalendars);
