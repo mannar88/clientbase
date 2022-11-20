@@ -88,5 +88,20 @@ android:id="@+id/textViewSettingFinishMinits"
         android:id="@+id/spinnerSettingFinishMinits"
         app:layout_constraintTop_toBottomOf="@id/textViewSettingFinishMinits"
 />
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/textViewSettingInterval"
+android:text="Интервал в минутах "
+    app:layout_constraintTop_toBottomOf="@id/spinnerSettingFinishMinits"
+    app:layout_constraintLeft_toLeftOf="parent"
+    />
 
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerSettingInterval"
+        app:layout_constraintTop_toBottomOf="@id/spinnerSettingFinishMinits"
+        app:layout_constraintLeft_toRightOf="@id/textViewSettingInterval"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

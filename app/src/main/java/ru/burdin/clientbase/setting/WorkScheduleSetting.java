@@ -25,6 +25,9 @@ private ArrayAdapter adaptrMinutes;
 private  ArrayAdapter <String> adapterFinishHour;
 private  List <String> listFinishHour = new ArrayList<>();
 private Spinner spinnerFinishMinutes;
+private  Spinner spinnerInterval;
+private  ArrayAdapter <String> adapterInterval;
+List <String> listIntervalt = new ArrayList<>();
 
     public WorkScheduleSetting(Activity activity) {
         this.activity = activity;
@@ -40,6 +43,9 @@ spinnerStartHour.setSelection(list.indexOf(Preferences.getString(activity, Prefe
     spinnerFinishMinutes = activity.findViewById(R.id.spinnerSettingFinishMinits);
 spinnerFinishMinutes.setAdapter(spinnerStartMinutes.getAdapter());
     spinnerFinishMinutes.setSelection(listMinutes.indexOf(Preferences.getString(activity, Preferences.APP_PREFERENCES_FINISH_MINUTES,"0")));
+    spinnerInterval = activity.findViewById(R.id.spinnerSettingInterval);
+    set(activity, spinnerInterval, adapterInterval, listIntervalt, 10, 65, 5);
+    spinnerInterval.setSelection(listIntervalt.indexOf(Preferences.getString(activity,Preferences.APP_PREFERENCES_WORK_INTERVAL, "10")));
     }
 
     /*
@@ -98,6 +104,17 @@ Preferences.set(activity, Preferences.APP_PREFERENCES_START_WORK_HOUR, list.get(
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             Preferences.set(activity, Preferences.APP_PREFERENCES_FINISH_MINUTES, listMinutes.get(i));
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    });
+    spinnerInterval.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            Preferences.set(activity, Preferences.APP_PREFERENCES_WORK_INTERVAL, listIntervalt.get(i));
         }
 
         @Override

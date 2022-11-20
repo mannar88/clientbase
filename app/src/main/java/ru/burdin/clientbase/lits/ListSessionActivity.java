@@ -146,7 +146,7 @@ while (time.format(dateAndTime.getTime()).compareToIgnoreCase(time.format(calend
         if (!recordsEnpty.contains(record)) {
             recordsEnpty.add(record);
         }
-        dateAndTime.add(Calendar.MINUTE, 10);
+        dateAndTime.add(Calendar.MINUTE, Integer.parseInt(Preferences.getString(this, Preferences.APP_PREFERENCES_WORK_INTERVAL, "10")));
     }
 }
     if (dateAndTime.get(Calendar.DAY_OF_MONTH) != calendarFinish.get(Calendar.DAY_OF_MONTH)) {
