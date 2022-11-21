@@ -1,4 +1,4 @@
-package ru.burdin.clientbase;
+package ru.burdin.clientbase.importAndExport;
 
 import android.Manifest;
 import android.app.Activity;
@@ -20,11 +20,12 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
+import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.setting.SettingActivity;
 
 import static android.os.Environment.getExternalStorageDirectory;
 
-public class BdExportImport {
+ class BdExportImport {
 
     private  File file_Bd;
 private  File file_export;

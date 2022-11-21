@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import ru.burdin.clientbase.Bd;
-import ru.burdin.clientbase.BdExportImport;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
 
@@ -31,7 +30,6 @@ public class SettingActivity extends AppCompatActivity {
    private ArrayAdapter <?> arrayAdapter;
     private CalendarSetting calendars;
     public static final int REQUEST_PERMISSIONS = 101;
-private BdExportImport bdExportImport;
 private Bd bd;
 private  WorkScheduleSetting workScheduleSetting;
 
@@ -41,7 +39,6 @@ private  WorkScheduleSetting workScheduleSetting;
         setContentView(R.layout.activity_seting);
         bd = Bd.load(this);
         checkBoxCalender = findViewById(R.id.checkBoxSettingCalender);
-        bdExportImport = new BdExportImport(getDatabasePath(Bd.DATABASE_NAME).getPath());
         spinnerGetCalendar = findViewById(R.id.spinerSettingCalendar);
    workScheduleSetting = new WorkScheduleSetting(this);
         calendars = CalendarSetting.load(this);
@@ -75,38 +72,7 @@ spinnerGetCalendar.setEnabled(calendars.getCheckBox());
 workScheduleSetting.setOnItemSelectedListener();
 }
 
-    /*
-    Экспорт БД
-     */
-        public void onClickButtonSettingExportBd(View view) {
-            if (bdExportImport.requestMultiplePermissions(this, REQUEST_PERMISSIONS)) {
-                try {
-                    Toast.makeText(this, bdExportImport.exportBd(), Toast.LENGTH_SHORT).show();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-    /*
-Кнопка для импорта базы данных
-*/
-    public void onClickSettingImport(View view) {
-        if (bdExportImport.requestMultiplePermissions(this, REQUEST_PERMISSIONS)) {
-            try {
-                Toast.makeText(this, bdExportImport.inport(), Toast.LENGTH_SHORT).show();
-                bd.reStart();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /*
+        /*
 Ответна разрешение
  */
     @Override

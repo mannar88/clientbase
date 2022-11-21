@@ -21,7 +21,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ClientBase">
-        <activity android:name=".ImportExportActivity"></activity>
+        <activity android:name=".importAndExport.ImportExportActivity"></activity>
         <activity android:name=".StatActivity" />
         <activity android:name=".setting.SettingActivity" />
         <activity android:name=".lits.ListHistoryAndRecordActivity" />

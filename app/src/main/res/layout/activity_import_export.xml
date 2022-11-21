@@ -5,58 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 app:layout_constraintBottom_toBottomOf="parent"
-    tools:context=".ImportExportActivity">
+    tools:context=".importAndExport.ImportExportActivity">
+<Button
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/buttonImport"
+    android:text="Импорт"
+    android:onClick="onClickButtonImport"
+/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/buttonBackDayTest"
-        android:text="Прошлый день"
-        android:onClick="onClickbuttonBackDayTest"
+        android:id="@+id/buttonExport"
+        android:text="Экспорт"
+        android:onClick="onClickButtonExport"
+app:layout_constraintTop_toBottomOf="@+id/buttonImport"
         />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textViewDateTest"
-        app:layout_constraintTop_toBottomOf="@+id/buttonBackDayTest"
-        android:text="Сегодня"
-        />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/buttonNextDayTest"
-        android:text="Следующий день"
-        app:layout_constraintTop_toBottomOf="@+id/textViewDateTest"
-        />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textViewTimeTest"
-        android:text="какое-то количество"
-        app:layout_constraintTop_toBottomOf="@+id/buttonNextDayTest"
-        />
-
-    <CheckBox
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/checkBoxListSessionUsersTest"
-        android:text="Показать только записи"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTimeTest"
-        />
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/reCyclerViewTest"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@+id/checkBoxListSessionUsersTest"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constrainedHeight="true"
-        />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
