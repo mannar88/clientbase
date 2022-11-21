@@ -1,6 +1,6 @@
 package ru.burdin.clientbase.models;
 
-public class Expenses {
+public class Expenses implements  Model, Comparable{
 private  long id;
 private  long time;
 private  String name;
@@ -41,4 +41,10 @@ public  void  setName ( String name ) {
 public  void  setPrice ( double price) {
     this.price = price;
 }
+
+    @Override
+    public int compareTo(Object o) {
+        Expenses expenses = (Expenses)o;
+        return Long.compare(this.time, expenses.time);
+    }
 }

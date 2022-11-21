@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.function.Consumer;
 
@@ -87,7 +88,8 @@ public void onClickButtonSetExpenses(View view) {
          */
         private  void  updateListExpenses () {
             Consumer <MyAdapter.ViewHolder> consumer = viewHolder -> viewHolder.textView.setText(DateFormat.getDateInstance(FULL).format(new Date(bd.getExpenses().get(MyAdapter.count).getTime())) + " " + bd.getExpenses().get(MyAdapter.count).getName() + " " + bd.getExpenses().get(MyAdapter.count).getPrice());
-        MyAdapter myAdapter = new MyAdapter(this, bd.getExpenses(), new MyAdapter.OnUserClickListener() {
+bd.getExpenses().sort(Comparator.reverseOrder());
+            MyAdapter myAdapter = new MyAdapter(this, bd.getExpenses(), new MyAdapter.OnUserClickListener() {
             @Override
             public void onUserClick(Object o, int position) {
 int res = bd.delete(Bd.TABLE_EXPENSES, bd.getExpenses().get(position).getId());
