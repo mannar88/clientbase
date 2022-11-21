@@ -25,14 +25,16 @@ import ru.burdin.clientbase.setting.SettingActivity;
 
 import static android.os.Environment.getExternalStorageDirectory;
 
- class BdExportImport {
+ class BdImportExport {
 
     private  File file_Bd;
 private  File file_export;
 private  File fileImport;
 private final  String PATH ="Клиентская база";
+public   static  final  int REQUEST_PERMISSIONS = 1;
+     public   static  final  int REQUEST_PERMISSIONS_ALL = 2;
 
-    public  BdExportImport ( String path) {
+public BdImportExport(String path) {
     this.file_Bd = new File(path);
 this.file_export = new File(getExternalStorageDirectory(), PATH);
 this.fileImport = new File(getExternalStorageDirectory().getAbsolutePath() + "/" + PATH + "/" + Bd.DATABASE_NAME);
@@ -91,7 +93,7 @@ return  fileTask.get();
             Запрос разрешение на файловую систему
              */
 
-    public boolean requestMultiplePermissions(Activity activity, int request) {
+    public boolean requestMultiplePermissions(Activity activity) {
         boolean result = false;
         if (Build.VERSION.SDK_INT < 30) {
             String reExternalStoragePermission = Manifest.permission.READ_EXTERNAL_STORAGE;
@@ -107,17 +109,16 @@ return  fileTask.get();
             }
             if (!permissions.isEmpty()) {
                 String[] params = permissions.toArray(new String[permissions.size()]);
-activity.requestPermissions(params, SettingActivity.REQUEST_PERMISSIONS);
-
+activity.requestPermissions(params, REQUEST_PERMISSIONS);
             } else {
                 result = true;
             }
         }else {
             if ( !(result = Environment.isExternalStorageManager())) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                intent.addCategory("android.intent.category.DEFAULT");
+//                intent.addCategory("android.intent.category.DEFAULT");
                 intent.setData(Uri.parse(String.format("package:%s", activity.getPackageName())));
-                activity.startActivityForResult(intent , request);
+                activity.startActivityForResult(intent , REQUEST_PERMISSIONS_ALL);
             }
         }
         return  result;
