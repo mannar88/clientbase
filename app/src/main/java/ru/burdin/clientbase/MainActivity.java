@@ -19,7 +19,6 @@ public class MainActivity extends AppCompatActivity {
 
     private Bd bd;
 private CalendarSetting calendarSetting;
-private Button button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

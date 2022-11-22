@@ -18,10 +18,14 @@ import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.burdin.clientbase.add.AddClientActivity;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.lits.ListHistoryAndRecordActivity;
+import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.models.User;
 
 public class CardUserActivity extends AppCompatActivity {
@@ -68,7 +72,16 @@ private  final int call_permission = 1;
  */
     public void buttonDeleteC(View view) {
         if (bd.delete(Bd.TABLE, user.getId()) == 1) {
+            List <Record> deleteRecord = new ArrayList<>();
+            for (Record record : bd.getRecords()) {
+     if (record.getIdUser() == user.getId()) {
+         if (bd.delete(Bd.TABLE_SESSION, record.getId()) == 1) {
+deleteRecord.add(record);
+         }
+     }
+ }
             bd.getUsers().remove(stak);
+            bd.getRecords().removeAll(deleteRecord);
             Toast.makeText(getApplicationContext(), "Клиент удален", Toast.LENGTH_SHORT).show();
             finish();
         }

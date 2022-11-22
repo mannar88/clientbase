@@ -82,7 +82,7 @@ public class CalendarSetting {
      */
     private void initCalendars()  {
         AsyncTasCalender asyncTasCalender =new AsyncTasCalender();
-        Supplier <Long> supplier = new Supplier<Long>() {
+                Supplier <Long> supplier = new Supplier<Long>() {
     @Override
     public Long get() {
                 String[] projection =
@@ -111,7 +111,7 @@ public class CalendarSetting {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+            }
     }
 
 

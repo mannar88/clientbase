@@ -158,7 +158,6 @@ sumDef = bd.getExpenses().stream()
         .collect(Collectors.summingDouble(Expenses::getPrice));
  resStat.add("Чистый доход: "+ StaticClass.priceToString(sumPrise - sumDef));
     resStat.add("Всего заработанно: " + StaticClass.priceToString(sumPrise) + ", всего расходов: "  + StaticClass.priceToString(sumDef));
-resStat.add(getDatabasePath(Bd.DATABASE_NAME).isFile() + "");
 }
 
 private  class  Period {

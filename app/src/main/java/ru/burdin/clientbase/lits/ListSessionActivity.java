@@ -300,7 +300,8 @@ consumerHashMap.put(StaticClass.DUPLICATION, duplication);
         int index = getIntent().getExtras().getInt(StaticClass.POSITION_LIST_USERS);
         intent.putExtra(StaticClass.POSITION_LIST_USERS, index);
 consumerHashMap.get(StaticClass.NEWRECORD).accept(record);
-    finish();
+getIntent().removeExtra(StaticClass.POSITION_LIST_USERS);
+finish();
     }
 };
 consumerHashMap.put(StaticClass.NEWRECORDISCARD, consumerNewRecord);
