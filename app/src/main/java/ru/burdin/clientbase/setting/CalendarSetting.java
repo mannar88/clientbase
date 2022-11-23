@@ -59,11 +59,13 @@ public class CalendarSetting {
             initCalendars();
         }
 
-        if (Preferences.getSharedPreferences(activity).contains(Preferences.APP_PREFERENCES_ID_CALENDER) && Preferences.getSharedPreferences(activity).contains(Preferences.APP_PREFERENCES_NAME_CALENDAR)) {
+        if (calendars.size() == 0) {
+            calendars.put(EMPTY, 0l);
+        }
             id = Preferences.getLong(activity, Preferences.APP_PREFERENCES_ID_CALENDER, 0);
             name = Preferences.getString(activity, Preferences.APP_PREFERENCES_NAME_CALENDAR, EMPTY);
             checkBoxCalender = Preferences.getBoolean (activity, Preferences.APP_PREFERENCES_CheckBox, false) && requestSinglePermission();
-        }
+
         bd = Bd.load(activity.getApplicationContext());
     }
 
@@ -86,12 +88,13 @@ public class CalendarSetting {
      */
     private void initCalendars()  {
         AsyncTasCalender asyncTasCalender =new AsyncTasCalender();
-
+calendars.clear();
                 Supplier <Long> supplier = new Supplier<Long>() {
     @Override
     public Long get() {
                 String[] projection =
                         new String[]{
+
                                 CalendarContract.Calendars._ID,
                                 CalendarContract.Calendars.NAME,
                                 CalendarContract.Calendars.ACCOUNT_TYPE};
@@ -102,10 +105,12 @@ public class CalendarSetting {
                                 null,
                                 null);
 
-                while (calCursor.moveToNext()) {
-                    calendars.put(calCursor.getString(1), calCursor.getLong(0));
-                }
-                calCursor.close();
+                        if (calCursor.moveToFirst()) {
+              do {
+                calendars.put(calCursor.getString(1) + "", calCursor.getLong(0));
+            } while (calCursor.moveToNext());
+        }
+            calCursor.close();
     return  null;
     }
         };
@@ -127,7 +132,6 @@ public class CalendarSetting {
 Получаем список имен календарей
  */
     public Set<String> getNameCalendar() {
-Set <String> strings = new HashSet<>();
                 return calendars.keySet();
     }
 
@@ -171,17 +175,28 @@ Preferences.set(activity, Preferences.APP_PREFERENCES_ID_CALENDER, id);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                spinner.setEnabled(b);
                 checkBoxCalender = b && requestSinglePermission();
-if (!checkBoxCalender) {
+                if (!checkBoxCalender) {
     String [] permissions = new  String[] {Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR};
 calenderAxtivity.requestPermissions(permissions, Calender_PERMISSION);
-spinner.setEnabled(checkBoxCalender);
 }else {
-                initCalendars();
-spinner.setEnabled(checkBoxCalender);
-calenderAxtivity.recreate();
-}
-             Preferences.set(activity, Preferences.APP_PREFERENCES_CheckBox, checkBoxCalender);
+                    if (b) {
+                        initCalendars();
+
+                        calenderAxtivity.recreate();
+                    name = calendars.keySet().stream().findFirst().get();
+                    id = calendars.get(name);
+                    Preferences.set(activity, Preferences.APP_PREFERENCES_NAME_CALENDAR, name);
+                    Preferences.set(activity,Preferences.APP_PREFERENCES_ID_CALENDER, id);
+                    }else  {
+                        spinner.setEnabled(b);
+                    }
+
+                }
+
+                Preferences.set(activity, Preferences.APP_PREFERENCES_CheckBox, checkBoxCalender);
             }
         });
     }

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -30,9 +31,11 @@ public class SettingActivity extends AppCompatActivity {
    private ArrayAdapter <?> arrayAdapter;
     private CalendarSetting calendars;
     public static final int REQUEST_PERMISSIONS = 101;
-private Bd bd;
+
+
+    private Bd bd;
 private  WorkScheduleSetting workScheduleSetting;
-private  List<String> nameCalendars;
+private  static List<String> nameCalendars;
 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,30 +49,24 @@ private  List<String> nameCalendars;
                 arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, nameCalendars);
     arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     spinnerGetCalendar.setAdapter(arrayAdapter);
-    spinnerGetCalendar.setSelection(calendars.indexSave(nameCalendars));
-/*
-Получаем настройку флажка календаря
- */
-            checkBoxCalender.setChecked(calendars.getCheckBox());
-spinnerGetCalendar.setEnabled(calendars.getCheckBox());
 
-/*
-
-        Слушатель флажка
-         */
-            calendars.listenChexBox(checkBoxCalender, spinnerGetCalendar, this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 workScheduleSetting.setOnItemSelectedListener();
+spinnerGetCalendar.setSelection(calendars.indexSave(nameCalendars));
+        checkBoxCalender.setChecked(calendars.getCheckBox());
+        spinnerGetCalendar.setEnabled(calendars.getCheckBox());
+        calendars.listenChexBox(checkBoxCalender, spinnerGetCalendar, this);
 }
 
     @Override
     protected void onResume() {
         super.onResume();
 calendars.listenCSpinner(spinnerGetCalendar, nameCalendars);
+
 }
 
     /*
@@ -80,8 +77,7 @@ calendars.listenCSpinner(spinnerGetCalendar, nameCalendars);
         switch (requestCode) {
             case CalendarSetting.Calender_PERMISSION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    spinnerGetCalendar.setEnabled(true);
-                    this.recreate();
+checkBoxCalender.setChecked(false);
                 } else {
                     spinnerGetCalendar.setEnabled(false);
                     StaticClass.getDialog(this, "чтение и запись календаря");
@@ -109,4 +105,10 @@ calendars.listenCSpinner(spinnerGetCalendar, nameCalendars);
 
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+    public static List<String> getNameCalendars() {
+        return nameCalendars;
+    }
+
+
 }
