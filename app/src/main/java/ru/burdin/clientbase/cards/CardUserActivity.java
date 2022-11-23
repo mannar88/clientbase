@@ -71,22 +71,32 @@ private  final int call_permission = 1;
 Удаляет клиента
  */
     public void buttonDeleteC(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+builder.setMessage("Вы уверены, что хотите удалить карточку клиента? Так же с карточкой удалиться вся история записей.");
+builder.setPositiveButton("Уверен, как никогда. Удалить", new DialogInterface.OnClickListener() {
+    @Override
+    public void onClick(DialogInterface dialogInterface, int i) {
         if (bd.delete(Bd.TABLE, user.getId()) == 1) {
             List <Record> deleteRecord = new ArrayList<>();
             for (Record record : bd.getRecords()) {
-     if (record.getIdUser() == user.getId()) {
-         if (bd.delete(Bd.TABLE_SESSION, record.getId()) == 1) {
-deleteRecord.add(record);
-         }
-     }
- }
+                if (record.getIdUser() == user.getId()) {
+                    if (bd.delete(Bd.TABLE_SESSION, record.getId()) == 1) {
+                        deleteRecord.add(record);
+                    }
+                }
+            }
             bd.getUsers().remove(stak);
             bd.getRecords().removeAll(deleteRecord);
             Toast.makeText(getApplicationContext(), "Клиент удален", Toast.LENGTH_SHORT).show();
             finish();
         }
+
     }
-/*
+});
+builder.create().show();
+    }
+
+    /*
 Редактировать клинта
  */
     public void buttonReadC(View view) {
