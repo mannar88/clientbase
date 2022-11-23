@@ -117,7 +117,9 @@ startActivityForResult(intent, AddSessionActivity.CLASS_INDEX);
 int resultDelete = bd.delete(Bd.TABLE_SESSION, record.getId());
 if (resultDelete == 1) {
 long id =  bd.getRecords().remove(StaticClass.indexList(record.getId(), bd.getRecords())).getEvent_id();
-calendarSetting.delete(id);
+if(calendarSetting.delete(id) == 0) {
+    Toast.makeText(this, "Не удалось удалить запись в календаре", Toast.LENGTH_SHORT).show();
+}
 Toast.makeText(this, "Запись удалена", Toast.LENGTH_SHORT).show();
 finish();
 }

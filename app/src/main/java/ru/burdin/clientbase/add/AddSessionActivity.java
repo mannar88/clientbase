@@ -133,7 +133,9 @@ public void onClickButtonSessionSave(View view) {
     bd.getRecords().get(indexRecord).setPrice(record.getPrice());
     bd.getRecords().get(indexRecord).setComment(record.getComment());
     bd.getRecords().get(indexRecord).setEvent_id(record.getEvent_id());
-    calendarSetting.update(bd.getRecords().get(indexRecord));
+if (calendarSetting.update(bd.getRecords().get(indexRecord)) == 0) {
+    Toast.makeText(this, "Не удалось обновить запись в календаре", Toast.LENGTH_SHORT).show();
+}
     setResult(RESULT_OK);
     finish();
 }else {
@@ -141,7 +143,13 @@ public void onClickButtonSessionSave(View view) {
 }
 } else {
             if (!bd.getRecords().contains(record)) {
-                record.setEvent_id(calendarSetting.addRecordCalender(record));
+long evant = calendarSetting.addRecordCalender(record);
+if (evant > 0) {
+    record.setEvent_id(evant);
+}
+if (evant != -2 && evant < 1) {
+    Toast.makeText(this, "Не удалось добавить событие в календарь", Toast.LENGTH_SHORT).show();
+}
                 contentValues.put(Bd.COLUMN_EVENT_ID, record.getEvent_id());
                 long res = bd.add(Bd.TABLE_SESSION, contentValues);
                 if (res > -1) {

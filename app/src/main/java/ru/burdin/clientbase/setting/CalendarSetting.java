@@ -18,14 +18,18 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
@@ -40,10 +44,10 @@ public class CalendarSetting {
     private static CalendarSetting calendarSetting;
     public long id = 0;
     private String name;
-    private HashMap<String, Long> calendars = new HashMap<>();
+    private Map<String, Long> calendars = new LinkedHashMap<>();
     private static Activity activity;
     private boolean checkBoxCalender;
-    public   final static  String EMPTY = "Календарь не выбран";
+    public   final static  String EMPTY = "Не найдены доступные календари";
     private Bd bd;
     public   static final int Calender_PERMISSION = 2;
 
@@ -56,8 +60,8 @@ public class CalendarSetting {
         }
 
         if (Preferences.getSharedPreferences(activity).contains(Preferences.APP_PREFERENCES_ID_CALENDER) && Preferences.getSharedPreferences(activity).contains(Preferences.APP_PREFERENCES_NAME_CALENDAR)) {
-            id = Preferences.getLong(activity, Preferences.APP_PREFERENCES_ID_CALENDER, 1);
-            name = Preferences.getString(activity, Preferences.APP_PREFERENCES_NAME_CALENDAR, "");
+            id = Preferences.getLong(activity, Preferences.APP_PREFERENCES_ID_CALENDER, 0);
+            name = Preferences.getString(activity, Preferences.APP_PREFERENCES_NAME_CALENDAR, EMPTY);
             checkBoxCalender = Preferences.getBoolean (activity, Preferences.APP_PREFERENCES_CheckBox, false) && requestSinglePermission();
         }
         bd = Bd.load(activity.getApplicationContext());
@@ -82,6 +86,7 @@ public class CalendarSetting {
      */
     private void initCalendars()  {
         AsyncTasCalender asyncTasCalender =new AsyncTasCalender();
+
                 Supplier <Long> supplier = new Supplier<Long>() {
     @Override
     public Long get() {
@@ -107,10 +112,13 @@ public class CalendarSetting {
         asyncTasCalender.execute(supplier);
         try {
             asyncTasCalender.get();
+        if (calendars.size() == 0) {
+            calendars.put(EMPTY, 0l);
+        }
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            Toast.makeText(activity.getApplicationContext(), "Что-то пошло не так с запросом календарей", Toast.LENGTH_SHORT).show();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Toast.makeText(activity.getApplicationContext(), "Что-то пошло не так с запросом календарей", Toast.LENGTH_SHORT).show();
             }
     }
 
@@ -126,18 +134,13 @@ Set <String> strings = new HashSet<>();
     /*
     Выбираем календарь для синхронизации
      */
-    public void listenCSpinner(Spinner spinner, List<String> list) {
+    public void listenCSpinner(Spinner spinner, List <String> namesCalender) {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i != 0) {
-                    name = list.get(i);
-                    id = calendars.get(name);
-                }else {
-                    id   = 0l;
-                    name = EMPTY;
-                }
-                Preferences.set(activity, Preferences.APP_PREFERENCES_ID_CALENDER, id);
+name = namesCalender.get(i);
+id = calendars.get(name);
+Preferences.set(activity, Preferences.APP_PREFERENCES_ID_CALENDER, id);
                 Preferences.set(activity, Preferences.APP_PREFERENCES_NAME_CALENDAR, name);
             }
 
@@ -187,7 +190,7 @@ calenderAxtivity.recreate();
     Добавить событие в календарь
      */
     public long addRecordCalender (Record record) {
-        long result = 0;
+        long result = -2;
         if (checkBoxCalender && requestSinglePermission() && id != 0) {
             AsyncTasCalender asyncTasCalender = new AsyncTasCalender();
             Supplier<Long> supplier = new Supplier<Long>() {
@@ -201,9 +204,9 @@ calenderAxtivity.recreate();
             try {
                 result = asyncTasCalender.get();
             } catch (ExecutionException e) {
-                e.printStackTrace();
+                Toast.makeText(activity.getApplicationContext(), "Поток с добавлением календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Toast.makeText(activity.getApplicationContext(), "Поток с добавлением календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
             }
         }        return  result;
     }
@@ -212,7 +215,7 @@ calenderAxtivity.recreate();
     Редактирование события календаря
      */
     public int update(Record record) {
-        long result = 0;
+        long result = -2;
         if (checkBoxCalender && requestSinglePermission() && id !=0) {
             AsyncTasCalender asyncTasCalender = new AsyncTasCalender();
             Supplier<Long> supplier = new Supplier<Long>() {
@@ -226,9 +229,9 @@ calenderAxtivity.recreate();
             try {
                 result = asyncTasCalender.get();
             } catch (ExecutionException e) {
-                e.printStackTrace();
+                Toast.makeText(activity.getApplicationContext(), "Поток с изменением записи календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Toast.makeText(activity.getApplicationContext(), "Поток с изменением записи календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
             }
         }
         return  (int)result;
@@ -238,7 +241,7 @@ calenderAxtivity.recreate();
 удаляет запись в календаре
  */
     public int delete(long id) {
-        long result = 0;
+        long result = -2;
         if (checkBoxCalender && requestSinglePermission() && id !=0) {
 
             AsyncTasCalender asyncTasCalender = new AsyncTasCalender();
@@ -253,9 +256,9 @@ calenderAxtivity.recreate();
             try {
                 result = asyncTasCalender.get();
             } catch (ExecutionException e) {
-                e.printStackTrace();
+                Toast.makeText(activity.getApplicationContext(), "Поток с удалением записи календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Toast.makeText(activity.getApplicationContext(), "Поток с удалением записи календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
             }
         }
         return  (int) result;

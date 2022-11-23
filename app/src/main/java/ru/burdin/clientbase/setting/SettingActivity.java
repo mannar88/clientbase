@@ -32,7 +32,7 @@ public class SettingActivity extends AppCompatActivity {
     public static final int REQUEST_PERMISSIONS = 101;
 private Bd bd;
 private  WorkScheduleSetting workScheduleSetting;
-
+private  List<String> nameCalendars;
 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +42,7 @@ private  WorkScheduleSetting workScheduleSetting;
         spinnerGetCalendar = findViewById(R.id.spinerSettingCalendar);
    workScheduleSetting = new WorkScheduleSetting(this);
         calendars = CalendarSetting.load(this);
-List <String> nameCalendars = new ArrayList<>(calendars.getNameCalendar());
-nameCalendars.add(0, CalendarSetting.EMPTY);
+ nameCalendars = new ArrayList<>(calendars.getNameCalendar());
                 arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, nameCalendars);
     arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     spinnerGetCalendar.setAdapter(arrayAdapter);
@@ -59,11 +58,6 @@ spinnerGetCalendar.setEnabled(calendars.getCheckBox());
         Слушатель флажка
          */
             calendars.listenChexBox(checkBoxCalender, spinnerGetCalendar, this);
-            /*
-    Выбор календаря для синхронизации
-     */
-        calendars.listenCSpinner(spinnerGetCalendar, nameCalendars);
-
     }
 
     @Override
@@ -72,9 +66,15 @@ spinnerGetCalendar.setEnabled(calendars.getCheckBox());
 workScheduleSetting.setOnItemSelectedListener();
 }
 
-        /*
-Ответна разрешение
- */
+    @Override
+    protected void onResume() {
+        super.onResume();
+calendars.listenCSpinner(spinnerGetCalendar, nameCalendars);
+}
+
+    /*
+    Ответна разрешение
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
         switch (requestCode) {
