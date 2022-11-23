@@ -47,8 +47,9 @@ private  RecyclerView recyclerViewClient;
         textViewCount = findViewById(R.id.textCountUsers);
 editTextSerch = findViewById(R.id.editTextListClientSearsh);
 users = bd.getUsers();
-listenerSearch();
+    listenerSearch();
     }
+
 
     /*
     Запись нового клиента
@@ -72,7 +73,7 @@ listenerSearch();
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 if (charSequence.length() > 0) {
 users = new ArrayList<>();
-    String result = "";
+String result = "";
     if (charSequence.charAt(0) == '+' || charSequence.charAt(0) == '8') {
         for (int j = 0; j < charSequence.length(); j++) {
             if ((charSequence.charAt(j) == '+' && j == 0) || Character.isDigit(charSequence.charAt(j))) {
@@ -88,9 +89,9 @@ users = new ArrayList<>();
         }
         editTextSerch.setSelection(result.length());
     }
+    String text = charSequence.toString();
     for (User user : bd.getUsers()){
-        if (user.getSurname().toLowerCase().contains(charSequence) || user.getName().toLowerCase().contains(charSequence) || user.getPhone().contains(charSequence)
-        || user.getSurname().toUpperCase().contains(charSequence) || user.getName().toUpperCase().contains(charSequence)
+        if (user.getSurname().toLowerCase().contains(text.toLowerCase()) || user.getName().toLowerCase().contains(text.toLowerCase()) || user.getPhone().contains(charSequence)
         ){
 users.add(user);
     }
@@ -113,8 +114,8 @@ users.add(user);
     @Override
     protected void onResume() {
         super.onResume();
-updateList();
-            }
+        updateList();
+    }
 
     /*
         Установка листа клиентов
