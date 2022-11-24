@@ -14,12 +14,21 @@ android:id="@+id/editTextName"
         android:inputType="textCapWords"
         />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonAddClientExchange"
+        android:text="Поменять местами имя и фамилия"
+        android:onClick="onClickButtonAddClientExchange"
+        app:layout_constraintTop_toBottomOf="@+id/editTextName"
+/>
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 android:id="@+id/editTextSurname"
 android:hint="Фамилия"
-        app:layout_constraintTop_toBottomOf="@+id/editTextName"
+        app:layout_constraintTop_toBottomOf="@+id/buttonAddClientExchange"
 android:inputType="textCapWords"
         />
 

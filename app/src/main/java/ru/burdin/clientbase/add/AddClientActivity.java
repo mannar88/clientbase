@@ -122,4 +122,9 @@ finish();
         });
     }
 
+    public void onClickButtonAddClientExchange(View view) {
+    String exchange = editTextSurname.getText().toString();
+    editTextSurname.setText(editTextName.getText().toString());
+    editTextName.setText(exchange);
+    }
 }
