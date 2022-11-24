@@ -156,7 +156,19 @@ if (grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANT
 }else {
     StaticClass.getDialog(this, "на чтение журнала звонков");
 }
+break;
+
+case SelectAddClient.PERMISSION_PHONE_BOOK:
+    if (grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        SelectAddClient selectAddClient = new SelectAddClient(this);
+        selectAddClient.phoneBooke();
+    }else {
+        StaticClass.getDialog(this, "на чтение телефоной книги");
+    }
+    break;
+
 }
+
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

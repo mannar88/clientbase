@@ -12,7 +12,11 @@ private  String comment;
 
     public User(long id, String name, String surname, String phone, String comment) {
         this.id = id;
+if (name.equals(null + "")) {
+this.name = "";
+}else {
         this.name = name;
+        }
         this.surname = surname;
         this.phone = phone;
     this.comment = comment;
