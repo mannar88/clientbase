@@ -1,15 +1,19 @@
 package ru.burdin.clientbase.lits;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -142,4 +146,17 @@ textViewCount.setText("Всего клиентов: " + users.size() );
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+switch (requestCode ) {
+    case SelectAddClient.PERNISSION_LOG_COLL:
+if (grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+    SelectAddClient selectAddClient = new SelectAddClient(this);
+    selectAddClient.callLog();
+}else {
+    StaticClass.getDialog(this, "на чтение журнала звонков");
+}
+}
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 }
