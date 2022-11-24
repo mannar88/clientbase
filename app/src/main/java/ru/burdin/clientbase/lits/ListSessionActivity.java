@@ -261,7 +261,8 @@ Consumer <Record> duplication = new Consumer<Record>() {
         recordDup.setPrice(bd.getRecords().get(indexListRecord).getPrice());
         recordDup.setComment(bd.getRecords().get(indexListRecord).getComment());
         if (!bd.getRecords().contains(recordDup)) {
-            recordDup.setEvent_id(calendarSetting.addRecordCalender(recordDup));
+            String surnameAndName = bd.getUsers().get(StaticClass.indexList(recordDup.getIdUser(), bd.getUsers())).getSurname() + " " + bd.getUsers().get(StaticClass.indexList(recordDup.getIdUser(), bd.getUsers()));
+            recordDup.setEvent_id(calendarSetting.addRecordCalender(recordDup, surnameAndName));
             ContentValues contentValues = new ContentValues();
             contentValues.put(Bd.COLUMN_TIME, recordDup.getStart());
             contentValues.put(Bd.COLUMN_TIME_END, recordDup.getEnd());

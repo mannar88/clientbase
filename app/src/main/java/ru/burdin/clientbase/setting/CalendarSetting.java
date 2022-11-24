@@ -204,24 +204,24 @@ calenderAxtivity.requestPermissions(permissions, Calender_PERMISSION);
     /*
     Добавить событие в календарь
      */
-    public long addRecordCalender (Record record) {
+    public long addRecordCalender (Record record, String surname) {
         long result = -2;
         if (checkBoxCalender && requestSinglePermission() && id != 0) {
             AsyncTasCalender asyncTasCalender = new AsyncTasCalender();
             Supplier<Long> supplier = new Supplier<Long>() {
                 @Override
                 public Long get() {
-                    Uri uri = activity.getContentResolver().insert(CalendarContract.Events.CONTENT_URI, getContentValues(record));
+                    Uri uri = activity.getContentResolver().insert(CalendarContract.Events.CONTENT_URI, getContentValues(record, surname));
                     return Long.parseLong(uri.getLastPathSegment());
-                                    }
+                }
             };
             asyncTasCalender.execute(supplier);
             try {
                 result = asyncTasCalender.get();
             } catch (ExecutionException e) {
-                Toast.makeText(activity.getApplicationContext(), "Поток с добавлением календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity.getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             } catch (InterruptedException e) {
-                Toast.makeText(activity.getApplicationContext(), "Поток с добавлением календаря закрылся не корректно", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity.getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         }        return  result;
     }
@@ -229,7 +229,7 @@ calenderAxtivity.requestPermissions(permissions, Calender_PERMISSION);
     /*
     Редактирование события календаря
      */
-    public int update(Record record) {
+    public int update(Record record, String nameSurname) {
         long result = -2;
         if (checkBoxCalender && requestSinglePermission() && id !=0) {
             AsyncTasCalender asyncTasCalender = new AsyncTasCalender();
@@ -237,7 +237,7 @@ calenderAxtivity.requestPermissions(permissions, Calender_PERMISSION);
                 @Override
                 public Long get() {
                     Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, record.getEvent_id());
-                    return (long) activity.getContentResolver().update(uri, getContentValues(record), null, null);
+                    return (long) activity.getContentResolver().update(uri, getContentValues(record,nameSurname ), null, null);
                 }
             };
             asyncTasCalender.execute(supplier);
@@ -281,12 +281,11 @@ calenderAxtivity.requestPermissions(permissions, Calender_PERMISSION);
     /*
     создает и наполняет contentValues
      */
-    private ContentValues getContentValues(Record record) {
-        User user = bd.getUsers().get(StaticClass.indexList(record.getIdUser(), bd.getUsers()));
+    private ContentValues getContentValues(Record record, String nameSurname) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(CalendarContract.Events.DTSTART, record.getStart());
         contentValues.put(CalendarContract.Events.DTEND, record.getStart() + record.getEnd());
-        contentValues.put(CalendarContract.Events.TITLE, activity.getResources().getString(R.string.app_name) + " " + user.getSurname() + " " + user.getName() + " " + record.getProcedure());
+        contentValues.put(CalendarContract.Events.TITLE, activity.getResources().getString(R.string.app_name) + " " +nameSurname + " " + record.getProcedure());
         contentValues.put(CalendarContract.Events.DESCRIPTION, "");
         contentValues.put(CalendarContract.Events.CALENDAR_ID, this.id);
         contentValues.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getDisplayName());

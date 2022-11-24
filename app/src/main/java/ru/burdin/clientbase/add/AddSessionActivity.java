@@ -133,7 +133,7 @@ public void onClickButtonSessionSave(View view) {
     bd.getRecords().get(indexRecord).setPrice(record.getPrice());
     bd.getRecords().get(indexRecord).setComment(record.getComment());
     bd.getRecords().get(indexRecord).setEvent_id(record.getEvent_id());
-if (calendarSetting.update(bd.getRecords().get(indexRecord)) == 0) {
+if (calendarSetting.update(bd.getRecords().get(indexRecord),textViewSetUser.getText().toString()) == 0) {
     Toast.makeText(this, "Не удалось обновить запись в календаре", Toast.LENGTH_SHORT).show();
 }
     setResult(RESULT_OK);
@@ -143,14 +143,18 @@ if (calendarSetting.update(bd.getRecords().get(indexRecord)) == 0) {
 }
 } else {
             if (!bd.getRecords().contains(record)) {
-long evant = calendarSetting.addRecordCalender(record);
-if (evant > 0) {
-    record.setEvent_id(evant);
+try {
+    long evant = calendarSetting.addRecordCalender(record, textViewSetUser.getText().toString());
+    if (evant > 0) {
+        record.setEvent_id(evant);
+    }
+    if (evant != -2 && evant < 1) {
+        Toast.makeText(this, "Не удалось добавить событие в календарь", Toast.LENGTH_SHORT).show();
+    }
+}catch (Exception e){
+    Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
 }
-if (evant != -2 && evant < 1) {
-    Toast.makeText(this, "Не удалось добавить событие в календарь", Toast.LENGTH_SHORT).show();
-}
-                contentValues.put(Bd.COLUMN_EVENT_ID, record.getEvent_id());
+contentValues.put(Bd.COLUMN_EVENT_ID, record.getEvent_id());
                 long res = bd.add(Bd.TABLE_SESSION, contentValues);
                 if (res > -1) {
                     if (bd.getRecords().add(new Record(res, record.getStart(),
@@ -160,9 +164,11 @@ if (evant != -2 && evant < 1) {
                             record.getPrice(),
                             record.getComment(),
 record.getEvent_id()                            ))) {
-    Toast.makeText(getApplicationContext(), "Запись успешно добавлена.", Toast.LENGTH_SHORT).show();
-                        finish();
-}else {
+                        Toast.makeText(getApplicationContext(), "Запись успешно добавлена.", Toast.LENGTH_SHORT).show();
+
+                    finish();
+
+                }else {
                         Toast.makeText(getApplicationContext(), "Не удается сохранить", Toast.LENGTH_SHORT).show();
                     }
                     }
