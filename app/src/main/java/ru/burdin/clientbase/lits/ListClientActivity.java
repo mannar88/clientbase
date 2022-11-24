@@ -55,8 +55,8 @@ users = bd.getUsers();
     Запись нового клиента
      */
     public  void  buttonAddClient (View view) {
-        Intent intent = new Intent(this, AddClientActivity.class);
-        startActivity(intent);
+SelectAddClient selectAddClient = new SelectAddClient(this);
+selectAddClient.getDialog();
     }
 
     /*

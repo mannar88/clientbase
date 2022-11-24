@@ -14,6 +14,7 @@ import java.util.Comparator;
 
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
+import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.models.User;
 
 public class AddClientActivity extends AppCompatActivity {
@@ -35,12 +36,8 @@ public class AddClientActivity extends AppCompatActivity {
         editTextPhone = findViewById(R.id.editTextPhone);
         editTextComment = findViewById(R.id.editTextComment);
         bd = Bd.load(getApplicationContext());
-        try {
-            index = getIntent().getExtras().getInt(Bd.TABLE);
-        } catch (Exception e) {
-
-        }
-
+            index = getIntent().getIntExtra(Bd.TABLE, -1);
+        getIntent().removeExtra(Bd.TABLE);
         if (index > -1) {
             user = bd.getUsers().get(index);
             editTextName.setText(user.getName());
@@ -51,6 +48,8 @@ public class AddClientActivity extends AppCompatActivity {
             editTextPhone.setSelection(editTextPhone.getText().length());
             editTextComment.setText(user.getComment());
             editTextComment.setSelection(editTextComment.getText().length());
+        }else {
+            editTextPhone.setText(getIntent().getStringExtra(StaticClass.NUMBER_PHONE));
         }
         tooListen();
     }

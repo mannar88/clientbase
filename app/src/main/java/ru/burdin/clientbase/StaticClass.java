@@ -24,6 +24,8 @@ public  static  final  String TIMEFREE = "timeFree";
 public  static  final  String   POSITION_LIST_USERS  = "position_list_users";
 public  static  final  String NEWRECORDISCARD = "newRecordCardUser";
 public  static  final  String NEWRECORD = "newRecord";
+public  static final  String NUMBER_PHONE = "number_phone";
+
 /*
     Ищет индекс в коллекции по его id
      */
