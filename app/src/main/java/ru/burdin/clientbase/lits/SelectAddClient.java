@@ -24,9 +24,7 @@ import android.widget.Toast;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,18 +34,21 @@ import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.add.AddClientActivity;
+import ru.burdin.clientbase.cards.CardUserActivity;
 import ru.burdin.clientbase.models.User;
 
 class SelectAddClient {
 
+    private  Bd bd;
     private  List<String> resultContact = new ArrayList<>();
     private Activity activity;
 public  static  final  int PERNISSION_LOG_COLL = 5;
 public  static  final  int PERMISSION_PHONE_BOOK = 6;
-
+private  static  final  String  CLIENT = " клиент ";
 public SelectAddClient(Activity activity) {
-        this.activity = activity;
-    }
+    this.activity = activity;
+bd = Bd.load(activity);
+}
 
     /*
     Вызывает диалог
@@ -117,15 +118,28 @@ public SelectAddClient(Activity activity) {
 list.sort(Comparator.naturalOrder());
 String[] contacts = new  String[list.size()];
         for (int i = 0; i < contacts.length; i++) {
-            contacts[i] =list.get(i).type + " " +  list.get(i).name + " " +  list.get(i).number + " " + dateFormat.format(list.get(i).date);
+            String client = "";
+for (User user: bd.getUsers()) {
+    if (user.getPhone().contains(list.get(i).number)) {
+        client = client + user.getSurname() + " " + user.getName();
+list.get(i).user_id = user.getId();
+    }
+}
+            contacts[i] =list.get(i).type + " "+ client +  list.get(i).name + " " +  list.get(i).number + " " + dateFormat.format(list.get(i).date);
         }
 builderColl.setItems(contacts, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-Intent intent = new Intent(activity, AddClientActivity.class);
-intent.putExtra(StaticClass.NUMBER_PHONE, list.get(i).number);
-            activity.startActivity(intent);
-            }
+              public void onClick(DialogInterface dialogInterface, int i) {
+if (list.get(i).user_id == -1) {
+    Intent intent = new Intent(activity, AddClientActivity.class);
+    intent.putExtra(StaticClass.NUMBER_PHONE, list.get(i).number);
+    activity.startActivity(intent);
+}else {
+    Intent intent = new Intent(activity, CardUserActivity.class);
+    intent.putExtra(Bd.TABLE, StaticClass.indexList(list.get(i).user_id, bd.getUsers()));
+activity.startActivity(intent);
+}
+}
         });
 
         builderColl.create().show();
@@ -299,7 +313,7 @@ long id;
             long date;
 String name;
 String type;
-
+ long user_id = -1;
 public Contact( String number, long date, String name, int type) {
                 this.number = number;
                 this.date = date;
