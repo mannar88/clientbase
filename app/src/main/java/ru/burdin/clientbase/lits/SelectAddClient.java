@@ -4,33 +4,43 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.SparseBooleanArray;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import ru.burdin.clientbase.Bd;
+import ru.burdin.clientbase.R;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.add.AddClientActivity;
 import ru.burdin.clientbase.models.User;
 
 class SelectAddClient {
 
+    private  List<String> resultContact = new ArrayList<>();
     private Activity activity;
 public  static  final  int PERNISSION_LOG_COLL = 5;
 public  static  final  int PERMISSION_PHONE_BOOK = 6;
@@ -78,8 +88,8 @@ public SelectAddClient(Activity activity) {
     Журнал звонков
      */
     public void callLog() {
-        Map<String, String> colls = new LinkedHashMap<>();
-        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd-MM-YYYY");
+        Map<String, Contact> colls = new LinkedHashMap<>();
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm dd-MM-YYYY");
         AlertDialog.Builder builderColl = new AlertDialog.Builder(activity);
         String[] projection = new String[]{
                 CallLog.Calls._ID,
@@ -100,17 +110,21 @@ public SelectAddClient(Activity activity) {
 
         if (cursor.moveToFirst()) {
             do {
-                colls.put(cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER)) + ", " + dateFormat.format(new Date(cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE)))), cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER)));
+                colls.put(cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER)) , new Contact(cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER)), cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE)), cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME)), cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE))));
             } while (cursor.moveToNext());
         }
-        List<String> list = new ArrayList<>(colls.keySet());
-        Collections.reverse(list);
-        builderColl.setItems(list.toArray(new String[colls.size()]), new DialogInterface.OnClickListener() {
+        List<Contact> list = new ArrayList<>(colls.values());
+list.sort(Comparator.naturalOrder());
+String[] contacts = new  String[list.size()];
+        for (int i = 0; i < contacts.length; i++) {
+            contacts[i] =list.get(i).type + " " +  list.get(i).name + " " +  list.get(i).number + " " + dateFormat.format(list.get(i).date);
+        }
+builderColl.setItems(contacts, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = new Intent(activity, AddClientActivity.class);
-                intent.putExtra(StaticClass.NUMBER_PHONE, colls.get(list.get(i)));
-                activity.startActivity(intent);
+Intent intent = new Intent(activity, AddClientActivity.class);
+intent.putExtra(StaticClass.NUMBER_PHONE, list.get(i).number);
+            activity.startActivity(intent);
             }
         });
 
@@ -122,46 +136,126 @@ public SelectAddClient(Activity activity) {
 Запрос к телефонной книге
  */
   public void phoneBooke () {
-      Map <String, String> contacts = new TreeMap<>();
+      View linearlayout =activity.getLayoutInflater().inflate(R.layout.serch , null);
+ListView       listView = linearlayout.findViewById(R.id.listViewSearchContats);
+      EditText editText = linearlayout.findViewById(R.id.editTextContactSearsh);
+      Button button = linearlayout.findViewById(R.id.buttonContactAdd)
+;      Map <String, String> contacts = new TreeMap<>();
+      getContacts(contacts);
       List <String[]> result = new ArrayList<>();
       AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-      Cursor cursor = activity.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-              null, null, null, null);
-      if (cursor != null) {
-          while (cursor.moveToNext()) {
-          contacts.put(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_ALTERNATIVE)).trim() + "", cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).trim() + "");
-          }
-      }
-      if (cursor != null) {
-          cursor.close();
-      }
-List <String> list = new ArrayList<>(contacts.keySet());
+      builder.setView(linearlayout);
+
+List <String> list = new ArrayList<>();
+contacts.keySet().forEach(s -> list.add(s));
 Comparator <String> comparator = (String::compareToIgnoreCase);
 list.sort(comparator);
 boolean [] checks = new  boolean[contacts.size()];
-  builder.setMultiChoiceItems(list.toArray(new String[contacts.size()]), checks, new DialogInterface.OnMultiChoiceClickListener() {
-      @Override
-      public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-if (b) {
-    result.add(new  String[] {list.get(i), contacts.get(list.get(i))});
-}
-      }
-  });
-  builder.setPositiveButton("Добавить", new DialogInterface.OnClickListener() {
-      @Override
-      public void onClick(DialogInterface dialogInterface, int i) {
-      result.forEach(
-              strings ->
-                      setContact(
-                              strings[0].split(" ", 2), strings[1]
-                      )
-      );
-      }
-  });
-  builder.create().show();
+listScreen(listView, list);
+search(editText, list,  listView);
+buttonAddConact(button, contacts);
+builder.create().show();
+
   }
 
   /*
+  Слушатель листа контактов
+   */
+  private   void   listViewSetOnItemClickListener (ListView listViewt, List <String> nameSurname) {
+listViewt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        resultContact.clear();
+                SparseBooleanArray resultBoolaen = ((ListView) adapterView).getCheckedItemPositions();
+        for (int j = 0; j < resultBoolaen.size(); j++) {
+            if (resultBoolaen.valueAt(j)) {
+resultContact.add(nameSurname.get(resultBoolaen.keyAt(j)));            }
+        }
+
+    }
+});
+  }
+
+  /*
+Кнопка добавления
+ */
+private   void  buttonAddConact (Button button, Map <String, String> map) {
+    button.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+if (resultContact.size() >0) {
+    resultContact.forEach(s ->setContact(s.split(" ",2), map.get(s)) );
+}else {
+    Toast.makeText(activity, "Ничего не выбрано", Toast.LENGTH_SHORT).show();
+}
+        }
+    });
+}
+
+/*
+  Слушатель поиска
+   */
+private  void  search (EditText editText, List <String> list, ListView listView) {
+    editText.addTextChangedListener(new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            List <String> names = new ArrayList<>();
+String string = charSequence.toString();
+            for (String name : list){
+            if (name.toLowerCase().contains(string.toLowerCase())) {
+names.add(name);
+            }
+        }
+        listScreen(listView, names);
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+
+    });
+
+                                         }
+
+                                         /*
+                                         Создает список контактов на экране
+                                          */
+    private  void  listScreen (ListView listView, List <String> list) {
+
+        ArrayAdapter<?> arrayAdapter =new   ArrayAdapter (activity,
+                android.R.layout.simple_list_item_multiple_choice,
+                list);
+
+        listView.setAdapter(arrayAdapter);
+try {
+    listViewSetOnItemClickListener(listView, list);
+}catch ( Exception e) {
+    Toast.makeText(activity, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+}
+    }
+
+    /*
+  СВыгружает списо контактов
+   */
+    private  void  getContacts (Map <String, String> contacts) {
+    Cursor cursor = activity.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            null, null, null, null);
+    if (cursor != null) {
+        while (cursor.moveToNext()) {
+            contacts.put(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_ALTERNATIVE)).trim() + "", cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).trim() + "");
+        }
+    }
+    if (cursor != null) {
+        cursor.close();
+    }
+
+}
+    /*
   Добавление контакта вбазу
    */
   private  void  setContact (String[] name, String phone) {
@@ -199,5 +293,42 @@ activity.recreate();
         }
         return result;
     }
+        class  Contact implements  Comparable {
+long id;
+            String number;
+            long date;
+String name;
+String type;
+
+public Contact( String number, long date, String name, int type) {
+                this.number = number;
+                this.date = date;
+            this.name = name;
+this.type =type ==1? "Входящий":"Исходящий";
+}
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (o == null || getClass() != o.getClass()) return false;
+
+                Contact contact = (Contact) o;
+
+                return number.equals(contact.number);
+            }
+
+            @Override
+            public int hashCode() {
+                int result = number.hashCode();
+                result = 31 * result + (int) (date ^ (date >>> 32));
+                return result;
+            }
+
+            @Override
+            public int compareTo(Object o) {
+                Contact contact = (Contact)o;
+return  Long.compare(contact.date, this.date);
+            }
+        }
 
 }

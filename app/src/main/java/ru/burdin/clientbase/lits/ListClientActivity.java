@@ -66,7 +66,7 @@ selectAddClient.getDialog();
     /*
     Слушатель поиска
      */
-    private  void listenerSearch () {
+    private   void listenerSearch () {
     editTextSerch.addTextChangedListener(new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -137,6 +137,7 @@ MyAdapter.OnUserClickListener <User> onUserClickListener = new MyAdapter.OnUserC
         }else {
             intent.putExtra(Bd.TABLE, StaticClass.indexList(user.getId(), bd.getUsers()));
             startActivity(intent);
+        editTextSerch.setText("");
         }
     }
 };
