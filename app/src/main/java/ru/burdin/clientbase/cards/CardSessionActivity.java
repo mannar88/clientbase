@@ -11,6 +11,7 @@ import android.widget.Toast;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import ru.burdin.clientbase.add.AddSessionActivity;
@@ -36,7 +37,8 @@ public class CardSessionActivity extends AppCompatActivity {
 private  int indexUser;
 private  long recordId = -1;
 private CalendarSetting calendarSetting;
-
+public  static  final  String TRANSFER = "transfer";
+public  static  final  int TRANSFER_INT = 67;
 
 @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +46,13 @@ private CalendarSetting calendarSetting;
     setContentView(R.layout.activity_card_session);
     bd = Bd.load(getApplicationContext());
 calendarSetting = CalendarSetting.load(this);
-    if (savedInstanceState == null) {
-        recordId = getIntent().getLongExtra(StaticClass.POSITION_LIST_RECORDS, -1);
-        if (recordId != -1) {
-            record = bd.getRecords().get(StaticClass.indexList(recordId, bd.getRecords()));
-        } else {
-            finish();
-        }
+    recordId = getIntent().getLongExtra(StaticClass.POSITION_LIST_RECORDS, -1);
+    if (recordId != -1) {
+        record = bd.getRecords().get(StaticClass.indexList(recordId, bd.getRecords()));
+    } else {
+        finish();
     }
+
     textViewDate = findViewById(R.id.textViewCardSessionDate);
     textViewNameUser = findViewById(R.id.textViewCardSessionNameUser);
     textViewProcedure = findViewById(R.id.textViewCardSessionProcedures);
@@ -63,7 +64,7 @@ calendarSetting = CalendarSetting.load(this);
     @Override
     protected void onStart() {
         super.onStart();
-setScreenInfo(record);
+        setScreenInfo(record);
 }
 
     /*
@@ -140,8 +141,28 @@ finish();
             setScreenInfo(record);
                     Toast.makeText(getApplicationContext(), "Запись изменена", Toast.LENGTH_SHORT).show();
             break;
+                case TRANSFER_INT:
+            recordId = data.getLongExtra(TRANSFER, -1);
+if (recordId != -1) {
+    int index = StaticClass.indexList(recordId, bd.getRecords());
+    record = bd.getRecords().get(index);
+setScreenInfo(record);
+Toast.makeText(this, "Запись успешно перенесена", Toast.LENGTH_SHORT).show();
+}
+            //            setScreenInfo(record);
+
             }
         }
     }
 
+    /*
+    Перенос
+     */
+    public void onClickButtonCardSessionTransfer(View view) {
+    Intent intent = new Intent(this, ListSessionActivity.class);
+        intent.putExtra(TRANSFER,record.getId());
+        intent.putExtra(StaticClass.KEY, StaticClass.DUPLICATION);
+        intent.putExtra(StaticClass.POSITION_LIST_RECORDS, StaticClass.indexList(record.getId(), bd.getRecords()));
+        startActivityForResult(intent,TRANSFER_INT);
+    }
 }

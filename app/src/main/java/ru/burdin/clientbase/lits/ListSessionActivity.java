@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,8 +64,8 @@ private  boolean checbox = false;
 private  HashMap <String, Consumer> consumerHashMap = new HashMap<>();
 private CalendarSetting calendarSetting;
 private  int indexListRecord;
-
 public  static  final  int CLASS_INDEX = 2;
+    private Intent intentTransfer = new Intent();
 @Override
 protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +79,7 @@ protected void onCreate(Bundle savedInstanceState) {
         dateAndTime = new GregorianCalendar();
 dateAndTime.setTimeInMillis(savedInstanceState.getLong("dateAndTime"));
             }
-indexListRecord = getIntent().getIntExtra(StaticClass.POSITION_LIST_RECORDS,0);
+indexListRecord = getIntent().getIntExtra(StaticClass.POSITION_LIST_RECORDS,-1);
         textViewDay = findViewById(R.id.textViewDate);
         textViewTime = findViewById(R.id.textViewTime);
 textViewDay.setText(DateFormat.getDateInstance(FULL).format(dateAndTime.getTime()));
@@ -134,8 +135,9 @@ calendarFinish.set(Calendar.HOUR_OF_DAY, Integer.parseInt(Preferences.getString(
 calendarFinish.set(Calendar.MINUTE, Integer.parseInt(Preferences.getString(this, Preferences.APP_PREFERENCES_FINISH_MINUTES, "0")));
 calendarFinish.set(Calendar.DAY_OF_MONTH, dateAndTime.get(Calendar.DAY_OF_MONTH));
 recordsEnpty = bd.getRecords().stream()
-.filter(record -> dateFormat.format(dateAndTime.getTime()).equals(dateFormat.format(record.getStartDay())))
-.collect(Collectors.toList());
+        .filter(record -> dateFormat.format(dateAndTime.getTime()).equals(dateFormat.format(record.getStartDay())))
+.filter(record -> record.getId() != getIntent().getLongExtra(CardSessionActivity.TRANSFER, -1))
+        .collect(Collectors.toList());
     sum = recordsEnpty.stream()
         .collect(Collectors.summingDouble(Record::getPrice));
         textViewTime.setText("Всего записано: " + recordsEnpty.size() + " клиентов, на общую сумму: " + StaticClass.priceToString(sum) + " руб");
@@ -260,7 +262,8 @@ Consumer <Record> duplication = new Consumer<Record>() {
         recordDup.setProcedure(bd.getRecords().get(indexListRecord).getProcedure());
         recordDup.setPrice(bd.getRecords().get(indexListRecord).getPrice());
         recordDup.setComment(bd.getRecords().get(indexListRecord).getComment());
-        if (!bd.getRecords().contains(recordDup)) {
+        long transfer = getIntent().getLongExtra(CardSessionActivity.TRANSFER, -1);
+        if (!bd.getRecords().contains(recordDup) ||transfer > -1) {
             String surnameAndName = bd.getUsers().get(StaticClass.indexList(recordDup.getIdUser(), bd.getUsers())).getSurname() + " " + bd.getUsers().get(StaticClass.indexList(recordDup.getIdUser(), bd.getUsers())).getName();
             recordDup.setEvent_id(calendarSetting.addRecordCalender(recordDup, surnameAndName));
             ContentValues contentValues = new ContentValues();
@@ -273,6 +276,13 @@ Consumer <Record> duplication = new Consumer<Record>() {
             contentValues.put(Bd.COLUMN_EVENT_ID, recordDup.getEvent_id());
             long id = bd.add(Bd.TABLE_SESSION, contentValues);
             if (id > 0) {
+if (transfer > -1) {
+    calendarSetting.delete(bd.getRecords().get(indexListRecord).getEvent_id());
+    bd.delete(Bd.TABLE_SESSION, transfer);
+    bd.getRecords().remove(indexListRecord);
+    getIntent().removeExtra(CardSessionActivity.TRANSFER);
+    intentTransfer.putExtra(CardSessionActivity.TRANSFER,id);
+}
                 if (bd.getRecords().add(new Record(
                         id,
                         recordDup.getStart(),
@@ -283,8 +293,13 @@ Consumer <Record> duplication = new Consumer<Record>() {
                         recordDup.getComment(),
                 recordDup.getEvent_id()
                         ))) {
-                    setResult(RESULT_OK);
-                    indexListRecord = 0;
+                    if (transfer == -1) {
+                        setResult(RESULT_OK);
+                    }else{
+                        setResult(RESULT_OK, intentTransfer);
+                    }
+                        indexListRecord = 0;
+
                     finish();
                 }
             }

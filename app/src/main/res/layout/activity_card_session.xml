@@ -60,10 +60,19 @@ android:onClick="onClickTextViewCardSessionNameUser"
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/buttonCardSessionTransfer"
+        android:onClick="onClickButtonCardSessionTransfer"
+        android:text="Перенести запись"
+        app:layout_constraintTop_toBottomOf="@+id/buttonCardSessionDooble"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/buttonCardSessionRead"
         android:onClick="onclickButtonCardSessionRead"
         android:text="Редактировать запись"
-        app:layout_constraintTop_toBottomOf="@+id/buttonCardSessionDooble"
+        app:layout_constraintTop_toBottomOf="@+id/buttonCardSessionTransfer"
         />
 
     <Button
