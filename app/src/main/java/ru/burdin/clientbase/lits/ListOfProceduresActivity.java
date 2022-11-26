@@ -4,13 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +36,8 @@ public class ListOfProceduresActivity extends AppCompatActivity {
 private Bd bd;
 private TextView textView;
 public static ArrayList<Procedure> processes = new ArrayList<>();
+private  Activity activity;
+
 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +55,7 @@ public static ArrayList<Procedure> processes = new ArrayList<>();
 if (AddSessionActivity.class.getName().equals(getIntent().getStringExtra(AddSessionActivity.class.getName()))){
     textView.setText("Щелкните по услуге, что бы выбрать");
 }
+activity = this;
 }
 
 /*
@@ -71,6 +77,7 @@ public  void  buttonAddProcedur (View view) {
             editTextPrice.setText("");
             editTextTimeEnd.setText("");
             recyclerViewUpdate();
+            Toast.makeText(this, "Услуга сохранена", Toast.LENGTH_SHORT).show();
         }
         }
 
@@ -101,10 +108,17 @@ private  void  recyclerViewUpdate () {
 setResult(RESULT_OK, intent);
                 finish();
             }else {
-
-                textView.setText(bd.delete(Bd.TABLE_PROCEDURE, processes.get(position).getId()) + "");
-                bd.getProcedures().remove(position);
-                recyclerViewUpdate();
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setMessage("/Точно удалить услугу - " + processes.get(position).getName());
+                builder.setPositiveButton("Удалить", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        bd.delete(Bd.TABLE_PROCEDURE, processes.get(position).getId());
+                        bd.getProcedures().remove(position);
+                        recyclerViewUpdate();
+                    }
+                });
+builder.create().show();
             }
             }
     }, consumer);

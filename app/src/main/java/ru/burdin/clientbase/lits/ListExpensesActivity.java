@@ -3,8 +3,11 @@ package ru.burdin.clientbase.lits;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
@@ -35,7 +38,7 @@ public class ListExpensesActivity extends AppCompatActivity {
    private RecyclerView recyclerViewExpenses;
    private Calendar date = Calendar.getInstance();
 private  Bd bd;
-
+private Activity activity;
 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +50,7 @@ private  Bd bd;
         recyclerViewExpenses = findViewById(R.id.listExpenses);
         textViewTime.setText(DateFormat.getDateInstance(DateFormat.FULL).format(date.getTime()) + " Щелкните для выбора ");
 updateListExpenses();
+activity= this;
 }
 
     public void onClickTextViewSetTimeExpenses(View view) {
@@ -79,6 +83,7 @@ public void onClickButtonSetExpenses(View view) {
                     editTextNameExpenses.setText("");
                     editTextPriceExpenses.setText("");
                 updateListExpenses();
+                Toast.makeText(this, "Сохранено", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -92,13 +97,23 @@ bd.getExpenses().sort(Comparator.reverseOrder());
             MyAdapter myAdapter = new MyAdapter(this, bd.getExpenses(), new MyAdapter.OnUserClickListener() {
             @Override
             public void onUserClick(Object o, int position) {
-int res = bd.delete(Bd.TABLE_EXPENSES, bd.getExpenses().get(position).getId());
-if (res > 0) {
-    bd.getExpenses().remove(position);
-    updateListExpenses();
-    Toast.makeText(getApplicationContext(), "Расход удален", Toast.LENGTH_SHORT).show();
-}
+    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+    builder.setMessage("Вы точно хотите удалить расход" );
+    builder.setPositiveButton("Минимизировать расходы всегда приятно. Удалить", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            int res = bd.delete(Bd.TABLE_EXPENSES, bd.getExpenses().get(position).getId());
+            if (res > 0) {
+                bd.getExpenses().remove(position);
+                updateListExpenses();
+                Toast.makeText(getApplicationContext(), "Расход удален", Toast.LENGTH_SHORT).show();
             }
+
+        }
+    });
+    builder.create().show();
+
+}
         }, consumer);
         recyclerViewExpenses.setAdapter(myAdapter);
         }

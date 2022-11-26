@@ -114,6 +114,10 @@ bd = Bd.load(activity);
                 colls.put(cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER)) , new Contact(cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER)), cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE)), cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME)), cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE))));
             } while (cursor.moveToNext());
         }
+        if (cursor != null) {
+            cursor.close();
+        }
+
         List<Contact> list = new ArrayList<>(colls.values());
 list.sort(Comparator.naturalOrder());
 String[] contacts = new  String[list.size()];
@@ -121,7 +125,7 @@ String[] contacts = new  String[list.size()];
             String client = "";
 for (User user: bd.getUsers()) {
     if (user.getPhone().contains(list.get(i).number)) {
-        client = client + user.getSurname() + " " + user.getName();
+        client = CLIENT + user.getSurname() + " " + user.getName();
 list.get(i).user_id = user.getId();
     }
 }

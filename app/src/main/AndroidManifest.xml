@@ -3,9 +3,9 @@
     package="ru.burdin.clientbase">
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.READ_CALL_LOG"/>
-    <uses-permission android:name="android.permission.CALL_COMPANION_APP" />
-    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+        <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
@@ -23,7 +23,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ClientBase">
-        <activity android:name=".importAndExport.ImportExportActivity"></activity>
+        <activity android:name=".InfoActivity"></activity>
+        <activity android:name=".importAndExport.ImportExportActivity" />
         <activity android:name=".StatActivity" />
         <activity android:name=".setting.SettingActivity" />
         <activity android:name=".lits.ListHistoryAndRecordActivity" />

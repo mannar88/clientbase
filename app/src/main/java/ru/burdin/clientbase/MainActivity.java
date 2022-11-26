@@ -59,9 +59,18 @@ startActivity(intent);
     Intent intent = new Intent(this, StatActivity.class);
     startActivity(intent);
     }
-
+/*
+Открывает активность импорта и экспорта
+ */
     public void onClickButtonImportExport(View view) {
     Intent intent = new Intent(this, ImportExportActivity.class);
+    startActivity(intent);
+    }
+/*
+Инфо
+ */
+    public void onClickButtonInfo(View view) {
+    Intent intent = new Intent(this, InfoActivity.class);
     startActivity(intent);
     }
 }
