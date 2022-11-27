@@ -1,5 +1,13 @@
 package ru.burdin.clientbase.models;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+
 public class User implements Comparable, Model  {
 
     private  long id;
@@ -7,7 +15,9 @@ public class User implements Comparable, Model  {
     private  String surname;
     private  String phone;
 private  String comment;
-    public User() {
+public  static  final  int CALL_PERMISSION = 1;
+
+public User() {
     }
 
     public User(long id, String name, String surname, String phone, String comment) {
@@ -56,6 +66,56 @@ this.name = "";
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    /*
+    Позвонить
+     */
+public  void call(Activity activity) {
+        String callPermission = Manifest.permission.CALL_PHONE;
+        int hasPermission =activity.checkSelfPermission(callPermission);
+        String [] permissions = new  String[] {callPermission};
+        if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+          activity.requestPermissions(permissions, CALL_PERMISSION);
+        }else  {
+            Intent intentColl = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + this.phone));
+           activity.startActivity(intentColl);
+        }
+}
+
+/*
+Написать
+ */
+    public  void  send (Activity activity) {
+    String [] messanger = new  String[] {"SMS","WHATSAPP", "TELEGRAMM", "VIBER"};
+        AlertDialog.Builder b = new AlertDialog.Builder(activity);
+        b.setItems(messanger, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+switch (i){
+    case 0:
+    Intent intentSend = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + phone));
+       activity.startActivity(intentSend);
+break;
+    case 1:
+        String  number = "https://wa.me/" +phone.substring(1);
+        Intent                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse(number));
+        activity.startActivity(intent);
+
+        break;
+    case 2:
+        String telegramm = "https://t.me/" + phone;
+        Intent intentTelegramm = new Intent(Intent.ACTION_VIEW, Uri.parse(telegramm));
+        activity.startActivity(intentTelegramm);
+break;
+    case 3:;
+        String viber  = "viber://chat?number=%2B" + phone.substring(1);
+        Intent intentVyber = new Intent(Intent.ACTION_VIEW, Uri.parse(viber));
+activity.startActivity(intentVyber);
+}
+            }
+        });
+    b.create().show();
     }
 
     @Override
