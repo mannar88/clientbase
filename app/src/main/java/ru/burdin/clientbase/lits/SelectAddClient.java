@@ -111,8 +111,10 @@ bd = Bd.load(activity);
 
         if (cursor.moveToFirst()) {
             do {
-                colls.put(cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER)) , new Contact(cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER)), cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE)), cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME)), cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE))));
-            } while (cursor.moveToNext());
+if (!colls.containsKey(cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))) || colls.get(cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER))).date < cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE))) {
+    colls.put(cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER)), new Contact(cursor.getString(cursor.getColumnIndex(CallLog.Calls.NUMBER)), cursor.getLong(cursor.getColumnIndex(CallLog.Calls.DATE)), cursor.getString(cursor.getColumnIndex(CallLog.Calls.CACHED_NAME)), cursor.getInt(cursor.getColumnIndex(CallLog.Calls.TYPE))));
+}
+} while (cursor.moveToNext());
         }
         if (cursor != null) {
             cursor.close();
