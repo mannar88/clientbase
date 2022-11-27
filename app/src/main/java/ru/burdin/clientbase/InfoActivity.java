@@ -9,6 +9,7 @@ import android.content.ClipboardManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Array;
@@ -19,6 +20,8 @@ import java.util.function.Consumer;
 
 import ru.burdin.clientbase.lits.ListClientActivity;
 
+import static ru.burdin.clientbase.BuildConfig.VERSION_CODE;
+
 public class InfoActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
@@ -27,13 +30,17 @@ private MyAdapter myAdapter;
 private  MyAdapter.OnUserClickListener <String> onUserClickListener;
 Consumer<MyAdapter.ViewHolder> consumer= viewHolder -> viewHolder.textView.setText(list.get(MyAdapter.count));
 private Activity activity;
+private TextView textViewInfoVersionApp;
+
 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
         recyclerView = findViewById(R.id.recyclerViewInfoe);
-
-list = Arrays.asList(getResources().getStringArray(R.array.info_donate));
+textViewInfoVersionApp = findViewById(R.id.textViewInfoVersionAPP);
+    String versionName = BuildConfig.VERSION_NAME;
+textViewInfoVersionApp.setText("Версия приложения: " + versionName);
+    list = Arrays.asList(getResources().getStringArray(R.array.info_donate));
 select();
 myAdapter = new MyAdapter(this, list, onUserClickListener, consumer);
 recyclerView.setAdapter(myAdapter);
