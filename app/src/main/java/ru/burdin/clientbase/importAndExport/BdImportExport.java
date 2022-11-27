@@ -57,7 +57,7 @@ this.fileImport = new File(getExternalStorageDirectory().getAbsolutePath() + "/"
                         text = "База экспортировалась успешно в папку Клиентская база";
                     } catch (IOException e) {
                         e.printStackTrace();
-                        text = "Что-то пошло не так";
+                        text = e.getLocalizedMessage() + " IOException";
                     }
                         return text;
                     }
@@ -77,8 +77,7 @@ if (!fileImport.exists()){
     try {
         Files.copy(fileImport.toPath(), file_Bd.toPath(), StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException e) {
-        e.printStackTrace();
-    }
+result = e.getLocalizedMessage();    }
     result = "База данных  импортированна успешно";
 }
 return result;
@@ -119,6 +118,8 @@ activity.requestPermissions(params, REQUEST_PERMISSIONS);
 //                intent.addCategory("android.intent.category.DEFAULT");
                 intent.setData(Uri.parse(String.format("package:%s", activity.getPackageName())));
                 activity.startActivityForResult(intent , REQUEST_PERMISSIONS_ALL);
+            }else  {
+                result  = true;
             }
         }
         return  result;

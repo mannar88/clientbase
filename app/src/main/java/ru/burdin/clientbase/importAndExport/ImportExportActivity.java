@@ -40,8 +40,9 @@ bd = Bd.load(this);
                 Toast.makeText(getApplicationContext(), bdExportImport.inport(), Toast.LENGTH_SHORT).show();
                 bd.reStart();
             } catch (ExecutionException e) {
-                Toast.makeText(getApplicationContext(), "Что-то пошло не так", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), e.getLocalizedMessage() + " ExecutionException", Toast.LENGTH_SHORT).show();
             } catch (InterruptedException e) {
+            Toast.makeText(this, e.getLocalizedMessage() + " InterruptedException", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -54,9 +55,9 @@ bd = Bd.load(this);
             try {
                 Toast.makeText(getApplicationContext(), bdExportImport.exportBd(), Toast.LENGTH_SHORT).show();
             } catch (ExecutionException e) {
-                Toast.makeText(getApplicationContext(), "Что-то пошло не так", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), e.getLocalizedMessage() + " ExecutionException", Toast.LENGTH_SHORT).show();
             } catch (InterruptedException e) {
-                Toast.makeText(getApplicationContext(), "Что-то пошло не так", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), e.getLocalizedMessage() + " InterruptedException", Toast.LENGTH_SHORT).show();
             }
         }
         }
