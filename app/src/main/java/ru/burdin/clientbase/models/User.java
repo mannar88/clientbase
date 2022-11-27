@@ -3,10 +3,16 @@ package ru.burdin.clientbase.models;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.telephony.PhoneNumberUtils;
+import android.widget.Toast;
+
+import okhttp3.internal.Util;
 
 public class User implements Comparable, Model  {
 
@@ -87,28 +93,40 @@ public  void call(Activity activity) {
 Написать
  */
     public  void  send (Activity activity) {
-    String [] messanger = new  String[] {"SMS","WHATSAPP", "TELEGRAMM", "VIBER"};
+    String [] messanger = new  String[] {"SMS","WHATSAPP", "TELEGRAMM"};
         AlertDialog.Builder b = new AlertDialog.Builder(activity);
         b.setItems(messanger, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-switch (i){
+                PackageManager pm=activity.getPackageManager();
+                switch (i){
     case 0:
     Intent intentSend = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + phone));
        activity.startActivity(intentSend);
 break;
     case 1:
-        String  number = "https://wa.me/" +phone.substring(1);
-        Intent                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse(number));
-        activity.startActivity(intent);
+        String formattedNumber = phone.substring(1);
+        try{
+            Intent sendIntent =new Intent("android.intent.action.MAIN");
+            sendIntent.setComponent(new ComponentName("com.whatsapp", "com.whatsapp.Conversation"));
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.setType("text/plain");
+            sendIntent.putExtra(Intent.EXTRA_TEXT,"");
+            sendIntent.putExtra("jid", formattedNumber +"@s.whatsapp.net");
+            sendIntent.setPackage("com.whatsapp");
+            activity.startActivity(sendIntent);
+        }
+        catch(Exception e)
 
+        {
+            Toast.makeText(activity,"Error/n"+ e.toString(),Toast.LENGTH_SHORT).show();
+        }
         break;
     case 2:
-        String telegramm = "https://t.me/" + phone;
-        Intent intentTelegramm = new Intent(Intent.ACTION_VIEW, Uri.parse(telegramm));
+        Intent intentTelegramm = new Intent(Intent.ACTION_VIEW,Uri.parse("tg://resolve?domain=" + phone.substring(1)));
         activity.startActivity(intentTelegramm);
 break;
-    case 3:;
+    case  3:
         String viber  = "viber://chat?number=%2B" + phone.substring(1);
         Intent intentVyber = new Intent(Intent.ACTION_VIEW, Uri.parse(viber));
 activity.startActivity(intentVyber);
