@@ -124,7 +124,7 @@ users.add(user);
     /*
         Установка листа клиентов
          */
-    private  void  updateList () {
+    public   void  updateList () {
         Consumer <MyAdapter.ViewHolder> consumer = viewHolder ->viewHolder.textView.setText(users.get(MyAdapter.count).getSurname() +  " " + users.get(MyAdapter.count).getName());
 MyAdapter.OnUserClickListener <User> onUserClickListener = new MyAdapter.OnUserClickListener<User>() {
     @Override
@@ -139,6 +139,11 @@ MyAdapter.OnUserClickListener <User> onUserClickListener = new MyAdapter.OnUserC
             startActivity(intent);
         editTextSerch.setText("");
         }
+    }
+
+    @Override
+    public void onLongClick(User user, int position) {
+
     }
 };
 MyAdapter myAdapter = new MyAdapter(this, users , onUserClickListener, consumer);

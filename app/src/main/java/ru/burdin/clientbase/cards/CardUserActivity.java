@@ -147,25 +147,6 @@ user.call(this);
 user.send(this);
     }
 
-    /*
-    Диалоговое окно
-     */
-    private Dialog dialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setNegativeButton("SMS", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialogInterface, int i) {
-
-        }
-    });
-    builder.setPositiveButton("WHATSAPP", new DialogInterface.OnClickListener() {
-        @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    }
-    });
-
-    return builder.create();
-    }
 
 
 }

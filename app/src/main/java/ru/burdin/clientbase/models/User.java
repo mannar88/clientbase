@@ -93,7 +93,7 @@ public  void call(Activity activity) {
 Написать
  */
     public  void  send (Activity activity) {
-    String [] messanger = new  String[] {"SMS","WHATSAPP", "TELEGRAMM"};
+    String [] messanger = new  String[] {"SMS","WHATSAPP", "TELEGRAMM", "VIBER"};
         AlertDialog.Builder b = new AlertDialog.Builder(activity);
         b.setItems(messanger, new DialogInterface.OnClickListener() {
             @Override
@@ -127,10 +127,13 @@ break;
         activity.startActivity(intentTelegramm);
 break;
     case  3:
-        String viber  = "viber://chat?number=%2B" + phone.substring(1);
-        Intent intentVyber = new Intent(Intent.ACTION_VIEW, Uri.parse(viber));
-activity.startActivity(intentVyber);
-}
+        String viberPackageName = "com.viber.voip";
+activity.startActivity(
+        new                         Intent(Intent.ACTION_VIEW,
+                Uri.parse("viber://add?number="+phone.substring(1))
+                ));
+                break;
+                }
             }
         });
     b.create().show();

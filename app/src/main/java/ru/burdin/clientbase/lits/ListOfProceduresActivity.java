@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import ru.burdin.clientbase.MyAdapter.OnUserClickListener;
 import ru.burdin.clientbase.add.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.MyAdapter;
@@ -96,18 +97,18 @@ private  void  recyclerViewUpdate () {
         }
         }
     Consumer <MyAdapter.ViewHolder> consumer = viewHolder -> viewHolder.textView.setText(processes.get(MyAdapter.count).getName() + " " + StaticClass.priceToString(processes.get(MyAdapter.count).getPrice()) + " руб, " + Long.toString(TimeUnit.MILLISECONDS.toMinutes(bd.getProcedures().get(MyAdapter.count).getTimeEnd())) + " минут");
-    myAdapter = new MyAdapter(this,processes, new MyAdapter.OnUserClickListener() {
+    myAdapter = new MyAdapter(this, processes, new OnUserClickListener() {
         @Override
         public void onUserClick(Object o, int position) {
-/*
-Проверяем из какого класса пришли
- */
+            /*
+            Проверяем из какого класса пришли
+                    */
             if (AddSessionActivity.class.getName().equals(getIntent().getStringExtra(AddSessionActivity.class.getName()))) {
                 Intent intent = new Intent();
                 intent.putExtra(ListOfProceduresActivity.class.getName(), position);
-setResult(RESULT_OK, intent);
+                setResult(RESULT_OK, intent);
                 finish();
-            }else {
+            } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 builder.setMessage("/Точно удалить услугу - " + processes.get(position).getName());
                 builder.setPositiveButton("Удалить", new DialogInterface.OnClickListener() {
@@ -118,12 +119,19 @@ setResult(RESULT_OK, intent);
                         recyclerViewUpdate();
                     }
                 });
-builder.create().show();
+                builder.create().show();
+
             }
-            }
+        }
+            @Override
+        public void onLongClick(Object o, int position) {
+
+        }
     }, consumer);
-    recyclerViewProcedure.setAdapter(myAdapter);
+
+            recyclerViewProcedure.setAdapter(myAdapter);
 }
+
 /*
 Проверка валидности данных поступившие от редактора
  */

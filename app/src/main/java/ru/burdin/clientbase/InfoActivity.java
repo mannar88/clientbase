@@ -71,6 +71,11 @@ String group = "https://t.me/+LRWaSmfAmahkYmVi";
     break;
 }
         }
+
+        @Override
+        public void onLongClick(String s, int position) {
+
+        }
     };
 }
 

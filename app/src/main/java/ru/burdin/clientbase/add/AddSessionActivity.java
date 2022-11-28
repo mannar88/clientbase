@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -218,12 +219,17 @@ record.getEvent_id()                            ))) {
 private  void  updateProcedure () {
     RecyclerView recyclerView = findViewById(R.id.listSetupProcedure);
     Consumer <MyAdapter.ViewHolder> consumer = viewHolder -> viewHolder.textView.setText(procedures.get(MyAdapter.count).getName());
-MyAdapter myAdapter = new MyAdapter(this, procedures, new MyAdapter.OnUserClickListener() {
+MyAdapter myAdapter = new MyAdapter(this, procedures, new MyAdapter.OnUserClickListener<Procedure>() {
     @Override
-    public void onUserClick(Object o, int position) {
+    public void onUserClick(Procedure procedure, int position) {
 procedures.remove(position);
     updateProcedure();
     sumPrices();
+    }
+
+    @Override
+    public void onLongClick(Procedure procedure, int position) {
+
     }
 }, consumer);
 recyclerView.setAdapter(myAdapter);

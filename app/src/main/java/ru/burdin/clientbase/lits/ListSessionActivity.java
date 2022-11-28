@@ -1,10 +1,16 @@
 package ru.burdin.clientbase.lits;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -12,9 +18,12 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -66,10 +75,11 @@ private CalendarSetting calendarSetting;
 private  int indexListRecord;
 public  static  final  int CLASS_INDEX = 2;
     private Intent intentTransfer = new Intent();
-@Override
+Activity activity;@Override
 protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_session);
+activity = this;
         bd = Bd.load(getApplicationContext());
      calendarSetting = CalendarSetting.load(this);
         intentCardSession = new Intent(this, CardSessionActivity.class);
@@ -192,13 +202,34 @@ while (time.format(dateAndTime.getTime()).compareToIgnoreCase(time.format(calend
         };
 MyAdapter.OnUserClickListener <Record> onUserClickListener = new MyAdapter.OnUserClickListener<Record>() {
     @Override
+    public void onLongClick(Record record, int position) {
+    if (record.getId() != 0) {
+        User user = bd.getUsers().get(StaticClass.indexList(record.getIdUser(), bd.getUsers()));
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setNegativeButton("Позвонить", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                user.call(activity);
+            }
+        });
+        builder.setPositiveButton("Написать", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                user.send(activity);
+            }
+        });
+builder.create().show();
+    }
+    }
+
+    @Override
     public void onUserClick(Record record, int position) {
         if (getIntent().getStringExtra(StaticClass.KEY) == null) {
             getIntent().putExtra(StaticClass.KEY, StaticClass.NEWRECORD);
         }
         if (record.getId() !=0) {
                 getIntent().putExtra(StaticClass.KEY, StaticClass.CARDSESSION);
-    }
+        }
 
         String key = getIntent().getStringExtra(StaticClass.KEY);
         consumerHashMap.get(key).accept(record);
@@ -320,16 +351,17 @@ getIntent().removeExtra(StaticClass.POSITION_LIST_USERS);
 finish();
     }
 };
-consumerHashMap.put(StaticClass.NEWRECORDISCARD, consumerNewRecord);
+
+ consumerHashMap.put(StaticClass.NEWRECORDISCARD, consumerNewRecord);
 }
 
-    /*
-Сохраняет данные перед перекрытием экрана
- */
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putLong("dateAndTime", dateAndTime.getTimeInMillis());
-     }
-
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+        if (requestCode == User.CALL_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                StaticClass.getDialog(this, "на совершение звонков");
+            }
+        }
+super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+}

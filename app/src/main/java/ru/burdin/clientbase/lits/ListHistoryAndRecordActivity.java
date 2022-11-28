@@ -82,6 +82,11 @@ MyAdapter myAdapter = new MyAdapter(this, records, onUserClickListener, consumer
 intentCardSession.putExtra(StaticClass.POSITION_LIST_RECORDS, record.getId());
     startActivity(intentCardSession);
     }
+
+    @Override
+    public void onLongClick(Record record, int position) {
+
+    }
 };
 
 }

@@ -94,9 +94,9 @@ public void onClickButtonSetExpenses(View view) {
         private  void  updateListExpenses () {
             Consumer <MyAdapter.ViewHolder> consumer = viewHolder -> viewHolder.textView.setText(DateFormat.getDateInstance(FULL).format(new Date(bd.getExpenses().get(MyAdapter.count).getTime())) + " " + bd.getExpenses().get(MyAdapter.count).getName() + " " + bd.getExpenses().get(MyAdapter.count).getPrice());
 bd.getExpenses().sort(Comparator.reverseOrder());
-            MyAdapter myAdapter = new MyAdapter(this, bd.getExpenses(), new MyAdapter.OnUserClickListener() {
+            MyAdapter myAdapter = new MyAdapter(this, bd.getExpenses(), new MyAdapter.OnUserClickListener<Expenses>() {
             @Override
-            public void onUserClick(Object o, int position) {
+            public void onUserClick(Expenses o, int position) {
     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
     builder.setMessage("Вы точно хотите удалить расход" );
     builder.setPositiveButton("Минимизировать расходы всегда приятно. Удалить", new DialogInterface.OnClickListener() {
@@ -114,7 +114,12 @@ bd.getExpenses().sort(Comparator.reverseOrder());
     builder.create().show();
 
 }
-        }, consumer);
+
+                @Override
+                public void onLongClick(Expenses expenses, int position) {
+
+                }
+            }, consumer);
         recyclerViewExpenses.setAdapter(myAdapter);
         }
 

@@ -41,12 +41,12 @@ class SelectAddClient {
 
     private  Bd bd;
     private  List<String> resultContact = new ArrayList<>();
-    private Activity activity;
+    private ListClientActivity activity;
 public  static  final  int PERNISSION_LOG_COLL = 5;
 public  static  final  int PERMISSION_PHONE_BOOK = 6;
 private  static  final  String  CLIENT = " клиент ";
-public SelectAddClient(Activity activity) {
-    this.activity = activity;
+public SelectAddClient(ListClientActivity activity) {
+    this.activity =(ListClientActivity)activity;
 bd = Bd.load(activity);
 }
 
@@ -149,7 +149,6 @@ activity.startActivity(intent);
         });
 
         builderColl.create().show();
-
     }
 
 /*
@@ -165,7 +164,6 @@ ListView       listView = linearlayout.findViewById(R.id.listViewSearchContats);
       List <String[]> result = new ArrayList<>();
       AlertDialog.Builder builder = new AlertDialog.Builder(activity);
       builder.setView(linearlayout);
-
 List <String> list = new ArrayList<>();
 contacts.keySet().forEach(s -> list.add(s));
 Comparator <String> comparator = (String::compareToIgnoreCase);
@@ -173,8 +171,9 @@ list.sort(comparator);
 boolean [] checks = new  boolean[contacts.size()];
 listScreen(listView, list);
 search(editText, list,  listView);
-buttonAddConact(button, contacts);
-builder.create().show();
+AlertDialog alertDialog = builder.create();
+buttonAddConact(button, contacts, alertDialog);
+alertDialog.show();
 
   }
 
@@ -199,16 +198,22 @@ resultContact.add(nameSurname.get(resultBoolaen.keyAt(j)));            }
   /*
 Кнопка добавления
  */
-private   void  buttonAddConact (Button button, Map <String, String> map) {
+private   void  buttonAddConact (Button button, Map <String, String> map, AlertDialog alertDialog) {
     button.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-if (resultContact.size() >0) {
-    resultContact.forEach(s ->setContact(s.split(" ",2), map.get(s)) );
+            if (resultContact.size() >0) {
+resultContact.forEach(s -> setContact(s.split(" ", 2), map.get(s)));
+                if (resultContact.size() == 1) {
+    Toast.makeText(activity, "Контакт добавлен в Клиентскую базу", Toast.LENGTH_SHORT).show();
 }else {
-    Toast.makeText(activity, "Ничего не выбрано", Toast.LENGTH_SHORT).show();
+    Toast.makeText(activity, "Контакты успешно добавлены в Клиентскую базу", Toast.LENGTH_SHORT).show();
 }
-        }
+                alertDialog.cancel();
+            }else{
+        Toast.makeText(activity, "Ничего не выбрано", Toast.LENGTH_SHORT).show();
+    }
+}
     });
 }
 
@@ -294,10 +299,9 @@ contentValues.put(Bd.COLUMN_PHONE, phone);
       User user = new User(id, contentValues.getAsString(Bd.COLUMN_NAME) + "", contentValues.getAsString(Bd.COLUMN_SURNAME), phone, "");
   bd.getUsers().add(user);
   bd.getUsers().sort(Comparator.naturalOrder());
-activity.recreate();
+  activity.updateList();
   }
   }
-
   /*
 Разрешение
  */
