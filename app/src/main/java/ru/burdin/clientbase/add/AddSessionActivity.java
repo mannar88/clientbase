@@ -2,15 +2,20 @@ package ru.burdin.clientbase.add;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -22,6 +27,7 @@ import java.util.function.Consumer;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.MyAdapter;
 import ru.burdin.clientbase.R;
+import ru.burdin.clientbase.SendSMS;
 import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.lits.ListClientActivity;
 import ru.burdin.clientbase.lits.ListOfProceduresActivity;
@@ -46,6 +52,8 @@ private  int indexListSession;
 private  int indexRecord = -1;
 private CalendarSetting calendarSetting;
 public  static  final  int CLASS_INDEX = 1;
+private CheckBox checkBoxSMS;
+
 
 @Override
 protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +65,8 @@ protected void onCreate(Bundle savedInstanceState) {
     editTextSetPrices = findViewById(R.id.editTextSetupPrise);
     editTextSetTimeFinish = findViewById(R.id.editTextSetupTimeFinish);
     editTextSetComment = findViewById(R.id.editTextSetupComment);
-DateFormat dateFormatTime = new SimpleDateFormat("HH:mm  EEEE dd-MM-YYYY");
+checkBoxSMS = findViewById(R.id.checkBoxAddSessionSMSNow);
+    DateFormat dateFormatTime = new SimpleDateFormat("HH:mm  EEEE dd-MM-YYYY");
 calendarSetting = CalendarSetting.load(this);
 if (savedInstanceState == null) {
         bd = Bd.load(this);
@@ -88,6 +97,7 @@ textViewSetTime.setText(dateFormatTime.format(record.getStartDay()));
         buttonAddProcedure.setText("Ещё добавить услугу");
     }
     updateProcedure();
+    SendSMS.setNow(checkBoxSMS, this);
 }
 
 /*
@@ -138,7 +148,7 @@ if (calendarSetting.update(bd.getRecords().get(indexRecord),textViewSetUser.getT
     Toast.makeText(this, "Не удалось обновить запись в календаре", Toast.LENGTH_SHORT).show();
 }
     setResult(RESULT_OK);
-    finish();
+finish();
 }else {
     Toast.makeText(getApplicationContext(), "Обновить запись не удалось", Toast.LENGTH_SHORT).show();
 }
@@ -166,7 +176,7 @@ contentValues.put(Bd.COLUMN_EVENT_ID, record.getEvent_id());
                             record.getComment(),
 record.getEvent_id()                            ))) {
                         Toast.makeText(getApplicationContext(), "Запись успешно добавлена.", Toast.LENGTH_SHORT).show();
-
+    SendSMS.nowSMS(bd.getUsers().get(userIndex).getPhone());
                     finish();
 
                 }else {
@@ -254,5 +264,15 @@ resultTime = resultTime + procedure.getTimeEnd();
     editTextSetTimeFinish.setText(Long.toString(TimeUnit.MILLISECONDS.toMinutes(resultTime)));
     }
 
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+if (requestCode == SendSMS.PERMISSION_SMS) {
+    if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+SendSMS.permission(this);
+    }else {
+        StaticClass.getDialog(this, "отправку SMS");
+    }
+}
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 }

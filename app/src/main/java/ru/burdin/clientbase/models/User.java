@@ -34,7 +34,10 @@ public User() {
         this.surname = notNull(surname);
         this.phone = phoneFormat(phone);
         this.comment = notNull(comment);
-    }
+if ((this.surname == "" && this.name == "") || (this.surname == null && this.name == null)) {
+    this.surname = phone;
+}
+}
 
     /*
     Исправляет номера телефона

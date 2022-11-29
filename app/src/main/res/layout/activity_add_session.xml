@@ -85,12 +85,20 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextSetupTimeFinish"
         />
 
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkBoxAddSessionSMSNow"
+    android:text="Отправить  сейчас SMS клиенту?"
+        app:layout_constraintTop_toBottomOf="@+id/editTextSetupComment"
+        />
+
     <Button
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/buttonSessionSave"
     android:onClick="onClickButtonSessionSave"
     android:text="Сохранить"
-    app:layout_constraintTop_toBottomOf="@+id/editTextSetupComment"
+    app:layout_constraintTop_toBottomOf="@+id/checkBoxAddSessionSMSNow"
     />
 </androidx.constraintlayout.widget.ConstraintLayout>
