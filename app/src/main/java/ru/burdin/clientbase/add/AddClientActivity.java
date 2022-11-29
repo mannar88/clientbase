@@ -51,7 +51,6 @@ public class AddClientActivity extends AppCompatActivity {
         }else {
             editTextPhone.setText(getIntent().getStringExtra(StaticClass.NUMBER_PHONE));
         }
-        tooListen();
     }
 
     public void buttonSaveC(View view) {
@@ -88,38 +87,6 @@ finish();
             result = true;
         }
         return result;
-    }
-
-    private void tooListen() {
-        editTextPhone.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String result = "";
-                for (int j = 0; j < charSequence.length(); j++) {
-                    if ((charSequence.charAt(j) == '+' && j == 0) || Character.isDigit(charSequence.charAt(j))) {
-                        if (j == 0 && charSequence.charAt(j) == '8') {
-                            result = "+7";
-                            continue;
-                        }
-                        result = result + charSequence.charAt(j);
-                    }
-                }
-                if (!result.equals(charSequence.toString())) {
-                    editTextPhone.setText(result);
-                }
-                editTextPhone.setSelection(result.length());
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
     }
 
     public void onClickButtonAddClientExchange(View view) {

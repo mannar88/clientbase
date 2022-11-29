@@ -9,8 +9,11 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.telephony.PhoneNumberUtils;
 import android.widget.Toast;
+
+import java.util.Locale;
 
 import okhttp3.internal.Util;
 
@@ -25,17 +28,36 @@ public  static  final  int CALL_PERMISSION = 1;
 
 public User() {
     }
-
     public User(long id, String name, String surname, String phone, String comment) {
-        this.id = id;
-if (name.equals(null + "")) {
-this.name = "";
-}else {
-        this.name = name;
-        }
-        this.surname = surname;
-        this.phone = phone;
-    this.comment = comment;
+    this.id = id;
+        this.name = notNull(name);
+        this.surname = notNull(surname);
+        this.phone = phoneFormat(phone);
+        this.comment = notNull(comment);
+    }
+
+    /*
+    Исправляет номера телефона
+     */
+
+    private String phoneFormat (String phone) {
+    String result = PhoneNumberUtils.normalizeNumber(phone);
+if ("RU".equalsIgnoreCase(Locale.getDefault().getCountry())) {
+    if (result.substring(0, 2).equalsIgnoreCase("89")) {
+        result = "+7" + result.substring(1);
+    }
+if (phone.charAt(0) == '9' && result.length() == 10){
+    result = "+7"+ result;
+}
+}
+    return result;
+}
+
+/*
+Убирает null, если есть
+ */
+    private String notNull( String string) {
+        return string.equalsIgnoreCase("null")? "": string;
     }
 
     public String getName() {
@@ -93,7 +115,7 @@ public  void call(Activity activity) {
 Написать
  */
     public  void  send (Activity activity) {
-    String [] messanger = new  String[] {"SMS","WHATSAPP", "TELEGRAMM", "VIBER"};
+        String [] messanger = new  String[] {"SMS","WHATSAPP", "TELEGRAMM", "VIBER"};
         AlertDialog.Builder b = new AlertDialog.Builder(activity);
         b.setItems(messanger, new DialogInterface.OnClickListener() {
             @Override
@@ -108,18 +130,18 @@ break;
         String formattedNumber = phone.substring(1);
         try{
             Intent sendIntent =new Intent("android.intent.action.MAIN");
-            sendIntent.setComponent(new ComponentName("com.whatsapp", "com.whatsapp.Conversation"));
+            sendIntent.setComponent(new ComponentName("com.whatsapp1", "com.whatsapp.Conversation"));
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.setType("text/plain");
             sendIntent.putExtra(Intent.EXTRA_TEXT,"");
             sendIntent.putExtra("jid", formattedNumber +"@s.whatsapp.net");
-            sendIntent.setPackage("com.whatsapp");
+            sendIntent.setPackage("com2.whatsapp");
             activity.startActivity(sendIntent);
         }
-        catch(Exception e)
-
-        {
-            Toast.makeText(activity,"Error/n"+ e.toString(),Toast.LENGTH_SHORT).show();
+        catch(Exception e)      {
+            String  number  = "https://wa.me/" + phone;
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(number));
+            activity.startActivity(intent);
         }
         break;
     case 2:

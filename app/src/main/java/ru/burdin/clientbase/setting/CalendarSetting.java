@@ -66,7 +66,7 @@ public class CalendarSetting {
             name = Preferences.getString(activity, Preferences.APP_PREFERENCES_NAME_CALENDAR, EMPTY);
             checkBoxCalender = Preferences.getBoolean (activity, Preferences.APP_PREFERENCES_CheckBox, false) && requestSinglePermission();
 
-        bd = Bd.load(activity.getApplicationContext());
+        bd = Bd.load(activity);
     }
 
     /*

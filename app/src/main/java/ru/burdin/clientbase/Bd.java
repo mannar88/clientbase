@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -53,17 +54,19 @@ private ArrayList <User> users;
 private  ArrayList <Procedure> procedures;
 private  ArrayList <Record> records;
 private  ArrayList <Expenses> expenses;
-private  static  Context staticContex;
+private    Context staticContex;
 
 private  Bd (Context context) {
+    this.staticContex = context;
     databaseHelper = new DatabaseHelper(context);
-
         sqLiteDatabase = databaseHelper.getReadableDatabase();
-        collectListUsers();
-        collectProcedures();
+            collectListUsers();
+                    collectProcedures();
         collectRecord();
         collectExpenses();
-    }
+sqLiteDatabase.close();
+databaseHelper.close();
+}
 
     public ArrayList<Expenses> getExpenses() {
         return expenses;
@@ -72,7 +75,7 @@ private  Bd (Context context) {
 Создание объекта База данных
  */
     public  static  Bd load (Context context) {
-staticContex = context;
+//staticContex = context;
         Supplier <Bd> bdSupplier = new Supplier<Bd>() {
     @Override
     public Bd get() {
@@ -121,10 +124,15 @@ public void  reStart (){
     public ArrayList<Record> getRecords() {
         return records;
     }
-
+/*
+Добавить
+ */
     public  long  add (String table, ContentValues contentValues) {
 AsyncTaskBd <Long> asyncTaskBd = new AsyncTaskBd();
-    long  result = 0;
+        databaseHelper = new DatabaseHelper(staticContex);
+        sqLiteDatabase = databaseHelper.getReadableDatabase();
+
+        long  result = 0;
     Supplier <Long>  supplier = ()-> sqLiteDatabase.insert(table, null, contentValues);
     asyncTaskBd.execute(supplier);
         try {
@@ -134,6 +142,8 @@ AsyncTaskBd <Long> asyncTaskBd = new AsyncTaskBd();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        sqLiteDatabase.close();
+        databaseHelper.close();
         return  result;
 }
 
@@ -141,7 +151,7 @@ private  void  collectListUsers () {
 users = new ArrayList<>();
     Cursor userCursor = sqLiteDatabase.rawQuery("select * from "+ TABLE, null);
     while (userCursor.moveToNext()) {
-    users.add(new User(userCursor.getLong(0), userCursor.getString(1), userCursor.getString(2), userCursor.getString(3), userCursor.getString(4)));
+    users.add(new User(userCursor.getLong(0), userCursor.getString(1) + "", userCursor.getString(2) + "", userCursor.getString(3) + "", userCursor.getString(4) + ""));
 }
 userCursor.close();
 users.sort(Comparator.naturalOrder());
@@ -176,7 +186,9 @@ cursorExpenses.close();
 
 public  int delete (String table, long id) {
 AsyncTaskBd <Integer> asyncTaskBd = new AsyncTaskBd<>();
-Supplier<Integer> supplier = ()-> sqLiteDatabase.delete(table, "_id = ?", new String[]{String.valueOf(id)});
+    databaseHelper = new DatabaseHelper(staticContex);
+    sqLiteDatabase = databaseHelper.getReadableDatabase();
+    Supplier<Integer> supplier = ()-> sqLiteDatabase.delete(table, "_id = ?", new String[]{String.valueOf(id)});
     int result = 0;
       asyncTaskBd.execute(supplier);
     try {
@@ -186,11 +198,15 @@ Supplier<Integer> supplier = ()-> sqLiteDatabase.delete(table, "_id = ?", new St
     } catch (InterruptedException e) {
         e.printStackTrace();
     }
+    sqLiteDatabase.close();
+    databaseHelper.close();
     return  result;
 }
 
 public     int update  (String table, ContentValues contentValues, long id) {
     AsyncTaskBd <Integer> asyncTaskBd = new AsyncTaskBd<>();
+    databaseHelper = new DatabaseHelper(staticContex);
+    sqLiteDatabase = databaseHelper.getReadableDatabase();
     Supplier <Integer> supplier =()-> sqLiteDatabase.update(table, contentValues, COLUMN_ID + "=" + id, null);
 
     int result = -1;
@@ -198,6 +214,8 @@ public     int update  (String table, ContentValues contentValues, long id) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         result = supplier.get();
     }
+    sqLiteDatabase.close();
+    databaseHelper.close();
     return result;
 }
 
