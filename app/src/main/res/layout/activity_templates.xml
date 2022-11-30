@@ -55,6 +55,7 @@ android:text="Не отправлять напоминалку клиенту"
         android:layout_height="wrap_content"
         android:id="@+id/buttonTemplatesKey"
         android:text="Справка о ключах шаблона"
+        android:onClick="onClickButtonTemplatesKey"
         app:layout_constraintTop_toBottomOf="@+id/textVieTempletsSelectHourNotification"
         />
 
