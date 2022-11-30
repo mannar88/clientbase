@@ -111,4 +111,8 @@ checkBoxCalender.setChecked(false);
     }
 
 
+    public void onClickButtonSettingTemplets(View view) {
+    Intent intent = new Intent(this, TemplatesActivity.class);
+    startActivity(intent);
+    }
 }

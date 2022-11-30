@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".setting.TemplatesActivity">
+
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/textViewTenpletesNotification"
+android:text="Уведомление клиента"
+    />
+
+    <RadioGroup
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+android:id="@+id/radioGroupTempletesNotification"
+    app:layout_constraintTop_toBottomOf="@+id/textViewTenpletesNotification"
+        >
+    <RadioButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+android:id="@+id/radioButtonTempleetsNotificationNotCheck"
+android:text="Не отправлять напоминалку клиенту"
+        android:layout_weight="1" />
+
+    <RadioButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/radioButtonTempleetsNotificationNextDey"
+        android:text="Отправить напоминалку клиенту за день до услуги"
+        android:layout_weight="1" />
+
+    <RadioButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/radioButtonTempleetsNotificationToday"
+        android:text="Отправить клиенту напоминалку в день сеанса"
+        android:layout_weight="1" />
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textVieTempletsSelectHourNotification"
+        android:text="Выбрать время отправки напоминалки"
+        android:onClick="onClickTextViewTempletesSelectNotification"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroupTempletesNotification"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonTemplatesKey"
+        android:text="Справка о ключах шаблона"
+        app:layout_constraintTop_toBottomOf="@+id/textVieTempletsSelectHourNotification"
+        />
+
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+android:id="@+id/textViewTempletesInfoNow"
+android:text="Шаблон текста уведомления клиента при записи сеанса"
+app:layout_constraintTop_toBottomOf="@+id/buttonTemplatesKey"
+    />
+
+<EditText
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+android:id="@+id/editTextTempletesNow"
+app:layout_constraintTop_toBottomOf="@+id/textViewTempletesInfoNow"
+/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewTempletesInfoNotification"
+        android:text="Шаблон текста напоминалки клиенту выбранное время"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTempletesNow"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextTempletesNotificetion"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTempletesInfoNotification"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewTempletesInfoRead"
+        android:text="Шаблон текста уведомления клиента при изменения сеанса"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTempletesNotificetion"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextTempletesRead"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTempletesInfoRead"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewTempletesInfoDelete"
+        android:text="Шаблон текста уведомления клиента при удалении сеанса"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTempletesRead"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextTempletesDelete"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTempletesInfoDelete"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

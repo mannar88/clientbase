@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
+import java.util.ArrayList;
+
 public class SendSMS {
 
     private  static  boolean now = false;
@@ -15,11 +17,18 @@ public  static  final  int PERMISSION_SMS = 22;
     /*
     Отправка смс
      */
-public  static void  nowSMS (String phone) {
+public  static void  nowSMS (String phone, String text) {
     if (now) {
         SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(phone, null, "Тестовое сообщение", null, null);
-    now = false;
+        if (text.length() > 70) {
+            ArrayList <String> messageArray = smsManager.divideMessage(text);
+            for (int i = 0; i < messageArray.size(); i++) {
+                smsManager.sendMultipartTextMessage(phone, null,messageArray, null, null);
+            }
+        }else {
+            smsManager.sendTextMessage(phone, null, "Тестовое сообщение", null, null);
+        }
+            now = false;
     }
 }
 /*

@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <application
         android:name=".Back4appServer"
@@ -25,7 +25,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ClientBase">
-
+        <activity android:name=".setting.TemplatesActivity"></activity>
         <activity android:name=".InfoActivity" />
         <activity android:name=".importAndExport.ImportExportActivity" />
         <activity android:name=".StatActivity" />
