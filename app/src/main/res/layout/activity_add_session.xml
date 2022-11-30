@@ -85,13 +85,48 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextSetupTimeFinish"
         />
 
-    <CheckBox
+    <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/checkBoxAddSessionSMSNow"
-    android:text="Отправить  сейчас SMS клиенту?"
+        android:id="@+id/radioBoxAddSessionMessage"
         app:layout_constraintTop_toBottomOf="@+id/editTextSetupComment"
-        />
+        >
+
+    <RadioButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+android:id="@+id/radioButtonAddSessionNot"
+android:text="Не уведомлять клиента"
+        android:layout_weight="1" />
+
+    <RadioButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/radioButtonAddSessionSMS"
+        android:text="Уведомить по SMS"
+        android:layout_weight="1" />
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioButtonAddSessionWAthsApp"
+            android:text="Уведомить по WhatsApp"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioButtonAddSessionTelegramm"
+            android:text="Уведомить по telegramm"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioButtonAddSessionViber"
+            android:text="Уведомить по Viber"
+            android:layout_weight="1" />
+    </RadioGroup>
 
     <Button
     android:layout_width="match_parent"
@@ -99,6 +134,6 @@
     android:id="@+id/buttonSessionSave"
     android:onClick="onClickButtonSessionSave"
     android:text="Сохранить"
-    app:layout_constraintTop_toBottomOf="@+id/checkBoxAddSessionSMSNow"
+    app:layout_constraintTop_toBottomOf="@+id/radioBoxAddSessionMessage"
     />
 </androidx.constraintlayout.widget.ConstraintLayout>

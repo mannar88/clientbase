@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +36,7 @@ import ru.burdin.clientbase.lits.ListOfProceduresActivity;
 import ru.burdin.clientbase.models.Procedure;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.setting.CalendarSetting;
+import ru.burdin.clientbase.setting.Preferences;
 
 public class AddSessionActivity extends AppCompatActivity {
 
@@ -52,8 +55,12 @@ private  int indexListSession;
 private  int indexRecord = -1;
 private CalendarSetting calendarSetting;
 public  static  final  int CLASS_INDEX = 1;
-private CheckBox checkBoxSMS;
-
+private RadioGroup radioGroupMessange;
+RadioButton radioButtonNotChck;
+private RadioButton radioButtonSMS;
+RadioButton radioButtonWhatsApp;
+RadioButton radioButtonTelegramm;
+RadioButton radioButtonViber;
 
 @Override
 protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +72,14 @@ protected void onCreate(Bundle savedInstanceState) {
     editTextSetPrices = findViewById(R.id.editTextSetupPrise);
     editTextSetTimeFinish = findViewById(R.id.editTextSetupTimeFinish);
     editTextSetComment = findViewById(R.id.editTextSetupComment);
-checkBoxSMS = findViewById(R.id.checkBoxAddSessionSMSNow);
-    DateFormat dateFormatTime = new SimpleDateFormat("HH:mm  EEEE dd-MM-YYYY");
+radioGroupMessange = findViewById(R.id.radioBoxAddSessionMessage);
+radioButtonNotChck = findViewById(R.id.radioButtonAddSessionNot);
+radioButtonSMS = findViewById(R.id.radioButtonAddSessionSMS);
+radioButtonWhatsApp = findViewById(R.id.radioButtonAddSessionWAthsApp);
+radioButtonTelegramm = findViewById(R.id.radioButtonAddSessionTelegramm);
+radioButtonViber = findViewById(R.id.radioButtonAddSessionViber);
+radioGroupMessange.check(radioButtonNotChck.getId());
+DateFormat dateFormatTime = new SimpleDateFormat("HH:mm  EEEE dd-MM-YYYY");
 calendarSetting = CalendarSetting.load(this);
 if (savedInstanceState == null) {
         bd = Bd.load(this);
@@ -97,7 +110,7 @@ textViewSetTime.setText(dateFormatTime.format(record.getStartDay()));
         buttonAddProcedure.setText("Ещё добавить услугу");
     }
     updateProcedure();
-    SendSMS.setNow(checkBoxSMS, this);
+SendSMS.setNow(radioGroupMessange, this, radioButtonSMS.getId());
 }
 
 /*
@@ -176,7 +189,7 @@ contentValues.put(Bd.COLUMN_EVENT_ID, record.getEvent_id());
                             record.getComment(),
 record.getEvent_id()                            ))) {
                         Toast.makeText(getApplicationContext(), "Запись успешно добавлена.", Toast.LENGTH_SHORT).show();
-    SendSMS.nowSMS(bd.getUsers().get(userIndex).getPhone(), "Тестовое сообщение, которое проверяет, дошло ли сообщение с текстом больше семидесити знаков");
+SendSMS.send(this, Preferences.getString(this, SendSMS.KEY_PREFERENSES.get(0), SendSMS.TEMPLETS.get(0)), record, radioGroupMessange.getCheckedRadioButtonId());
                     finish();
 
                 }else {
@@ -268,9 +281,9 @@ resultTime = resultTime + procedure.getTimeEnd();
     public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
 if (requestCode == SendSMS.PERMISSION_SMS) {
     if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-SendSMS.permission(this);
+
     }else {
-        checkBoxSMS.setChecked(false);
+        radioGroupMessange.check(radioButtonNotChck.getId());
         StaticClass.getDialog(this, "отправку SMS");
     }
 }

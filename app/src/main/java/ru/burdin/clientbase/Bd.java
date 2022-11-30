@@ -32,7 +32,6 @@ public class Bd {
 private  static Bd bd;
 public static final String DATABASE_NAME = "clientBase.db";
     public static final int SCHEMA = 5;
-//public  static  final int SCHEMA_PROCEDURE = 3;
     public  static final String TABLE = "users";
     public  static  final String TABLE_PROCEDURE = "procedures";
     public  static  final String TABLE_EXPENSES = "expenses";
@@ -50,7 +49,7 @@ public  static  final  String COLUMN_PROCEDURE = "procedire";
 public  static  final  String COLUMN_EVENT_ID = "event_id";
 private  DatabaseHelper databaseHelper;
 private  SQLiteDatabase sqLiteDatabase;
-private ArrayList <User> users;
+private static ArrayList <User> users;
 private  ArrayList <Procedure> procedures;
 private  ArrayList <Record> records;
 private  ArrayList <Expenses> expenses;
@@ -113,7 +112,7 @@ public void  reStart (){
     load(staticContex);
 }
 
-    public ArrayList<User> getUsers() {
+    public static ArrayList<User> getUsers() {
     return  users;
     }
 
