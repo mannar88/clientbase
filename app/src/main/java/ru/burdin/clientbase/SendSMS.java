@@ -80,9 +80,7 @@ public  static  void  sms (String phone, String text) {
     SmsManager smsManager = SmsManager.getDefault();
     if (text.length() > 70) {
         ArrayList<String> messageArray = smsManager.divideMessage(text);
-        for (int i = 0; i < messageArray.size(); i++) {
             smsManager.sendMultipartTextMessage(phone, null, messageArray, null, null);
-        }
     } else {
         smsManager.sendTextMessage(phone, null, text, null, null);
     }
