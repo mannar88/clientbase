@@ -2,6 +2,10 @@ package ru.burdin.clientbase.cards;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import ru.burdin.clientbase.SendSMS;
 import ru.burdin.clientbase.add.AddSessionActivity;
 import ru.burdin.clientbase.Bd;
 import ru.burdin.clientbase.setting.CalendarSetting;
@@ -22,6 +27,7 @@ import ru.burdin.clientbase.StaticClass;
 import ru.burdin.clientbase.lits.ListSessionActivity;
 import ru.burdin.clientbase.models.Record;
 import ru.burdin.clientbase.models.User;
+import ru.burdin.clientbase.setting.Preferences;
 
 public class CardSessionActivity extends AppCompatActivity {
 
@@ -39,7 +45,7 @@ private  long recordId = -1;
 private CalendarSetting calendarSetting;
 public  static  final  String TRANSFER = "transfer";
 public  static  final  int TRANSFER_INT = 67;
-
+Activity context;
 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +65,8 @@ calendarSetting = CalendarSetting.load(this);
     textViewPrice = findViewById(R.id.textViewCardSessionPrice);
     textViewTimeEnd = findViewById(R.id.textViewCardSessionTimeEnd);
     textViewComment = findViewById(R.id.textViewCardSessionComment);
-        }
+this.context = this;
+}
 
     @Override
     protected void onStart() {
@@ -112,18 +119,56 @@ startActivityForResult(intent, AddSessionActivity.CLASS_INDEX);
 }
 
     /*
-Удаляет запись
+Кнопка ка для удаления записи
  */
     public void onClickButtonCardSessionDelete(View view) {
-int resultDelete = bd.delete(Bd.TABLE_SESSION, record.getId());
-if (resultDelete == 1) {
-long id =  bd.getRecords().remove(StaticClass.indexList(record.getId(), bd.getRecords())).getEvent_id();
-if(calendarSetting.delete(id) == 0) {
-    Toast.makeText(this, "Не удалось удалить запись в календаре", Toast.LENGTH_SHORT).show();
-}
-Toast.makeText(this, "Запись удалена", Toast.LENGTH_SHORT).show();
-finish();
-}
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Удалить запись из расписания?");
+            builder.setPositiveButton("Удалить без уведомления", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+ if (delete()) {
+     finish();
+ }
+                }
+            });
+            builder.setNegativeButton("Удалить и уведомить клиента по SMS", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+    Record recordNotification = new Record(record);
+   if (delete()) {
+       SendSMS.send(context, Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(3), SendSMS.TEMPLETS.get(3)), recordNotification, R.id.radioButtonAddSessionSMS);
+       finish();
+   }
+                                    }
+            });
+            builder.setNeutralButton("Удалить и уведомить по WHatsApp", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Record recordNotification = new Record(record);
+                    if (delete()) {
+                        SendSMS.send(context, Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(3), SendSMS.TEMPLETS.get(3)), recordNotification, R.id.radioButtonAddSessionWAthsApp);
+                        finish();
+                    }
+                }
+            });
+            builder.create().show();
+        }
+
+
+    /*
+    метод удаления сеанса
+     */
+    private  boolean   delete () {
+        int resultDelete = bd.delete(Bd.TABLE_SESSION, record.getId());
+        if (resultDelete == 1) {
+            long id = bd.getRecords().remove(StaticClass.indexList(record.getId(), bd.getRecords())).getEvent_id();
+            if (calendarSetting.delete(id) == 0) {
+                Toast.makeText(getApplicationContext(), "Не удалось удалить запись в календаре", Toast.LENGTH_SHORT).show();
+            }
+            Toast.makeText(getApplicationContext(), "Запись удалена", Toast.LENGTH_SHORT).show();
+        }
+        return  resultDelete == 0? false:true;
     }
 
     /*
@@ -138,7 +183,7 @@ finish();
                 Toast.makeText(this, "Запись дублирована", Toast.LENGTH_LONG).show();
             break;
                 case AddSessionActivity.CLASS_INDEX:
-            setScreenInfo(record);
+                setScreenInfo(record);
                     Toast.makeText(getApplicationContext(), "Запись изменена", Toast.LENGTH_SHORT).show();
             break;
                 case TRANSFER_INT:
@@ -148,6 +193,27 @@ if (recordId != -1) {
     record = bd.getRecords().get(index);
 setScreenInfo(record);
 Toast.makeText(this, "Запись успешно перенесена", Toast.LENGTH_SHORT).show();
+AlertDialog.Builder builder = new AlertDialog.Builder(this);
+builder.setTitle("Уведомить клиента о переносе?");
+builder.setPositiveButton("Нет, пусть будет нежданчик", new DialogInterface.OnClickListener() {
+    @Override
+    public void onClick(DialogInterface dialogInterface, int i) {
+   dialogInterface.cancel();
+    }
+});
+builder.setNegativeButton("Уведомить по SMS", new DialogInterface.OnClickListener() {
+    @Override
+    public void onClick(DialogInterface dialogInterface, int i) {
+   SendSMS.send(context, Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(2),SendSMS.TEMPLETS.get(2)), record, R.id.radioButtonAddSessionSMS);
+    }
+});
+builder.setNeutralButton("Уведомить по WhatsApp", new DialogInterface.OnClickListener() {
+    @Override
+    public void onClick(DialogInterface dialogInterface, int i) {
+   SendSMS.send(context, Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(2), SendSMS.TEMPLETS.get(2)), record, R.id.radioButtonAddSessionWAthsApp);
+    }
+});
+builder.create().show();
 }
             //            setScreenInfo(record);
 

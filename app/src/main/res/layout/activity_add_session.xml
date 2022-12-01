@@ -112,20 +112,6 @@ android:text="Не уведомлять клиента"
             android:id="@+id/radioButtonAddSessionWAthsApp"
             android:text="Уведомить по WhatsApp"
             android:layout_weight="1" />
-
-        <RadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/radioButtonAddSessionTelegramm"
-            android:text="Уведомить по telegramm"
-            android:layout_weight="1" />
-
-        <RadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/radioButtonAddSessionViber"
-            android:text="Уведомить по Viber"
-            android:layout_weight="1" />
     </RadioGroup>
 
     <Button

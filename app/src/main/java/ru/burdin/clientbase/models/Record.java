@@ -35,6 +35,16 @@ private  long id;
 
     public Record() {
     }
+public  Record (Record record) {
+        this.id = record.getId();
+        this.idUser = record.getIdUser();
+        this.end = record.getEnd();
+        this.event_id = record.getEvent_id();
+        this.start = record.getStart();
+        this.comment = record.getComment();
+        this.price = record.getPrice();
+        this.procedure = record.getProcedure();
+}
 
     public Record(long start) {
         this.start = start;

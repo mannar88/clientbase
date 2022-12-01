@@ -63,8 +63,6 @@ private  Bd (Context context) {
                     collectProcedures();
         collectRecord();
         collectExpenses();
-sqLiteDatabase.close();
-databaseHelper.close();
 }
 
     public ArrayList<Expenses> getExpenses() {
@@ -128,8 +126,6 @@ public void  reStart (){
  */
     public  long  add (String table, ContentValues contentValues) {
 AsyncTaskBd <Long> asyncTaskBd = new AsyncTaskBd();
-        databaseHelper = new DatabaseHelper(staticContex);
-        sqLiteDatabase = databaseHelper.getReadableDatabase();
 
         long  result = 0;
     Supplier <Long>  supplier = ()-> sqLiteDatabase.insert(table, null, contentValues);
@@ -141,8 +137,6 @@ AsyncTaskBd <Long> asyncTaskBd = new AsyncTaskBd();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        sqLiteDatabase.close();
-        databaseHelper.close();
         return  result;
 }
 
@@ -185,8 +179,6 @@ cursorExpenses.close();
 
 public  int delete (String table, long id) {
 AsyncTaskBd <Integer> asyncTaskBd = new AsyncTaskBd<>();
-    databaseHelper = new DatabaseHelper(staticContex);
-    sqLiteDatabase = databaseHelper.getReadableDatabase();
     Supplier<Integer> supplier = ()-> sqLiteDatabase.delete(table, "_id = ?", new String[]{String.valueOf(id)});
     int result = 0;
       asyncTaskBd.execute(supplier);
@@ -197,24 +189,16 @@ AsyncTaskBd <Integer> asyncTaskBd = new AsyncTaskBd<>();
     } catch (InterruptedException e) {
         e.printStackTrace();
     }
-    sqLiteDatabase.close();
-    databaseHelper.close();
     return  result;
 }
 
 public     int update  (String table, ContentValues contentValues, long id) {
     AsyncTaskBd <Integer> asyncTaskBd = new AsyncTaskBd<>();
-    databaseHelper = new DatabaseHelper(staticContex);
-    sqLiteDatabase = databaseHelper.getReadableDatabase();
     Supplier <Integer> supplier =()-> sqLiteDatabase.update(table, contentValues, COLUMN_ID + "=" + id, null);
 
     int result = -1;
     asyncTaskBd.execute(supplier);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         result = supplier.get();
-    }
-    sqLiteDatabase.close();
-    databaseHelper.close();
     return result;
 }
 

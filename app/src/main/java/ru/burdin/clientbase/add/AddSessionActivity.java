@@ -58,9 +58,7 @@ public  static  final  int CLASS_INDEX = 1;
 private RadioGroup radioGroupMessange;
 RadioButton radioButtonNotChck;
 private RadioButton radioButtonSMS;
-RadioButton radioButtonWhatsApp;
-RadioButton radioButtonTelegramm;
-RadioButton radioButtonViber;
+private RadioButton radioButtonWhatsApp;
 
 @Override
 protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +74,7 @@ radioGroupMessange = findViewById(R.id.radioBoxAddSessionMessage);
 radioButtonNotChck = findViewById(R.id.radioButtonAddSessionNot);
 radioButtonSMS = findViewById(R.id.radioButtonAddSessionSMS);
 radioButtonWhatsApp = findViewById(R.id.radioButtonAddSessionWAthsApp);
-radioButtonTelegramm = findViewById(R.id.radioButtonAddSessionTelegramm);
-radioButtonViber = findViewById(R.id.radioButtonAddSessionViber);
+
 radioGroupMessange.check(radioButtonNotChck.getId());
 DateFormat dateFormatTime = new SimpleDateFormat("HH:mm  EEEE dd-MM-YYYY");
 calendarSetting = CalendarSetting.load(this);
@@ -160,11 +157,12 @@ public void onClickButtonSessionSave(View view) {
 if (calendarSetting.update(bd.getRecords().get(indexRecord),textViewSetUser.getText().toString()) == 0) {
     Toast.makeText(this, "Не удалось обновить запись в календаре", Toast.LENGTH_SHORT).show();
 }
-    setResult(RESULT_OK);
-finish();
+                setResult(RESULT_OK);
+SendSMS.send(this, Preferences.getString(this, SendSMS.KEY_PREFERENSES.get(2), SendSMS.TEMPLETS.get(2)),record, radioGroupMessange.getCheckedRadioButtonId());
+                finish();
 }else {
     Toast.makeText(getApplicationContext(), "Обновить запись не удалось", Toast.LENGTH_SHORT).show();
-}
+            }
 } else {
             if (!bd.getRecords().contains(record)) {
 try {

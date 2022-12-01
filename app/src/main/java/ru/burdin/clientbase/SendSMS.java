@@ -57,19 +57,8 @@ switch (index) {
     case  R.id.radioButtonAddSessionWAthsApp:
 whatsAppSend(phone, text, activity);
         break;
-    case  R.id.radioButtonAddSessionTelegramm:
-        telegramm(phone, text, activity);
-        break;
-}
-}
 
-/*
-telegramm
- */
-public  static  void  telegramm (String phone, String text, Activity activity) {
-    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(number));
-  activity.startActivity(intent);
-
+}
 }
 
     /*
@@ -77,21 +66,10 @@ whatsApp
  */
 public  static  void  whatsAppSend (String phone, String text, Activity activity) {
     String formattedNumber = phone.substring(1);
-    try{
-        Intent sendIntent =new Intent("android.intent.action.MAIN");
-        sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.setType("text");
-        sendIntent.putExtra(Intent.EXTRA_TEXT,text);
-        sendIntent.putExtra("jid", formattedNumber +"@s.whatsapp.net");
-        sendIntent.setPackage("com.whatsapp");
-        activity.startActivity(sendIntent);
-    }
-    catch(Exception e)      {
 text = text.replace(" ", "%20");
         String  number  = "https://wa.me/" + phone +"?text=" + text;
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(number));
         activity.startActivity(intent);
-    }
 
 }
 
