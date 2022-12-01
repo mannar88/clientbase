@@ -1,5 +1,6 @@
 package ru.burdin.clientbase.cards;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -7,10 +8,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -137,7 +141,9 @@ startActivityForResult(intent, AddSessionActivity.CLASS_INDEX);
                 public void onClick(DialogInterface dialogInterface, int i) {
     Record recordNotification = new Record(record);
    if (delete()) {
-       SendSMS.send(context, Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(3), SendSMS.TEMPLETS.get(3)), recordNotification, R.id.radioButtonAddSessionSMS);
+       if (SendSMS.permission(context)) {
+           SendSMS.send(context, Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(3), SendSMS.TEMPLETS.get(3)), recordNotification, R.id.radioButtonAddSessionSMS);
+       }
        finish();
    }
                                     }
@@ -204,7 +210,9 @@ builder.setPositiveButton("Нет, пусть будет нежданчик", ne
 builder.setNegativeButton("Уведомить по SMS", new DialogInterface.OnClickListener() {
     @Override
     public void onClick(DialogInterface dialogInterface, int i) {
-   SendSMS.send(context, Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(2),SendSMS.TEMPLETS.get(2)), record, R.id.radioButtonAddSessionSMS);
+        if (SendSMS.permission(context)){
+        SendSMS.send(context, Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(2), SendSMS.TEMPLETS.get(2)), record, R.id.radioButtonAddSessionSMS);
+    }
     }
 });
 builder.setNeutralButton("Уведомить по WhatsApp", new DialogInterface.OnClickListener() {
@@ -230,5 +238,17 @@ builder.create().show();
         intent.putExtra(StaticClass.KEY, StaticClass.DUPLICATION);
         intent.putExtra(StaticClass.POSITION_LIST_RECORDS, StaticClass.indexList(record.getId(), bd.getRecords()));
         startActivityForResult(intent,TRANSFER_INT);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+if (requestCode == SendSMS.PERMISSION_SMS) {
+    if (grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        SendSMS.send(context, Preferences.getString(context, SendSMS.KEY_PREFERENSES.get(2), SendSMS.TEMPLETS.get(2)), record, R.id.radioButtonAddSessionSMS);
+    }else {
+        StaticClass.getDialog(context, "на отправку SMS");
+    }
+}
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
