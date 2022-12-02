@@ -25,7 +25,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ClientBase">
-        <activity android:name=".setting.TemplatesActivity"></activity>
+        <receiver
+            android:name=".TimeReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
+
+        <activity android:name=".setting.TemplatesActivity" />
         <activity android:name=".InfoActivity" />
         <activity android:name=".importAndExport.ImportExportActivity" />
         <activity android:name=".StatActivity" />

@@ -51,7 +51,7 @@ private  DatabaseHelper databaseHelper;
 private  SQLiteDatabase sqLiteDatabase;
 private static ArrayList <User> users;
 private  ArrayList <Procedure> procedures;
-private  ArrayList <Record> records;
+private  static ArrayList <Record> records;
 private  ArrayList <Expenses> expenses;
 private    Context staticContex;
 
@@ -118,7 +118,7 @@ public void  reStart (){
         return procedures;
     }
 
-    public ArrayList<Record> getRecords() {
+    public static ArrayList<Record> getRecords() {
         return records;
     }
 /*

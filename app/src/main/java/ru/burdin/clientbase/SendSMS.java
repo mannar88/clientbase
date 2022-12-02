@@ -3,6 +3,7 @@ package ru.burdin.clientbase;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -45,9 +46,9 @@ Preferences.APP_PREFERENCES_TEMPLETESNOTIFICATION,
 public  static  final  int PERMISSION_SMS = 22;
     /*
 
-    Отправка смс
+    Отправка сообщение
      */
-public  static void  send (Activity activity, String text, Record record, int index) {
+public  static void  send (Context context, String text, Record record, int index) {
     text = getTextNotKey(record, text);
     String phone = Bd.getUsers().get(StaticClass.indexList(record.getIdUser(), Bd.getUsers())).getPhone();
 switch (index) {
@@ -55,7 +56,7 @@ switch (index) {
     sms(phone, text);
     break;
     case  R.id.radioButtonAddSessionWAthsApp:
-whatsAppSend(phone, text, activity);
+whatsAppSend(phone, text, context);
         break;
 
 }
@@ -64,19 +65,19 @@ whatsAppSend(phone, text, activity);
     /*
 whatsApp
  */
-public  static  void  whatsAppSend (String phone, String text, Activity activity) {
+public  static  void  whatsAppSend (String phone, String text, Context context) {
     String formattedNumber = phone.substring(1);
 text = text.replace(" ", "%20");
         String  number  = "https://wa.me/" + phone +"?text=" + text;
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(number));
-        activity.startActivity(intent);
+        context.startActivity(intent);
 
 }
 
     /*
 СМС
  */
-public  static  void  sms (String phone, String text) {
+public  static  void  sms(String phone, String text) {
     SmsManager smsManager = SmsManager.getDefault();
     if (text.length() > 70) {
         ArrayList<String> messageArray = smsManager.divideMessage(text);
