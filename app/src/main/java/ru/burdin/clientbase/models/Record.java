@@ -35,7 +35,12 @@ private  long id;
 
     public Record() {
     }
-public  Record (Record record) {
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public  Record (Record record) {
         this.id = record.getId();
         this.idUser = record.getIdUser();
         this.end = record.getEnd();

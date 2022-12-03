@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,8 +19,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import ru.burdin.clientbase.SendSMS;
@@ -50,6 +57,8 @@ private CalendarSetting calendarSetting;
 public  static  final  String TRANSFER = "transfer";
 public  static  final  int TRANSFER_INT = 67;
 Activity context;
+DateFormat dateFormat = new SimpleDateFormat("HH:mm dd-MM-YYYY, EEEE");
+
 @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,8 +93,8 @@ this.context = this;
     private  void  setScreenInfo (Record record) {
         indexUser = StaticClass.indexList(record.getIdUser(), bd.getUsers());
         user = bd.getUsers().get(indexUser);
-        DateFormat dateFormatTime = new SimpleDateFormat("HH:mm dd.MM.YYYY");
-        textViewDate.setText("Время записи: "  + dateFormatTime.format(new Date(record.getStart())));
+
+        textViewDate.setText("Время записи: "  + dateFormat.format(new Date(record.getStart())));
         textViewNameUser.setText("Клиент: " +user.getSurname() + " " + user.getName() + " Нажмите, что бы открыть карточку клиента.");
         textViewProcedure.setText("Услуги: " + record.getProcedure());
         textViewPrice.setText("Стоимость: " + StaticClass.priceToString(record.getPrice()));
@@ -107,11 +116,89 @@ this.context = this;
     Дублирование записи
      */
     public void onClickButtonCardSessionDooble(View view) {
-Intent intent = new Intent(this, ListSessionActivity.class);
-intent.putExtra(StaticClass.KEY, StaticClass.DUPLICATION);
-intent.putExtra(StaticClass.POSITION_LIST_RECORDS, StaticClass.indexList(record.getId(), bd.getRecords()));
-    startActivityForResult(intent,ListSessionActivity.CLASS_INDEX);
+DateFormat dateFormat = new SimpleDateFormat("EEEE, dd-MM-YYYY HH:mm");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        Calendar calendar = new GregorianCalendar();
+calendar.setTimeInMillis(record.getStart());
+String [] times = new String[30];
+long[] longs = new  long[30];
+int i =0;
+while (times[times.length -1] == null) {
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        Record recordTrue = new Record(record);
+        recordTrue.setStart(calendar.getTimeInMillis());
+        if (!Bd.getRecords().contains(recordTrue)) {
+            times[i] = dateFormat.format(calendar.getTime());
+            longs[i++] = calendar.getTimeInMillis();
+        }
+        }
+builder.setPositiveButton("Дублировать однократно", new DialogInterface.OnClickListener() {
+    @Override
+    public void onClick(DialogInterface dialogInterface, int i) {
+        Intent intent = new Intent(getApplicationContext(), ListSessionActivity.class);
+        intent.putExtra(StaticClass.KEY, StaticClass.DUPLICATION);
+        intent.putExtra(StaticClass.POSITION_LIST_RECORDS, StaticClass.indexList(record.getId(), bd.getRecords()));
+        startActivityForResult(intent,ListSessionActivity.CLASS_INDEX);
     }
+});
+    builder.setNegativeButton("Дублировать пакетно без изменения времени", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+doubPacket(times, longs);
+        }
+    });
+    builder.create().show();
+    }
+
+    /*
+    Пакетное время для дублирования
+     */
+    private  void  doubPacket (String[] times, long [] longs) {
+Set<Long> longHashSet = new HashSet<>();
+    boolean [] booleans = new  boolean[times.length];
+AlertDialog.Builder builder = new AlertDialog.Builder(this);builder.setMultiChoiceItems(times, booleans, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+
+                if (b) {
+longHashSet.add(longs[i]);
+            }else {
+longHashSet.remove(longs[i]);
+                }
+
+            }
+        });
+        builder.setPositiveButton("Дублировать", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (longHashSet.size() > 0) {
+for (Long l : longHashSet) {
+    Record recordNew = new Record(record);
+    recordNew.setStart(l);
+    CalendarSetting calendarSetting =  CalendarSetting.load(getApplicationContext());
+    String name = user.getSurname() + " " + user.getName();
+    long evant = calendarSetting.addRecordCalender(recordNew, name);
+    ContentValues contentValues = new ContentValues();
+    contentValues.put(Bd.COLUMN_TIME, recordNew.getStart());
+    contentValues.put(Bd.COLUMN_TIME_END, record.getEnd());
+    contentValues.put(Bd.COLUMN_ID_USER, user.getId());
+    contentValues.put(Bd.COLUMN_PROCEDURE, record.getProcedure());
+    contentValues.put(Bd.COLUMN_PRICE, record.getPrice());
+    contentValues.put(Bd.COLUMN_COMMENT, record.getComment());
+    contentValues.put(Bd.COLUMN_EVENT_ID, evant);
+    recordNew.setIdUser(bd.add(Bd.TABLE_SESSION, contentValues));
+    recordNew.setIdUser(user.getId());
+    Bd.getRecords().add(recordNew);
+}
+Toast.makeText(getApplicationContext(), "Записи дублированы", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(getApplicationContext(), "Ниччего не выбрано", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    builder.create().show();;}
+
 
     /*
 Редактирование записи
